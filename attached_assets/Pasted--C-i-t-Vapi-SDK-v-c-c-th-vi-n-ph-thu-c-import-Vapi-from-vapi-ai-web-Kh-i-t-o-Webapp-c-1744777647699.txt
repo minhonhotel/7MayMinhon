@@ -1,0 +1,76 @@
+// Cài đặt Vapi SDK và các thư viện phụ thuộc
+import Vapi from "@vapi-ai/web";
+
+// Khởi tạo Webapp
+const vapi = new Vapi("your-public-key-or-jwt");  // Thay thế bằng Public Key hoặc JWT của bạn
+
+// Tạo 4 lớp giao diện
+// Lớp 1: Giao diện với nút gọi Vapi SDK
+function showInterface1() {
+  const button = document.getElementById("vapiButton");
+  button.addEventListener("click", () => {
+    startCall();
+  });
+}
+
+// Lớp 2: Giao diện hiển thị các thông số cuộc gọi và real-time conversation
+function showInterface2(callId) {
+  const callContainer = document.getElementById("callContainer");
+  const realTimeContainer = document.getElementById("realTimeConversation");
+
+  // Sử dụng WebSocket để nhận transcript cuộc gọi
+  const socket = new WebSocket("wss://your-websocket-endpoint");
+  socket.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    if (message.callId === callId) {
+      realTimeContainer.innerHTML += `<p>${message.transcript}</p>`;
+    }
+  };
+}
+
+// Lớp 3: Hiển thị summary cuộc gọi và cho phép user chỉnh sửa
+function showInterface3(sessionSummary) {
+  const summaryContainer = document.getElementById("summaryContainer");
+  summaryContainer.innerHTML = `<p>${sessionSummary}</p>`;
+  
+  // Cho phép người dùng chỉnh sửa
+  const inputField = document.createElement("input");
+  inputField.type = "text";
+  inputField.placeholder = "Chỉnh sửa thông tin nếu cần";
+  summaryContainer.appendChild(inputField);
+  
+  // Nút confirm
+  const confirmButton = document.createElement("button");
+  confirmButton.innerHTML = "Xác nhận";
+  confirmButton.addEventListener("click", () => {
+    confirmOrder();
+  });
+  summaryContainer.appendChild(confirmButton);
+}
+
+// Lớp 4: Thông báo xác nhận từ AI
+function showInterface4() {
+  const confirmationMessage = document.createElement("p");
+  confirmationMessage.innerHTML = "Yêu cầu đã được xác nhận và chuyển tới bộ phận liên quan.";
+  document.getElementById("confirmationContainer").appendChild(confirmationMessage);
+}
+
+// Khởi tạo cuộc gọi với Vapi SDK
+async function startCall() {
+  const assistantId = "your-assistant-id";  // Thay bằng ID của Assistant
+  const call = await vapi.start(assistantId);
+  
+  // Chuyển giao diện sau khi cuộc gọi bắt đầu
+  showInterface2(call.id);
+  
+  // Lắng nghe sự kiện kết thúc cuộc gọi
+  vapi.on("call-end", () => {
+    const sessionSummary = "Thông tin tóm tắt cuộc gọi"; // Extract từ dữ liệu Vapi
+    showInterface3(sessionSummary);
+  });
+}
+
+// Xác nhận và chuyển tiếp yêu cầu
+function confirmOrder() {
+  showInterface4();
+}

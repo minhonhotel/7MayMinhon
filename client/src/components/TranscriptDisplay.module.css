@@ -1,0 +1,26 @@
+.transcriptContainer {
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin: 1rem 0;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.transcriptStatus {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.transcriptText {
+  font-size: 1rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #333;
+  min-height: 3rem;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+} 

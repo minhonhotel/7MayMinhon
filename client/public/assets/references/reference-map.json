@@ -1,0 +1,48 @@
+{
+  "room_service": {
+    "type": "document",
+    "title": "Menu Phục vụ Phòng",
+    "url": "/assets/references/documents/room-service-menu.txt",
+    "description": "Danh sách đầy đủ các món ăn và đồ uống phục vụ tại phòng",
+    "keywords": [
+      "food", "dining", "menu", "room service", 
+      "thức ăn", "đồ ăn", "menu", "phục vụ phòng",
+      "bữa sáng", "breakfast", "bữa trưa", "lunch",
+      "bữa tối", "dinner", "đồ uống", "beverages",
+      "gọi đồ ăn", "order food"
+    ]
+  },
+  "pool_guidelines": {
+    "type": "document",
+    "title": "Hướng dẫn sử dụng Hồ bơi",
+    "url": "/assets/references/documents/pool-guidelines.txt",
+    "description": "Quy định và hướng dẫn an toàn khi sử dụng hồ bơi",
+    "keywords": [
+      "pool", "swimming", "safety", "rules",
+      "hồ bơi", "bơi lội", "an toàn", "quy định",
+      "giờ bơi", "swimming hours", "cứu hộ", "lifeguard"
+    ]
+  },
+  "hotel_map": {
+    "type": "image",
+    "title": "Sơ đồ Khách sạn",
+    "url": "/assets/references/images/hotel-map.jpg",
+    "description": "Bản đồ chi tiết các tiện ích trong khách sạn",
+    "keywords": [
+      "map", "layout", "facilities", "direction", "location",
+      "bản đồ", "sơ đồ", "tiện ích", "hướng dẫn", "vị trí",
+      "tầng", "floor", "phòng", "room", "nhà hàng", "restaurant"
+    ]
+  },
+  "spa_services": {
+    "type": "link",
+    "title": "Dịch vụ Spa",
+    "url": "https://minhnon-hotel.com/spa-services",
+    "description": "Danh sách đầy đủ các dịch vụ spa và massage",
+    "keywords": [
+      "spa", "massage", "treatment", "wellness", "relaxation",
+      "mát xa", "spa", "thư giãn", "massage", "chăm sóc",
+      "đặt lịch spa", "book spa", "liệu trình", "treatment"
+    ]
+  }
+} 
