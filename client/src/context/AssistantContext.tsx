@@ -34,6 +34,8 @@ interface AssistantContextType {
   activeOrders: ActiveOrder[];
   addActiveOrder: (order: ActiveOrder) => void;
   micLevel: number;
+  modelOutput: string[];
+  addModelOutput: (output: string) => void;
 }
 
 const initialOrderSummary: OrderSummary = {
@@ -97,6 +99,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     }
   });
   const [micLevel, setMicLevel] = useState<number>(0);
+  const [modelOutput, setModelOutput] = useState<string[]>([]);
 
   // Persist activeOrders to localStorage whenever it changes
   useEffect(() => {
@@ -142,8 +145,11 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           console.log(`Message type: ${message.type}`);
         }
         
-        // Handle transcripts
-        if (message.type === 'transcript' && message.transcriptType === 'final') {
+        if (message.type === 'model_output') {
+          // Handle direct model output
+          addModelOutput(message.content);
+        } else if (message.type === 'transcript' && message.transcriptType === 'final') {
+          // Keep existing transcript handling as fallback
           const newTranscript: Transcript = {
             id: Date.now() as unknown as number,
             callId: callDetails?.id || `call-${Date.now()}`,
@@ -516,6 +522,10 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const addModelOutput = (output: string) => {
+    setModelOutput(prev => [...prev, output]);
+  };
+
   const value: AssistantContextType = {
     currentInterface,
     setCurrentInterface,
@@ -546,6 +556,8 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     activeOrders,
     addActiveOrder,
     micLevel,
+    modelOutput,
+    addModelOutput,
   };
 
   return (

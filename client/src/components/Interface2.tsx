@@ -16,7 +16,8 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     isMuted,
     toggleMute,
     setCurrentInterface,
-    micLevel
+    micLevel,
+    modelOutput
   } = useAssistant();
   
   // Add state for references
@@ -139,21 +140,15 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             ref={conversationRef}
             className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto"
           >
-            {[...transcripts].reverse().map((transcript) => (
-              <div key={transcript.id} className="mb-2">
+            {[...modelOutput].reverse().map((output, index) => (
+              <div key={index} className="mb-2">
                 <div className="flex items-start mb-1">
-                  <div className={`w-8 h-8 rounded-full ${
-                    transcript.role === 'assistant' ? 'bg-primary text-white' : 'bg-amber-400 text-primary-dark'
-                  } flex items-center justify-center mr-2 flex-shrink-0`}>
-                    <span className="material-icons text-base">
-                      {transcript.role === 'assistant' ? 'support_agent' : 'person'}
-                    </span>
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
+                    <span className="material-icons text-base">support_agent</span>
                   </div>
                   <div className="flex-grow">
-                    <p className={`text-sm mb-1 ${transcript.role === 'assistant' ? 'text-yellow-400' : 'text-blue-400'}`}>
-                      {transcript.role === 'assistant' ? 'Assistant' : 'You'}
-                    </p>
-                    <p className={`text-xl font-semibold ${transcript.role === 'assistant' ? 'text-yellow-200' : 'text-blue-200'}`}>{transcript.content}</p>
+                    <p className="text-sm mb-1 text-yellow-400">Assistant</p>
+                    <p className="text-xl font-semibold text-yellow-200">{output}</p>
                   </div>
                 </div>
               </div>
