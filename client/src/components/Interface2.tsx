@@ -132,7 +132,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           <div
             id="realTimeConversation"
             ref={conversationRef}
-            className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto"
+            className="relative p-2 w-full min-h-[128px] max-h-[256px] overflow-y-auto"
           >
             {(() => {
               // Sort transcripts by timestamp
@@ -163,11 +163,11 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               });
               
               return groupedMessages.map((group) => (
-                <div key={group.id} className="mb-2">
+                <div key={group.id} className="mb-3">
                   {group.role === 'user' ? (
                     // User messages - show each separately
                     group.messages.map((item) => (
-                      <div key={item.id} className="flex items-start mb-1">
+                      <div key={item.id} className="flex items-start mb-2 last:mb-0">
                         <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
                           <span className="material-icons text-sm">person</span>
                         </div>
@@ -178,20 +178,18 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                       </div>
                     ))
                   ) : (
-                    // Assistant messages - group together
-                    <div className="flex items-start">
-                      <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
-                        <span className="material-icons text-sm">support_agent</span>
+                    // Assistant messages - show each separately like user messages
+                    group.messages.map((item) => (
+                      <div key={item.id} className="flex items-start mb-2 last:mb-0">
+                        <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
+                          <span className="material-icons text-sm">support_agent</span>
+                        </div>
+                        <div className="flex-grow">
+                          <p className="text-xs mb-0.5 text-gray-400">Assistant</p>
+                          <p className="text-base font-normal text-yellow-100">{item.content}</p>
+                        </div>
                       </div>
-                      <div className="flex-grow">
-                        <p className="text-xs mb-0.5 text-gray-400">Assistant</p>
-                        {group.messages.map((item) => (
-                          <p key={item.id} className="text-base font-normal text-yellow-100 mb-1 last:mb-0">
-                            {item.content}
-                          </p>
-                        ))}
-                      </div>
-                    </div>
+                    ))
                   )}
                 </div>
               ));
