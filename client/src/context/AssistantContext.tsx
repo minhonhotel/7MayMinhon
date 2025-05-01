@@ -228,42 +228,67 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
   // Initialize sentence buffer
   const sentenceBuffer = createSentenceBuffer();
 
+  // Helper function to clean and format text
+  const cleanAndFormatText = (text: string): string => {
+    if (!text) return '';
+
+    // Step 1: Remove all system messages and typing indicators
+    let cleaned = text
+      .replace(/\(Typing\.\.\.\).*?(?=\w|$)/g, '') // Remove typing indicators and text until next word
+      .replace(/support_agentAssistant.*?(?=\w|$)/g, '') // Remove support_agentAssistant and following text
+      .replace(/Assistant.*?(?=\w|$)/g, '') // Remove Assistant and following text
+      .replace(/\(Real-time\).*?(?=\w|$)/g, '') // Remove real-time indicators
+      .replace(/support_agent/g, '')
+      .replace(/_agent/g, '');
+
+    // Step 2: Split camelCase and concatenated words
+    cleaned = cleaned
+      // Split camelCase
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      // Split concatenated words by common patterns
+      .replace(/([a-z])([A-Z][a-z])/g, '$1 $2')
+      // Split numbers from words
+      .replace(/([a-zA-Z])(\d)/g, '$1 $2')
+      .replace(/(\d)([a-zA-Z])/g, '$1 $2');
+
+    // Step 3: Fix common word joining issues
+    cleaned = cleaned
+      // Add space after punctuation if missing
+      .replace(/([.,!?])([a-zA-Z])/g, '$1 $2')
+      // Fix spaces around apostrophes
+      .replace(/(\w)'(\w)/g, "$1'$2")
+      // Ensure single space between words
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    // Step 4: Skip if the cleaned text only contains system indicators or is empty
+    if (cleaned.match(/^[!?""]*$/) || 
+        cleaned.length === 0 ||
+        cleaned.includes('support_agent') ||
+        cleaned.includes('(Real-time)') ||
+        cleaned.includes('(Typing...)')) {
+      return '';
+    }
+
+    // Step 5: Final cleanup
+    cleaned = cleaned
+      // Remove any remaining system message patterns
+      .replace(/\(\s*\)/g, '') // Empty parentheses
+      .replace(/\s+/g, ' ') // Ensure single spaces
+      .trim();
+
+    return cleaned;
+  };
+
   // Message handler for transcripts and reports
   const handleMessage = async (message: any) => {
     console.log('=== Message Handler Started ===');
-    console.log('Raw message:', message);
-
-    // Helper function to clean system messages
-    const cleanSystemMessage = (content: string): string => {
-      if (!content) return '';
-
-      // Skip if it's just system indicators
-      if (content.includes('(Typing...)') || 
-          content.includes('support_agent') ||
-          content.includes('_agent') ||
-          content.includes('GoodNhonHotelvoiceassistant') ||
-          content.includes('(Real-time)person')) {
-        return '';
-      }
-
-      return content
-        .replace(/\(Typing\.\.\.\).*?support_agentAssistant/g, '')
-        .replace(/GoodNhonHotelvoiceassistant.*?Mion/g, '')
-        .replace(/support_agentAssistant\s*\(Real-time\)person.*?How are you doing\??/g, '')
-        .replace(/\(Typing\.\.\.\)/g, '')
-        .replace(/support_agent/g, '')
-        .replace(/_agent/g, '')
-        .replace(/YouHi\./g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-    };
     
-    // For model output - handle this first
+    // For model output
     if (message.type === 'model-output') {
-      console.log('=== Processing Model Output ===');
-      
-      // Get the content from the message
       let outputContent = '';
+      
+      // Get content from various possible fields
       if (typeof message.content === 'string') {
         outputContent = message.content;
       } else if (typeof message.text === 'string') {
@@ -281,57 +306,73 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      // Clean the output
-      const cleanedOutput = cleanSystemMessage(outputContent);
-      if (!cleanedOutput) {
+      // Clean and format the output
+      const formattedOutput = cleanAndFormatText(outputContent);
+      if (!formattedOutput) {
         console.log('Skipping system message or empty output');
         return;
       }
 
-      console.log('Cleaned model output:', cleanedOutput);
+      console.log('Formatted output:', formattedOutput);
 
-      // Add to model output array
-      setModelOutput(prev => [...prev, cleanedOutput]);
+      // Update model output array
+      setModelOutput(prev => {
+        // Don't add if it's just a repeat
+        if (prev.length > 0 && prev[prev.length - 1] === formattedOutput) {
+          return prev;
+        }
+        return [...prev, formattedOutput];
+      });
 
-      // Update or create transcript for assistant
+      // Update transcripts
       setTranscripts(prev => {
-        // Find existing assistant transcript
         const existingIndex = prev.findIndex(t => t.role === 'assistant' && t.isModelOutput);
         
         if (existingIndex >= 0) {
           // Update existing transcript
           const updated = [...prev];
+          const currentContent = updated[existingIndex].content;
+          
+          // Don't add if it would create a duplicate
+          if (currentContent.endsWith(formattedOutput)) {
+            return prev;
+          }
+          
+          // Add space between sentences
+          const needsPeriod = !currentContent.endsWith('.') && 
+                            !currentContent.endsWith('!') && 
+                            !currentContent.endsWith('?');
+                            
+          const separator = needsPeriod ? '. ' : ' ';
+          
           updated[existingIndex] = {
             ...updated[existingIndex],
-            content: updated[existingIndex].content + cleanedOutput
+            content: currentContent + separator + formattedOutput
           };
           return updated;
         } else {
           // Create new transcript
-          const newTranscript: Transcript = {
+          return [...prev, {
             id: Date.now(),
             callId: callDetails?.id || `call-${Date.now()}`,
             role: 'assistant',
-            content: cleanedOutput,
+            content: formattedOutput,
             timestamp: new Date(),
             isModelOutput: true
-          };
-          return [...prev, newTranscript];
+          }];
         }
       });
     }
     
-    // For user transcripts
+    // For user transcripts - keep as is
     if (message.type === 'transcript' && message.role === 'user') {
-      console.log('=== Processing User Transcript ===');
-      const newTranscript: Transcript = {
+      setTranscripts(prev => [...prev, {
         id: Date.now(),
         callId: callDetails?.id || `call-${Date.now()}`,
         role: 'user',
         content: message.content || message.transcript || '',
         timestamp: new Date()
-      };
-      setTranscripts(prev => [...prev, newTranscript]);
+      }]);
     }
   };
 
