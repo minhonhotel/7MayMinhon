@@ -3,9 +3,11 @@ import OpenAI from "openai";
 // Initialize OpenAI client
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  defaultQuery: { "project": process.env.OPENAI_PROJECT_ID }
+  organization: process.env.OPENAI_PROJECT_ID,
+  defaultHeaders: {
+    'OpenAI-Organization': process.env.OPENAI_PROJECT_ID
+  }
 });
-const projectId = process.env.OPENAI_PROJECT_ID || "";
 
 // Service category definitions for better classification
 export const SERVICE_CATEGORIES = {
