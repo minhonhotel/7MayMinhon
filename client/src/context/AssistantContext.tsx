@@ -147,17 +147,13 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         // Message handler for transcripts and reports
         const handleMessage = async (message: any) => {
           console.log('Raw message received:', message);
-          console.log('Message type:', message.type);
-          console.log('Message role:', message.role);
           
           // For model output - handle this first
           if (message.type === 'model-output') {
-            console.log('Model output detected - Full message:', message);
+            console.log('Model output detected:', message);
             
-            // Try to get content from any available field
+            // Get the content from the message
             let outputContent = '';
-            
-            // Check each possible field
             if (typeof message.content === 'string') {
               outputContent = message.content;
             } else if (typeof message.text === 'string') {
@@ -171,55 +167,64 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             }
             
             if (outputContent) {
-              console.log('Current accumulated output:', accumulatedOutput);
-              console.log('New output content:', outputContent);
-              
               // Accumulate the output
               const newAccumulatedOutput = accumulatedOutput + outputContent;
-              setAccumulatedOutput(newAccumulatedOutput);
-              console.log('New accumulated output:', newAccumulatedOutput);
+              console.log('Accumulated output:', newAccumulatedOutput);
 
-              // Function to check if we have a complete sentence
-              const hasCompleteSentence = (text: string) => {
-                // Match for sentence endings including Vietnamese punctuation
-                const sentenceEndings = /[.!?。？！]\s*$/;
-                const hasEnding = sentenceEndings.test(text);
-                const hasDoubleNewline = /\n\n/.test(text);
-                return hasEnding || hasDoubleNewline;
+              // Function to extract complete sentences
+              const extractCompleteSentences = (text: string): { 
+                completeSentences: string, 
+                remaining: string 
+              } => {
+                // Match one or more complete sentences
+                const sentencePattern = /^([\s\S]*?[.!?。？！:]\s+)/;
+                const match = text.match(sentencePattern);
+                
+                if (match) {
+                  // We found complete sentences
+                  const completeSentences = match[0];
+                  const remaining = text.slice(completeSentences.length);
+                  return { completeSentences, remaining };
+                }
+                
+                // Check for double newlines
+                const newlineMatch = text.match(/^([\s\S]*?\n\n)/);
+                if (newlineMatch) {
+                  const completeSentences = newlineMatch[0];
+                  const remaining = text.slice(completeSentences.length);
+                  return { completeSentences, remaining };
+                }
+                
+                // No complete sentences found
+                return { completeSentences: '', remaining: text };
               };
 
-              // Check if we should display the content
-              const shouldDisplay = hasCompleteSentence(newAccumulatedOutput) || message.done;
+              // Extract any complete sentences from accumulated output
+              const { completeSentences, remaining } = extractCompleteSentences(newAccumulatedOutput);
               
-              if (shouldDisplay && newAccumulatedOutput.trim()) {
-                console.log('Creating new transcript with content:', newAccumulatedOutput.trim());
+              if (completeSentences || message.done) {
+                // Create transcript with complete sentences
+                const contentToShow = message.done ? newAccumulatedOutput : completeSentences;
                 
-                // Create new transcript with the complete content
-                const newTranscript: Transcript = {
-                  id: Date.now() as unknown as number,
-                  callId: callDetails?.id || `call-${Date.now()}`,
-                  role: 'assistant',
-                  content: newAccumulatedOutput.trim(),
-                  timestamp: new Date(),
-                  isModelOutput: true
-                };
+                if (contentToShow.trim()) {
+                  const newTranscript: Transcript = {
+                    id: Date.now() as unknown as number,
+                    callId: callDetails?.id || `call-${Date.now()}`,
+                    role: 'assistant',
+                    content: contentToShow.trim(),
+                    timestamp: new Date(),
+                    isModelOutput: true
+                  };
 
-                // Add the new transcript
-                setTranscripts(prev => {
-                  console.log('Previous transcripts:', prev);
-                  const newTranscripts = [...prev, newTranscript];
-                  console.log('New transcripts:', newTranscripts);
-                  return newTranscripts;
-                });
-                
-                // Reset accumulated output only if it's the end of message or we have a complete sentence
-                if (message.done || hasCompleteSentence(newAccumulatedOutput)) {
-                  console.log('Resetting accumulated output');
-                  setAccumulatedOutput('');
-                  setLastTranscriptId(null);
+                  // Add the new transcript
+                  setTranscripts(prev => [...prev, newTranscript]);
                 }
+                
+                // Keep any remaining incomplete sentence for next time
+                setAccumulatedOutput(message.done ? '' : remaining);
               } else {
-                console.log('Content not ready for display yet');
+                // Keep accumulating if no complete sentences yet
+                setAccumulatedOutput(newAccumulatedOutput);
               }
             }
           }
