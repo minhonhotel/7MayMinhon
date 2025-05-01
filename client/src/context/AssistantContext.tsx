@@ -170,38 +170,46 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
               
               // Function to clean and format sentences
               const formatSentences = (text: string) => {
-                return text
-                  .split(/(?<=[.!?])\s+/) // Split on sentence endings
-                  .filter(sentence => sentence.trim().length > 0) // Remove empty sentences
+                // Split into sentences while keeping the punctuation
+                const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
+                
+                // Clean and join sentences
+                return sentences
                   .map(sentence => sentence.trim()) // Clean up whitespace
+                  .filter(sentence => sentence.length > 0) // Remove empty sentences
                   .join('\n'); // Join with newlines
               };
               
               // Check if we have complete sentences or if this is the final message
               if (
-                outputContent.match(/[.!?]\s*$/) || // Ends with punctuation
+                newAccumulatedOutput.match(/[.!?](\s+|$)/) || // Ends with punctuation
                 message.done // Message indicates it's complete
               ) {
                 // Format the accumulated output into clean sentences
                 const formattedContent = formatSentences(newAccumulatedOutput);
                 
-                // Create new transcript with formatted content
-                const newTranscript: Transcript = {
-                  id: Date.now() as unknown as number,
-                  callId: callDetails?.id || `call-${Date.now()}`,
-                  role: 'assistant',
-                  content: formattedContent,
-                  timestamp: new Date(),
-                  isModelOutput: true
-                };
+                if (formattedContent) {
+                  // Create new transcript with formatted content
+                  const newTranscript: Transcript = {
+                    id: Date.now() as unknown as number,
+                    callId: callDetails?.id || `call-${Date.now()}`,
+                    role: 'assistant',
+                    content: formattedContent,
+                    timestamp: new Date(),
+                    isModelOutput: true
+                  };
 
-                // Add the complete sentences as a new transcript
-                setTranscripts(prev => [...prev, newTranscript]);
+                  console.log('Adding formatted sentences:', formattedContent);
+                  // Add the complete sentences as a new transcript
+                  setTranscripts(prev => [...prev, newTranscript]);
 
-                // Reset accumulated output
-                setAccumulatedOutput('');
+                  // Reset accumulated output
+                  setAccumulatedOutput('');
+                } else {
+                  // If formatting resulted in empty content, keep accumulating
+                  console.log('No complete sentences found yet, continuing to accumulate');
+                }
               }
-              // If no complete sentence yet, just keep accumulating
             } else {
               console.warn('Model output message received but no content found:', message);
             }
