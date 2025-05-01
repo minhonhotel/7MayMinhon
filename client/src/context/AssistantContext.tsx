@@ -157,7 +157,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             // Try to get content from any available field
             let outputContent = '';
             
-            // Check each possible field and log its value
+            // Check each possible field
             if (typeof message.content === 'string') {
               outputContent = message.content;
             } else if (typeof message.text === 'string') {
@@ -175,61 +175,34 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
               const newAccumulatedOutput = accumulatedOutput + outputContent;
               setAccumulatedOutput(newAccumulatedOutput);
               
+              // Function to check if text ends with sentence-ending punctuation
+              const isCompleteSentence = (text: string) => {
+                // Check for common sentence endings
+                const endsWithPunctuation = /[.!?。？！]\s*$/.test(text);
+                const endsWithNewlines = text.endsWith('\n\n');
+                return endsWithPunctuation || endsWithNewlines;
+              };
+
               // Check if we have a complete sentence or if it's the final message
-              if (message.done) {
-                // If it's the final message, create a transcript with all accumulated content
-                if (newAccumulatedOutput.trim()) {
-                  const newTranscript: Transcript = {
-                    id: Date.now() as unknown as number,
-                    callId: callDetails?.id || `call-${Date.now()}`,
-                    role: 'assistant',
-                    content: newAccumulatedOutput.trim(),
-                    timestamp: new Date(),
-                    isModelOutput: true
-                  };
-                  
-                  // Add or update transcript
-                  setTranscripts(prev => {
-                    if (lastTranscriptId) {
-                      // Update existing transcript
-                      return prev.map(t => 
-                        t.id === lastTranscriptId 
-                          ? { ...t, content: newAccumulatedOutput.trim() }
-                          : t
-                      );
-                    }
-                    // Add new transcript
-                    return [...prev, newTranscript];
-                  });
-                  
-                  // Reset for next sentence
-                  setAccumulatedOutput('');
-                  setLastTranscriptId(null);
-                }
-              } else {
-                // If not final, update the current transcript
-                if (!lastTranscriptId) {
-                  // Create new transcript if we don't have one
-                  const newTranscript: Transcript = {
-                    id: Date.now() as unknown as number,
-                    callId: callDetails?.id || `call-${Date.now()}`,
-                    role: 'assistant',
-                    content: newAccumulatedOutput.trim(),
-                    timestamp: new Date(),
-                    isModelOutput: true
-                  };
-                  setTranscripts(prev => [...prev, newTranscript]);
-                  setLastTranscriptId(newTranscript.id);
-                } else {
-                  // Update existing transcript
-                  setTranscripts(prev =>
-                    prev.map(t =>
-                      t.id === lastTranscriptId
-                        ? { ...t, content: newAccumulatedOutput.trim() }
-                        : t
-                    )
-                  );
-                }
+              const shouldDisplayOutput = message.done || isCompleteSentence(newAccumulatedOutput);
+              
+              if (shouldDisplayOutput && newAccumulatedOutput.trim()) {
+                // Create new transcript with the complete sentence
+                const newTranscript: Transcript = {
+                  id: Date.now() as unknown as number,
+                  callId: callDetails?.id || `call-${Date.now()}`,
+                  role: 'assistant',
+                  content: newAccumulatedOutput.trim(),
+                  timestamp: new Date(),
+                  isModelOutput: true
+                };
+
+                // Add the transcript
+                setTranscripts(prev => [...prev, newTranscript]);
+                
+                // Reset accumulated output for next sentence
+                setAccumulatedOutput('');
+                setLastTranscriptId(null);
               }
             }
           }
