@@ -130,6 +130,150 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     setTranscripts(prev => [...prev, newTranscript]);
   }, []);
 
+  // Utility function to handle text processing
+  const createSentenceBuffer = () => {
+    let fullBuffer = "";
+    let temporaryBuffer = "";
+    const sentenceEndMarkers = ['.', '!', '?', '。', '！', '?', ' ', '\n\n'];
+    
+    // Find and hook existing handlers
+    const findCurrentHandlers = () => {
+      const allEventListeners = document.querySelectorAll('*[class*="conversation"]');
+      console.log("Tất cả event listeners:", allEventListeners);
+      
+      if (allEventListeners) {
+        Array.from(allEventListeners).forEach(element => {
+          // Set up mutation observer for this element
+          const observer = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+              if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                const currentText = mutation.target.textContent || '';
+                
+                if (currentText && currentText !== fullBuffer) {
+                  // Process only new text
+                  const newText = currentText.substring(fullBuffer.length);
+                  temporaryBuffer += newText;
+                  
+                  // Check for complete sentences
+                  let lastSentenceEndIndex = -1;
+                  for (const marker of sentenceEndMarkers) {
+                    const index = temporaryBuffer.lastIndexOf(marker);
+                    if (index > lastSentenceEndIndex) {
+                      lastSentenceEndIndex = index;
+                    }
+                  }
+                  
+                  // If we found a sentence end
+                  if (lastSentenceEndIndex !== -1) {
+                    // Get the complete sentence
+                    const completeSentence = temporaryBuffer.substring(0, lastSentenceEndIndex + 1);
+                    fullBuffer += completeSentence;
+                    
+                    // Create new transcript with the complete text
+                    const newTranscript: Transcript = {
+                      id: Date.now() as unknown as number,
+                      callId: callDetails?.id || `call-${Date.now()}`,
+                      role: 'assistant',
+                      content: fullBuffer,
+                      timestamp: new Date(),
+                      isModelOutput: true
+                    };
+
+                    // Update transcripts
+                    setTranscripts(prev => {
+                      // Remove previous assistant transcript if exists
+                      const filtered = prev.filter(t => !(t.role === 'assistant' && t.isModelOutput));
+                      return [...filtered, newTranscript];
+                    });
+
+                    // Keep remaining text for next iteration
+                    temporaryBuffer = temporaryBuffer.substring(lastSentenceEndIndex + 1);
+                    console.log("Câu hoàn chỉnh:", completeSentence);
+                    console.log("Buffer còn lại:", temporaryBuffer);
+                  }
+                }
+              }
+            }
+          });
+
+          // Observe everything
+          observer.observe(element, {
+            childList: true,
+            characterData: true,
+            subtree: true
+          });
+        });
+      }
+    };
+
+    // Initialize observers when component mounts
+    useEffect(() => {
+      findCurrentHandlers();
+      
+      // Cleanup function
+      return () => {
+        // Cleanup code if needed
+      };
+    }, []);
+
+    return {
+      getBuffer: () => fullBuffer,
+      reset: () => {
+        fullBuffer = "";
+        temporaryBuffer = "";
+      }
+    };
+  };
+
+  // Initialize sentence buffer
+  const sentenceBuffer = createSentenceBuffer();
+
+  // Message handler for transcripts and reports
+  const handleMessage = async (message: any) => {
+    console.log('=== Message Handler Started ===');
+    console.log('Raw message:', message);
+    
+    // For model output - handle this first
+    if (message.type === 'model-output') {
+      console.log('=== Processing Model Output ===');
+      
+      // Get the content from the message
+      let outputContent = '';
+      if (typeof message.content === 'string') {
+        outputContent = message.content;
+      } else if (typeof message.text === 'string') {
+        outputContent = message.text;
+      } else if (typeof message.transcript === 'string') {
+        outputContent = message.transcript;
+      } else if (typeof message.output === 'string') {
+        outputContent = message.output;
+      } else if (message.content && typeof message.content.text === 'string') {
+        outputContent = message.content.text;
+      }
+
+      if (!outputContent) {
+        console.warn("Received invalid model output event", message);
+        return;
+      }
+
+      // The actual text processing is now handled by the mutation observer
+      console.log('Received new content:', outputContent);
+    }
+    
+    // For user transcripts
+    if (message.type === 'transcript' && message.role === 'user') {
+      console.log('=== Processing User Transcript ===');
+      const newTranscript: Transcript = {
+        id: Date.now() as unknown as number,
+        callId: callDetails?.id || `call-${Date.now()}`,
+        role: 'user',
+        content: message.content || message.transcript || '',
+        timestamp: new Date()
+      };
+      setTranscripts(prev => [...prev, newTranscript]);
+    }
+  };
+
   // Initialize Vapi when component mounts
   useEffect(() => {
     const setupVapi = async () => {
@@ -146,78 +290,6 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           setMicLevel(level);
         });
 
-        // Message handler for transcripts and reports
-        const handleMessage = async (message: any) => {
-          console.log('=== Message Handler Started ===');
-          console.log('Raw message:', message);
-          
-          // For model output - handle this first
-          if (message.type === 'model-output') {
-            console.log('=== Processing Model Output ===');
-            
-            // Get the content from the message
-            let outputContent = '';
-            if (typeof message.content === 'string') {
-              outputContent = message.content;
-            } else if (typeof message.text === 'string') {
-              outputContent = message.text;
-            } else if (typeof message.transcript === 'string') {
-              outputContent = message.transcript;
-            } else if (typeof message.output === 'string') {
-              outputContent = message.output;
-            } else if (message.content && typeof message.content.text === 'string') {
-              outputContent = message.content.text;
-            }
-
-            if (!outputContent) {
-              console.warn("Received invalid model output event", message);
-              return;
-            }
-
-            console.log('Model output content:', outputContent);
-
-            // Update or create transcript for assistant
-            setTranscripts(prev => {
-              // Find existing assistant transcript
-              const existingIndex = prev.findIndex(t => t.role === 'assistant' && t.isModelOutput);
-              
-              if (existingIndex >= 0) {
-                // Update existing transcript
-                const updated = [...prev];
-                updated[existingIndex] = {
-                  ...updated[existingIndex],
-                  content: updated[existingIndex].content + outputContent
-                };
-                return updated;
-              } else {
-                // Create new transcript
-                const newTranscript: Transcript = {
-                  id: Date.now() as unknown as number,
-                  callId: callDetails?.id || `call-${Date.now()}`,
-                  role: 'assistant',
-                  content: outputContent,
-                  timestamp: new Date(),
-                  isModelOutput: true
-                };
-                return [...prev, newTranscript];
-              }
-            });
-          }
-          
-          // For user transcripts
-          if (message.type === 'transcript' && message.role === 'user') {
-            console.log('=== Processing User Transcript ===');
-            const newTranscript: Transcript = {
-              id: Date.now() as unknown as number,
-              callId: callDetails?.id || `call-${Date.now()}`,
-              role: 'user',
-              content: message.content || message.transcript || '',
-              timestamp: new Date()
-            };
-            setTranscripts(prev => [...prev, newTranscript]);
-          }
-        };
-        
         vapi.on('message', handleMessage);
       } catch (error) {
         console.error('Error setting up Vapi:', error);
