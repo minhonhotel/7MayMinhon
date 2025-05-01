@@ -256,15 +256,44 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      // The actual text processing is now handled by the mutation observer
-      console.log('Received new content:', outputContent);
+      console.log('Model output content:', outputContent);
+
+      // Add to model output array
+      setModelOutput(prev => [...prev, outputContent]);
+
+      // Update or create transcript for assistant
+      setTranscripts(prev => {
+        // Find existing assistant transcript
+        const existingIndex = prev.findIndex(t => t.role === 'assistant' && t.isModelOutput);
+        
+        if (existingIndex >= 0) {
+          // Update existing transcript
+          const updated = [...prev];
+          updated[existingIndex] = {
+            ...updated[existingIndex],
+            content: updated[existingIndex].content + outputContent
+          };
+          return updated;
+        } else {
+          // Create new transcript
+          const newTranscript: Transcript = {
+            id: Date.now(),
+            callId: callDetails?.id || `call-${Date.now()}`,
+            role: 'assistant',
+            content: outputContent,
+            timestamp: new Date(),
+            isModelOutput: true
+          };
+          return [...prev, newTranscript];
+        }
+      });
     }
     
     // For user transcripts
     if (message.type === 'transcript' && message.role === 'user') {
       console.log('=== Processing User Transcript ===');
       const newTranscript: Transcript = {
-        id: Date.now() as unknown as number,
+        id: Date.now(),
         callId: callDetails?.id || `call-${Date.now()}`,
         role: 'user',
         content: message.content || message.transcript || '',
