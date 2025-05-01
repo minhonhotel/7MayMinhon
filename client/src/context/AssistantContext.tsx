@@ -140,23 +140,25 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       const handleMessage = async (message: any) => {
         console.log('Raw message received:', message);
         
-        // Handle assistant's output (firstMessage, endCallMessage, voicemailMessage, or messages with role "assistant")
+        // Handle assistant's output
         if (
           message.type === 'first-message' ||
           message.type === 'end-call-message' ||
           message.type === 'voicemail-message' ||
-          (message.role === 'assistant' && message.type === 'model-output') ||
+          message.type === 'model-output' ||
           (message.role === 'assistant' && message.type === 'transcript')
         ) {
           console.log('Assistant output detected:', message);
+          
           // For model output
           if (message.type === 'model-output') {
-            const outputContent = message.content || message.modelOutput;
-            if (outputContent) {
-              console.log('Adding assistant model output:', outputContent);
-              addModelOutput(outputContent);
+            console.log('Model output detected:', message.content);
+            if (message.content) {
+              console.log('Adding model output to conversation:', message.content);
+              addModelOutput(message.content);
             }
           }
+          
           // For transcripts
           if (message.type === 'transcript') {
             console.log('Adding assistant transcript:', message);
@@ -171,7 +173,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           }
         }
         
-        // Handle user's input (messages with role "user" in transcript)
+        // Handle user's input
         if (message.type === 'transcript' && message.role === 'user') {
           console.log('User input detected:', message);
           const newTranscript: Transcript = {
@@ -313,38 +315,51 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
   const startCall = async () => {
     // Record request received time
     setRequestReceivedAt(new Date());
-    if (vapiInstance) {
-      try {
-        const assistant = import.meta.env.VITE_VAPI_ASSISTANT_ID || "demo";
-        const call = await vapiInstance.start(assistant);
-        
-        // Reset email sent flag for new call
-        setEmailSentForCurrentSession(false);
-        
-        if (call) {
-          // Initialize call details - we don't set roomNumber here
-          // as it should be asked for and extracted from conversation
-          setCallDetails({
-            id: call.id || `call-${Date.now()}`,
-            roomNumber: '',
-            duration: '00:00',
-            category: 'Room Service'
-          });
-        } else {
-          console.error("Failed to initialize call: call object is null");
-        }
-        
-        // Clear previous transcripts
-        setTranscripts([]);
-        
-        // Change interface to call in progress
-        setCurrentInterface('interface2');
-        
-        // Reset call duration
-        setCallDuration(0);
-      } catch (error) {
-        console.error("Failed to start call:", error);
+    
+    if (!vapiInstance) {
+      console.error("Vapi instance is not initialized");
+      return;
+    }
+
+    try {
+      console.log("Starting call with Vapi...");
+      const assistant = import.meta.env.VITE_VAPI_ASSISTANT_ID || "demo";
+      console.log("Using assistant ID:", assistant);
+      
+      // Initialize Vapi before starting call
+      await vapiInstance.initialize();
+      
+      // Start the call
+      const call = await vapiInstance.start(assistant);
+      console.log("Call started successfully:", call);
+      
+      if (!call) {
+        throw new Error("Failed to start call: call object is null");
       }
+      
+      // Reset email sent flag for new call
+      setEmailSentForCurrentSession(false);
+      
+      // Initialize call details
+      setCallDetails({
+        id: call.id || `call-${Date.now()}`,
+        roomNumber: '',
+        duration: '00:00',
+        category: 'Room Service'
+      });
+      
+      // Clear previous transcripts and model outputs
+      setTranscripts([]);
+      setModelOutput([]);
+      
+      // Change interface to call in progress
+      setCurrentInterface('interface2');
+      
+      // Reset call duration
+      setCallDuration(0);
+      
+    } catch (error) {
+      console.error("Failed to start call:", error);
     }
   };
 
