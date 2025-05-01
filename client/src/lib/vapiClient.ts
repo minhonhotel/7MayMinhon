@@ -76,80 +76,57 @@ export async function initVapi() {
 function setupVapiEventListeners() {
   if (!vapiInstance) return;
   
-  // Speech start event
+  // Speech events
   vapiInstance.on('speech-start', () => {
-    console.log('Assistant started speaking');
+    console.log('Speech has started');
   });
   
-  // Speech end event
   vapiInstance.on('speech-end', () => {
-    console.log('Assistant stopped speaking');
+    console.log('Speech has ended');
   });
   
-  // Call start event
+  // Call lifecycle events
   vapiInstance.on('call-start', () => {
     console.log('Call has started');
   });
   
-  // Call end event
   vapiInstance.on('call-end', () => {
-    console.log('Call has ended');
+    console.log('Call has stopped');
   });
   
-  // Volume level event
+  // Volume level monitoring
   vapiInstance.on('volume-level', (volume) => {
     console.log(`Assistant volume level: ${volume}`);
   });
   
-  // Message event (function calls and transcripts)
+  // Message handling (transcripts and function calls)
   vapiInstance.on('message', (message) => {
     console.log('Received message:', message);
     
-    // Handle end of call report with summary
-    if (message.type === 'end_of_call_report' && message.summary) {
-      console.log('End of call report received with summary:', message.summary);
-      
-      // Display the summary in the container if it exists
-      const summaryContainer = document.getElementById('summary-container');
-      if (summaryContainer) {
-        const summaryContent = `
-          <div class="p-4 bg-blue-50 rounded-lg shadow-sm">
-            <h3 class="font-medium text-lg mb-2 text-blue-800">Call Summary</h3>
-            <p class="text-gray-700">${message.summary}</p>
-          </div>
-        `;
-        summaryContainer.innerHTML = summaryContent;
-      }
-      
-      // Send the summary to the server
-      fetch('/api/store-summary', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          summary: message.summary,
-          timestamp: new Date().toISOString()
-        }),
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.status}`);
+    // Handle different message types
+    switch (message.type) {
+      case 'transcript':
+        console.log('Transcript received:', message.transcript);
+        break;
+      case 'model-output':
+        console.log('Model output received:', message.content);
+        break;
+      case 'end_of_call_report':
+        if (message.summary) {
+          console.log('End of call report received:', message.summary);
         }
-        console.log('Summary successfully sent to server');
-      })
-      .catch(error => {
-        console.error('Error sending summary to server:', error);
-      });
-    }
-    
-    // Special handling for status updates to detect end of call
-    if (message.type === 'status-update' && message.status === 'ended') {
-      console.log('Call ended with reason:', message.endedReason);
+        break;
+      case 'status-update':
+        if (message.status === 'ended') {
+          console.log('Call ended with reason:', message.endedReason);
+        }
+        break;
+      default:
+        console.log('Unknown message type:', message.type);
     }
   });
   
-  // Error event
+  // Error handling
   vapiInstance.on('error', (error) => {
     console.error('Vapi error:', error);
   });

@@ -323,13 +323,24 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
     try {
       console.log("Starting call with Vapi...");
-      const assistant = import.meta.env.VITE_VAPI_ASSISTANT_ID || "demo";
-      console.log("Using assistant ID:", assistant);
+      const assistantId = import.meta.env.VITE_VAPI_ASSISTANT_ID;
+      
+      // Configure the assistant
+      const assistantConfig = {
+        id: assistantId || 'demo',
+        debug: true,
+        name: "Minhon Hotel Assistant",
+        model: "gpt-4",
+        systemPrompt: "You are a helpful hotel assistant for Minhon Hotel."
+      };
+      
+      console.log("Using assistant config:", assistantConfig);
       
       // Start the call with proper error handling
       let call;
       try {
-        call = await vapiInstance.start(assistant);
+        // Pass the assistant configuration instead of just the ID
+        call = await vapiInstance.start(assistantConfig);
         console.log("Call started successfully:", call);
       } catch (startError) {
         console.error("Failed to start call:", startError);
