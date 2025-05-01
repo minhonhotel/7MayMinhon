@@ -2,22 +2,69 @@ import Vapi from '@vapi-ai/web';
 
 // Initialize with environment variable or fallback
 const PUBLIC_KEY = import.meta.env.VITE_VAPI_PUBLIC_KEY || 'demo';
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 2000; // 2 seconds
 
 // Option to force basic summary generation (for testing fallback)
 export const FORCE_BASIC_SUMMARY = false; // Set to true to always use basic summary
 
 export let vapiInstance: Vapi | null = null;
 
-export function initVapi() {
+async function initializeWithRetry(retryCount = 0): Promise<Vapi | null> {
+  try {
+    console.log(`Attempting to initialize Vapi (attempt ${retryCount + 1}/${MAX_RETRIES})`);
+    const instance = new Vapi(PUBLIC_KEY, {
+      debug: true, // Enable debug mode for more detailed logs
+    });
+    return instance;
+  } catch (error) {
+    console.error(`Initialization attempt ${retryCount + 1} failed:`, error);
+    if (retryCount < MAX_RETRIES - 1) {
+      console.log(`Retrying in ${RETRY_DELAY/1000} seconds...`);
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+      return initializeWithRetry(retryCount + 1);
+    }
+    return null;
+  }
+}
+
+export async function initVapi() {
   if (!vapiInstance) {
     try {
-      vapiInstance = new Vapi(PUBLIC_KEY);
+      console.log('Starting Vapi initialization...');
+      
+      // Initialize with retry logic
+      vapiInstance = await initializeWithRetry();
+      
+      if (!vapiInstance) {
+        throw new Error('Failed to initialize Vapi after multiple attempts');
+      }
       
       // Setup event listeners
       setupVapiEventListeners();
       console.log('Vapi initialized successfully');
+      
+      // Test WebSocket connection
+      vapiInstance.on('open', () => {
+        console.log('WebSocket connection established successfully');
+      });
+      
+      vapiInstance.on('close', (event) => {
+        console.log('WebSocket connection closed:', event);
+        // Attempt to reconnect on unexpected closure
+        if (event.code !== 1000) { // 1000 is normal closure
+          console.log('Attempting to reconnect...');
+          initVapi();
+        }
+      });
+      
+      vapiInstance.on('error', (error) => {
+        console.error('WebSocket error:', error);
+      });
+      
     } catch (error) {
       console.error('Failed to initialize Vapi:', error);
+      vapiInstance = null;
       return null;
     }
   }

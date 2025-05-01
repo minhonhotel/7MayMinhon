@@ -326,12 +326,15 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       const assistant = import.meta.env.VITE_VAPI_ASSISTANT_ID || "demo";
       console.log("Using assistant ID:", assistant);
       
-      // Initialize Vapi before starting call
-      await vapiInstance.initialize();
-      
-      // Start the call
-      const call = await vapiInstance.start(assistant);
-      console.log("Call started successfully:", call);
+      // Start the call with proper error handling
+      let call;
+      try {
+        call = await vapiInstance.start(assistant);
+        console.log("Call started successfully:", call);
+      } catch (startError) {
+        console.error("Failed to start call:", startError);
+        throw new Error("Failed to start call");
+      }
       
       if (!call) {
         throw new Error("Failed to start call: call object is null");
@@ -359,7 +362,8 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       setCallDuration(0);
       
     } catch (error) {
-      console.error("Failed to start call:", error);
+      console.error("Error in startCall:", error);
+      // You might want to show an error message to the user here
     }
   };
 
