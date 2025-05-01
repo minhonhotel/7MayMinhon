@@ -71,6 +71,8 @@ const AssistantContext = createContext<AssistantContextType | undefined>(undefin
 export function AssistantProvider({ children }: { children: ReactNode }) {
   const [currentInterface, setCurrentInterface] = useState<InterfaceLayer>('interface1');
   const [transcripts, setTranscripts] = useState<Transcript[]>([]);
+  const [completeText, setCompleteText] = useState<string>('');
+  const [pendingBuffer, setPendingBuffer] = useState<string>('');
   const [accumulatedOutput, setAccumulatedOutput] = useState<string>('');
   const [lastTranscriptId, setLastTranscriptId] = useState<number | null>(null);
   const [orderSummary, setOrderSummary] = useState<OrderSummary | null>(null);
@@ -148,7 +150,6 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         const handleMessage = async (message: any) => {
           console.log('=== Message Handler Started ===');
           console.log('Raw message:', message);
-          console.log('Message type:', message.type);
           
           // For model output - handle this first
           if (message.type === 'model-output') {
@@ -167,73 +168,73 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             } else if (message.content && typeof message.content.text === 'string') {
               outputContent = message.content.text;
             }
+
+            if (!outputContent) {
+              console.warn("Nhận được event model-output không hợp lệ", message);
+              return;
+            }
+
+            // Add new output to pending buffer
+            const newPendingBuffer = pendingBuffer + outputContent;
+            console.log('Buffer hiện tại:', newPendingBuffer);
+
+            // Find the last sentence end position
+            let lastSentenceEndIndex = -1;
+            const sentenceEndMarkers = ['.', '!', '?', '。', '？', '！'];
             
-            if (outputContent) {
-              console.log('=== Content Processing ===');
-              console.log('Current accumulated:', accumulatedOutput);
-              console.log('New content:', outputContent);
-              
-              // Accumulate the output
-              const newAccumulatedOutput = accumulatedOutput + outputContent;
-              console.log('Total accumulated:', newAccumulatedOutput);
-
-              // Define sentence end markers
-              const sentenceEndMarkers = ['.', '!', '?', '。', '？', '！'];
-              
-              // Find the last sentence end position
-              let lastSentenceEnd = -1;
-              for (const marker of sentenceEndMarkers) {
-                const pos = newAccumulatedOutput.lastIndexOf(marker);
-                if (pos > lastSentenceEnd) {
-                  lastSentenceEnd = pos;
-                }
+            for (const marker of sentenceEndMarkers) {
+              const index = newPendingBuffer.lastIndexOf(marker);
+              if (index > lastSentenceEndIndex) {
+                lastSentenceEndIndex = index;
               }
+            }
 
-              // If we found a sentence end or the message is done
-              if (lastSentenceEnd !== -1 || message.done) {
-                console.log('Complete sentence detected or message done');
-                
-                // Get the complete sentence
-                const completeSentence = lastSentenceEnd !== -1 
-                  ? newAccumulatedOutput.substring(0, lastSentenceEnd + 1)
-                  : newAccumulatedOutput;
-                
-                // Create new transcript with the complete sentence
-                const newTranscript: Transcript = {
-                  id: Date.now() as unknown as number,
-                  callId: callDetails?.id || `call-${Date.now()}`,
-                  role: 'assistant',
-                  content: completeSentence.trim(),
-                  timestamp: new Date(),
-                  isModelOutput: true
-                };
+            // If we found a sentence end or message is done
+            if (lastSentenceEndIndex !== -1 || message.done) {
+              // Get the complete sentence
+              const completeSentence = lastSentenceEndIndex !== -1 
+                ? newPendingBuffer.substring(0, lastSentenceEndIndex + 1)
+                : newPendingBuffer;
 
-                // Add the transcript to state
-                console.log('Adding new transcript:', newTranscript);
-                setTranscripts(prev => {
-                  const newTranscripts = [...prev, newTranscript];
-                  console.log('Updated transcripts:', newTranscripts);
-                  return newTranscripts;
-                });
+              // Update complete text
+              const newCompleteText = completeText + completeSentence;
+              setCompleteText(newCompleteText);
 
-                // Keep the remaining content for the next iteration
-                if (lastSentenceEnd !== -1) {
-                  const remaining = newAccumulatedOutput.substring(lastSentenceEnd + 1);
-                  console.log('Remaining content for next iteration:', remaining);
-                  setAccumulatedOutput(remaining);
-                } else {
-                  console.log('Message done, resetting accumulated output');
-                  setAccumulatedOutput('');
-                }
+              // Create new transcript with the complete text
+              const newTranscript: Transcript = {
+                id: Date.now() as unknown as number,
+                callId: callDetails?.id || `call-${Date.now()}`,
+                role: 'assistant',
+                content: newCompleteText,
+                timestamp: new Date(),
+                isModelOutput: true
+              };
+
+              // Update transcripts
+              setTranscripts(prev => {
+                // Remove previous assistant transcript if exists
+                const filtered = prev.filter(t => !(t.role === 'assistant' && t.isModelOutput));
+                return [...filtered, newTranscript];
+              });
+
+              // Keep remaining text for next iteration
+              if (lastSentenceEndIndex !== -1) {
+                const remaining = newPendingBuffer.substring(lastSentenceEndIndex + 1);
+                console.log('Remaining for next iteration:', remaining);
+                setPendingBuffer(remaining);
               } else {
-                // Keep accumulating if no complete sentence yet
-                console.log('No complete sentence yet, continuing to accumulate');
-                setAccumulatedOutput(newAccumulatedOutput);
+                console.log('Message done, clearing buffer');
+                setPendingBuffer('');
+                setCompleteText('');
               }
+            } else {
+              // Keep accumulating if no complete sentence
+              console.log('No complete sentence yet, accumulating');
+              setPendingBuffer(newPendingBuffer);
             }
           }
           
-          // For user transcripts only
+          // For user transcripts
           if (message.type === 'transcript' && message.role === 'user') {
             console.log('=== Processing User Transcript ===');
             const newTranscript: Transcript = {
