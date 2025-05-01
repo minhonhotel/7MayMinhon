@@ -36,8 +36,6 @@ interface AssistantContextType {
   micLevel: number;
   modelOutput: string[];
   addModelOutput: (output: string) => void;
-  pendingMessage: string;
-  isMessageComplete: boolean;
 }
 
 const initialOrderSummary: OrderSummary = {
@@ -73,10 +71,6 @@ const AssistantContext = createContext<AssistantContextType | undefined>(undefin
 export function AssistantProvider({ children }: { children: ReactNode }) {
   const [currentInterface, setCurrentInterface] = useState<InterfaceLayer>('interface1');
   const [transcripts, setTranscripts] = useState<Transcript[]>([]);
-  const [completeText, setCompleteText] = useState<string>('');
-  const [pendingBuffer, setPendingBuffer] = useState<string>('');
-  const [accumulatedOutput, setAccumulatedOutput] = useState<string>('');
-  const [lastTranscriptId, setLastTranscriptId] = useState<number | null>(null);
   const [orderSummary, setOrderSummary] = useState<OrderSummary | null>(null);
   const [callDetails, setCallDetails] = useState<CallDetails | null>(null);
   const [order, setOrder] = useState<Order | null>(null);
@@ -106,9 +100,8 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
   });
   const [micLevel, setMicLevel] = useState<number>(0);
   const [modelOutput, setModelOutput] = useState<string[]>([]);
-  const [pendingMessage, setPendingMessage] = useState<string>('');
-  const [isMessageComplete, setIsMessageComplete] = useState<boolean>(false);
-  const [messageBuffer, setMessageBuffer] = useState<string>('');
+  const [rawMessages, setRawMessages] = useState<{[key: string]: any}>({});
+  const [isProcessingMessage, setIsProcessingMessage] = useState(false);
 
   // Persist activeOrders to localStorage whenever it changes
   useEffect(() => {
@@ -135,204 +128,44 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     setTranscripts(prev => [...prev, newTranscript]);
   }, []);
 
-  // Utility function to handle text processing
-  const createSentenceBuffer = () => {
-    let fullBuffer = "";
-    let temporaryBuffer = "";
-    const sentenceEndMarkers = ['.', '!', '?', '。', '！', '?', ' ', '\n\n'];
+  // Process raw message into transcript when complete
+  const processRawMessage = React.useCallback((messageId: string) => {
+    const message = rawMessages[messageId];
+    if (!message) return;
+
+    console.log('Processing raw message:', message);
     
-    // Find and hook existing handlers
-    const findCurrentHandlers = () => {
-      const allEventListeners = document.querySelectorAll('*[class*="conversation"]');
-      console.log("Tất cả event listeners:", allEventListeners);
-      
-      if (allEventListeners) {
-        Array.from(allEventListeners).forEach(element => {
-          // Set up mutation observer for this element
-          const observer = new MutationObserver((mutations) => {
-            for (const mutation of mutations) {
-              if (mutation.type === 'childList' || mutation.type === 'characterData') {
-                const currentText = mutation.target.textContent || '';
-                
-                if (currentText && currentText !== fullBuffer) {
-                  // Process only new text
-                  const newText = currentText.substring(fullBuffer.length);
-                  temporaryBuffer += newText;
-                  
-                  // Check for complete sentences
-                  let lastSentenceEndIndex = -1;
-                  for (const marker of sentenceEndMarkers) {
-                    const index = temporaryBuffer.lastIndexOf(marker);
-                    if (index > lastSentenceEndIndex) {
-                      lastSentenceEndIndex = index;
-                    }
-                  }
-                  
-                  // If we found a sentence end
-                  if (lastSentenceEndIndex !== -1) {
-                    // Get the complete sentence
-                    const completeSentence = temporaryBuffer.substring(0, lastSentenceEndIndex + 1);
-                    fullBuffer += completeSentence;
-                    
-                    // Create new transcript with the complete text
-                    const newTranscript: Transcript = {
-                      id: Date.now() as unknown as number,
-                      callId: callDetails?.id || `call-${Date.now()}`,
-                      role: 'assistant',
-                      content: fullBuffer,
-                      timestamp: new Date(),
-                      isModelOutput: true
-                    };
-
-                    // Update transcripts
-                    setTranscripts(prev => {
-                      // Remove previous assistant transcript if exists
-                      const filtered = prev.filter(t => !(t.role === 'assistant' && t.isModelOutput));
-                      return [...filtered, newTranscript];
-                    });
-
-                    // Keep remaining text for next iteration
-                    temporaryBuffer = temporaryBuffer.substring(lastSentenceEndIndex + 1);
-                    console.log("Câu hoàn chỉnh:", completeSentence);
-                    console.log("Buffer còn lại:", temporaryBuffer);
-                  }
-                }
-              }
-            }
-          });
-
-          // Observe everything
-          observer.observe(element, {
-            childList: true,
-            characterData: true,
-            subtree: true
-          });
-        });
-      }
-    };
-
-    // Initialize observers when component mounts
-    useEffect(() => {
-      findCurrentHandlers();
-      
-      // Cleanup function
-      return () => {
-        // Cleanup code if needed
-      };
-    }, []);
-
-    return {
-      getBuffer: () => fullBuffer,
-      reset: () => {
-        fullBuffer = "";
-        temporaryBuffer = "";
-      }
-    };
-  };
-
-  // Initialize sentence buffer
-  const sentenceBuffer = createSentenceBuffer();
-
-  // Helper function to clean text
-  const cleanText = (text: string): string => {
-    if (!text) return '';
-    
-    return text
-      .replace(/\(Typing\.\.\.\)/g, '')
-      .replace(/support_agentAssistant/g, '')
-      .replace(/\(Real-time\)/g, '')
-      .replace(/Assistant/g, '')
-      .replace(/support_agent/g, '')
-      .replace(/person/g, '')
-      .replace(/YouHi/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
-  };
-
-  // Message handler for transcripts and reports
-  const handleMessage = async (message: any) => {
     if (message.type === 'model-output') {
-      let content = '';
-      
-      // Extract content
-      if (message.content?.text) {
-        content = message.content.text;
-      } else if (message.content) {
-        content = message.content;
-      } else if (message.text) {
-        content = message.text;
+      const outputContent = message.content || message.text || message.transcript || message.output;
+      if (outputContent) {
+        const newTranscript: Transcript = {
+          id: Date.now() as unknown as number,
+          callId: callDetails?.id || `call-${Date.now()}`,
+          role: 'assistant',
+          content: outputContent,
+          timestamp: new Date(),
+          isModelOutput: true
+        };
+        setTranscripts(prev => [...prev, newTranscript]);
       }
-
-      if (!content) return;
-
-      // Clean the content
-      const cleanedContent = cleanText(content);
-      if (!cleanedContent) return;
-
-      // Update message buffer
-      setMessageBuffer(prev => {
-        const newBuffer = prev + ' ' + cleanedContent;
-        return newBuffer.trim();
-      });
-
-      // Check if message is complete
-      if (message.done || 
-          content.endsWith('.') || 
-          content.endsWith('!') || 
-          content.endsWith('?')) {
-        
-        // Get final cleaned message from buffer
-        const finalMessage = cleanText(messageBuffer);
-        
-        if (finalMessage) {
-          // Add to transcripts
-          setTranscripts(prev => {
-            const existingAssistantTranscript = prev.find(t => 
-              t.role === 'assistant' && t.isModelOutput
-            );
-
-            if (existingAssistantTranscript) {
-              return prev.map(t => {
-                if (t.id === existingAssistantTranscript.id) {
-                  return {
-                    ...t,
-                    content: finalMessage
-                  };
-                }
-                return t;
-              });
-            } else {
-              return [...prev, {
-                id: Date.now(),
-                callId: callDetails?.id || `call-${Date.now()}`,
-                role: 'assistant',
-                content: finalMessage,
-                timestamp: new Date(),
-                isModelOutput: true
-              }];
-            }
-          });
-        }
-
-        // Clear buffer after processing complete message
-        setMessageBuffer('');
-      }
-    }
-    
-    // Handle user transcripts
-    if (message.type === 'transcript' && message.role === 'user') {
-      const userContent = message.content || message.transcript || '';
-      if (!userContent) return;
-
-      setTranscripts(prev => [...prev, {
-        id: Date.now(),
+    } else if (message.type === 'transcript' && message.role === 'user') {
+      const newTranscript: Transcript = {
+        id: Date.now() as unknown as number,
         callId: callDetails?.id || `call-${Date.now()}`,
         role: 'user',
-        content: userContent,
+        content: message.content || message.transcript || '',
         timestamp: new Date()
-      }]);
+      };
+      setTranscripts(prev => [...prev, newTranscript]);
     }
-  };
+
+    // Remove processed message from raw messages
+    setRawMessages(prev => {
+      const updated = { ...prev };
+      delete updated[messageId];
+      return updated;
+    });
+  }, [callDetails, rawMessages]);
 
   // Initialize Vapi when component mounts
   useEffect(() => {
@@ -350,6 +183,29 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           setMicLevel(level);
         });
 
+        // Message handler for transcripts and reports
+        const handleMessage = async (message: any) => {
+          console.log('Raw message received:', message);
+          
+          // Generate a unique ID for the message
+          const messageId = `${message.type}-${Date.now()}`;
+          
+          // Store raw message
+          setRawMessages(prev => ({
+            ...prev,
+            [messageId]: message
+          }));
+
+          // Set processing flag
+          setIsProcessingMessage(true);
+
+          // Process message after a short delay to allow for any additional data
+          setTimeout(() => {
+            processRawMessage(messageId);
+            setIsProcessingMessage(false);
+          }, 100); // Small delay to ensure message is complete
+        };
+        
         vapi.on('message', handleMessage);
       } catch (error) {
         console.error('Error setting up Vapi:', error);
@@ -364,7 +220,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         vapi.stop();
       }
     };
-  }, []);
+  }, [processRawMessage]);
 
   useEffect(() => {
     if (currentInterface === 'interface2') {
@@ -413,9 +269,6 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
   // Start call function
   const startCall = async () => {
-    setAccumulatedOutput('');
-    setLastTranscriptId(null);
-    
     const vapi = getVapiInstance();
     if (!vapi) {
       console.error("Vapi instance is not initialized");
@@ -705,8 +558,6 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     micLevel,
     modelOutput,
     addModelOutput,
-    pendingMessage,
-    isMessageComplete,
   };
 
   return (
