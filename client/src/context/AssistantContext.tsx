@@ -171,12 +171,30 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             }
             
             if (outputContent) {
+              console.log('Current accumulated output:', accumulatedOutput);
+              console.log('New output content:', outputContent);
+              
               // Accumulate the output
               const newAccumulatedOutput = accumulatedOutput + outputContent;
               setAccumulatedOutput(newAccumulatedOutput);
+              console.log('New accumulated output:', newAccumulatedOutput);
 
-              // If we don't have a current transcript, create one
-              if (!lastTranscriptId) {
+              // Function to check if we have a complete sentence
+              const hasCompleteSentence = (text: string) => {
+                // Match for sentence endings including Vietnamese punctuation
+                const sentenceEndings = /[.!?。？！]\s*$/;
+                const hasEnding = sentenceEndings.test(text);
+                const hasDoubleNewline = /\n\n/.test(text);
+                return hasEnding || hasDoubleNewline;
+              };
+
+              // Check if we should display the content
+              const shouldDisplay = hasCompleteSentence(newAccumulatedOutput) || message.done;
+              
+              if (shouldDisplay && newAccumulatedOutput.trim()) {
+                console.log('Creating new transcript with content:', newAccumulatedOutput.trim());
+                
+                // Create new transcript with the complete content
                 const newTranscript: Transcript = {
                   id: Date.now() as unknown as number,
                   callId: callDetails?.id || `call-${Date.now()}`,
@@ -185,23 +203,23 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                   timestamp: new Date(),
                   isModelOutput: true
                 };
-                setTranscripts(prev => [...prev, newTranscript]);
-                setLastTranscriptId(newTranscript.id);
-              } else {
-                // Update existing transcript with accumulated content
-                setTranscripts(prev =>
-                  prev.map(t =>
-                    t.id === lastTranscriptId
-                      ? { ...t, content: newAccumulatedOutput.trim() }
-                      : t
-                  )
-                );
-              }
 
-              // If this is the final message, reset for next output
-              if (message.done) {
-                setAccumulatedOutput('');
-                setLastTranscriptId(null);
+                // Add the new transcript
+                setTranscripts(prev => {
+                  console.log('Previous transcripts:', prev);
+                  const newTranscripts = [...prev, newTranscript];
+                  console.log('New transcripts:', newTranscripts);
+                  return newTranscripts;
+                });
+                
+                // Reset accumulated output only if it's the end of message or we have a complete sentence
+                if (message.done || hasCompleteSentence(newAccumulatedOutput)) {
+                  console.log('Resetting accumulated output');
+                  setAccumulatedOutput('');
+                  setLastTranscriptId(null);
+                }
+              } else {
+                console.log('Content not ready for display yet');
               }
             }
           }
