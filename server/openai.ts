@@ -2,7 +2,8 @@ import OpenAI from "openai";
 
 // Initialize OpenAI client
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
+  defaultQuery: { "project": process.env.OPENAI_PROJECT_ID }
 });
 const projectId = process.env.OPENAI_PROJECT_ID || "";
 
@@ -372,7 +373,7 @@ export async function extractServiceRequests(summary: string): Promise<ServiceRe
     `;
     
     try {
-      const options = { timeout: 20000, headers: { 'OpenAi-Project': projectId } };
+      const options = { timeout: 20000 };
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
@@ -463,7 +464,7 @@ export async function translateToVietnamese(text: string): Promise<string> {
       ],
       max_tokens: 1000,
       temperature: 0.3,
-    }, { headers: { 'OpenAi-Project': projectId } });
+    });
 
     return chatCompletion.choices[0].message.content?.trim() || "Không thể dịch văn bản.";
   } catch (error: any) {
@@ -524,10 +525,7 @@ export async function generateCallSummary(transcripts: Array<{role: string, cont
     `;
 
     // Call the OpenAI API with GPT-4o
-    const options = {
-      timeout: 30000, // 30 second timeout to prevent hanging
-      headers: { 'OpenAi-Project': projectId }
-    };
+    const options = { timeout: 30000 };
     
     const chatCompletion = await openai.chat.completions.create({
       model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
