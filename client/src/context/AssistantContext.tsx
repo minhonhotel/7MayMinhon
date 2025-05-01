@@ -71,6 +71,8 @@ const AssistantContext = createContext<AssistantContextType | undefined>(undefin
 export function AssistantProvider({ children }: { children: ReactNode }) {
   const [currentInterface, setCurrentInterface] = useState<InterfaceLayer>('interface1');
   const [transcripts, setTranscripts] = useState<Transcript[]>([]);
+  const [accumulatedOutput, setAccumulatedOutput] = useState<string>('');
+  const [lastTranscriptId, setLastTranscriptId] = useState<number | null>(null);
   const [orderSummary, setOrderSummary] = useState<OrderSummary | null>(null);
   const [callDetails, setCallDetails] = useState<CallDetails | null>(null);
   const [order, setOrder] = useState<Order | null>(null);
@@ -162,21 +164,69 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             if (outputContent) {
               console.log('Adding model output to conversation:', outputContent);
               
-              // Add as transcript with isModelOutput flag
-              const newTranscript: Transcript = {
-                id: Date.now() as unknown as number,
-                callId: callDetails?.id || `call-${Date.now()}`,
-                role: 'assistant',
-                content: outputContent,
-                timestamp: new Date(),
-                isModelOutput: true
-              };
-              console.log('Adding new transcript for model output:', newTranscript);
-              setTranscripts(prev => {
-                const updated = [...prev, newTranscript];
-                console.log('Updated transcripts array:', updated);
-                return updated;
-              });
+              // Accumulate the output
+              const newAccumulatedOutput = accumulatedOutput + outputContent;
+              setAccumulatedOutput(newAccumulatedOutput);
+              
+              // Check if we have a complete sentence (ends with ., !, ? or multiple line breaks)
+              if (
+                outputContent.match(/[.!?]\s*$/) || // Ends with punctuation
+                outputContent.includes('\n\n') || // Contains multiple line breaks
+                message.done // Message indicates it's complete
+              ) {
+                // Create new transcript with accumulated output
+                const newTranscript: Transcript = {
+                  id: Date.now() as unknown as number,
+                  callId: callDetails?.id || `call-${Date.now()}`,
+                  role: 'assistant',
+                  content: newAccumulatedOutput.trim(),
+                  timestamp: new Date(),
+                  isModelOutput: true
+                };
+
+                // Update or add transcript
+                setTranscripts(prev => {
+                  if (lastTranscriptId) {
+                    // Update existing transcript
+                    return prev.map(t => 
+                      t.id === lastTranscriptId 
+                        ? { ...t, content: newAccumulatedOutput.trim() }
+                        : t
+                    );
+                  } else {
+                    // Add new transcript
+                    return [...prev, newTranscript];
+                  }
+                });
+
+                // Reset accumulated output and last transcript ID
+                setAccumulatedOutput('');
+                setLastTranscriptId(null);
+              } else {
+                // If we don't have a complete sentence yet, update the last transcript
+                if (!lastTranscriptId) {
+                  // Create new transcript for incomplete sentence
+                  const newTranscript: Transcript = {
+                    id: Date.now() as unknown as number,
+                    callId: callDetails?.id || `call-${Date.now()}`,
+                    role: 'assistant',
+                    content: newAccumulatedOutput.trim(),
+                    timestamp: new Date(),
+                    isModelOutput: true
+                  };
+                  setTranscripts(prev => [...prev, newTranscript]);
+                  setLastTranscriptId(newTranscript.id);
+                } else {
+                  // Update existing transcript
+                  setTranscripts(prev =>
+                    prev.map(t =>
+                      t.id === lastTranscriptId
+                        ? { ...t, content: newAccumulatedOutput.trim() }
+                        : t
+                    )
+                  );
+                }
+              }
             } else {
               console.warn('Model output message received but no content found:', message);
             }
@@ -259,6 +309,9 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
   // Start call function
   const startCall = async () => {
+    setAccumulatedOutput('');
+    setLastTranscriptId(null);
+    
     const vapi = getVapiInstance();
     if (!vapi) {
       console.error("Vapi instance is not initialized");
