@@ -33,73 +33,46 @@ interface VapiMessage {
   [key: string]: any;
 }
 
-type VapiEventNames = 'call-start' | 'call-end' | 'speech-start' | 'speech-end' | 'volume-level' | 'message' | 'error';
-type VapiEventHandler<T = any> = (data: T) => void;
-
 export const initVapi = async (publicKey: string): Promise<Vapi> => {
   try {
-    // Check if public key is valid
-    if (!publicKey || publicKey === 'demo') {
-      throw new Error('Invalid Vapi public key. Please check your .env configuration.');
-    }
-
-    // Return existing instance if already initialized
     if (vapiInstance) {
-      console.log('Reusing existing Vapi instance');
       return vapiInstance;
     }
 
-    console.log('Initializing new Vapi instance');
     vapiInstance = new Vapi(publicKey);
 
-    // Add event listeners with error handling
-    const addListener = (event: VapiEventNames, handler: VapiEventHandler) => {
-      try {
-        vapiInstance?.on(event, (data: unknown) => {
-          try {
-            handler(data);
-          } catch (error) {
-            console.error(`Error in ${event} handler:`, error);
-          }
-        });
-      } catch (error) {
-        console.error(`Error adding ${event} listener:`, error);
-      }
-    };
-
-    addListener('call-start', () => {
+    // Add event listeners
+    vapiInstance.on('call-start', () => {
       console.log('Call started');
     });
 
-    addListener('call-end', () => {
+    vapiInstance.on('call-end', () => {
       console.log('Call ended');
     });
 
-    addListener('speech-start', () => {
+    vapiInstance.on('speech-start', () => {
       console.log('Speech started');
     });
 
-    addListener('speech-end', () => {
+    vapiInstance.on('speech-end', () => {
       console.log('Speech ended');
     });
 
-    addListener('volume-level', (volume: number) => {
+    vapiInstance.on('volume-level', (volume) => {
       console.log(`Volume level: ${volume}`);
     });
 
-    addListener('message', (message: VapiMessage) => {
+    vapiInstance.on('message', (message) => {
       console.log('Message received:', message);
     });
 
-    addListener('error', (error: Error) => {
-      console.error('Vapi error:', error);
+    vapiInstance.on('error', (error) => {
+      console.error('Error:', error);
     });
 
     return vapiInstance;
   } catch (error) {
     console.error('Failed to initialize Vapi:', error);
-    // Reset instance if initialization fails
-    vapiInstance = null;
     throw error;
   }
 };
@@ -117,19 +90,12 @@ export const startCall = async (assistantId: string, assistantOverrides?: any) =
     throw new Error('Vapi not initialized. Call initVapi first.');
   }
 
-  let retries = MAX_RETRIES;
-  while (retries > 0) {
-    try {
-      console.log(`Attempting to start call with assistant ID: ${assistantId}`);
-      const call = await vapiInstance.start(assistantId, assistantOverrides);
-      console.log('Call started successfully');
-      return call;
-    } catch (error) {
-      console.error(`Failed to start call (${retries} retries left):`, error);
-      retries--;
-      if (retries === 0) throw error;
-      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
-    }
+  try {
+    const call = await vapiInstance.start(assistantId, assistantOverrides);
+    return call;
+  } catch (error) {
+    console.error('Failed to start call:', error);
+    throw error;
   }
 };
 

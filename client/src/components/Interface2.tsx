@@ -3,7 +3,6 @@ import { useAssistant } from '@/context/AssistantContext';
 import Reference from './Reference';
 import SiriCallButton from './SiriCallButton';
 import { referenceService, ReferenceItem } from '@/services/ReferenceService';
-import { Transcript } from '@/types';
 
 interface Interface2Props {
   isActive: boolean;
@@ -135,50 +134,31 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             ref={conversationRef}
             className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto"
           >
-            {/* Group messages by user interaction */}
+            {/* Display user messages vertically */}
             {transcripts
-              .reduce((groups, message) => {
-                const lastGroup = groups[groups.length - 1];
-                
-                // If this is a user message, always start a new group
-                if (message.role === 'user') {
-                  groups.push([message]);
-                }
-                // If this is an assistant message
-                else if (message.role === 'assistant') {
-                  // If the last group exists and contains an assistant message, add to it
-                  if (lastGroup && lastGroup[0].role === 'assistant') {
-                    lastGroup.push(message);
-                  }
-                  // Otherwise, start a new group
-                  else {
-                    groups.push([message]);
-                  }
-                }
-                return groups;
-              }, [] as Transcript[][])
-              .sort((a, b) => a[0].timestamp.getTime() - b[0].timestamp.getTime())
-              .map((group, groupIndex) => (
-                <div key={groupIndex} className="mb-2">
-                  {group[0].role === 'user' ? (
-                    // User message
-                    <div className="flex items-start">
-                      <div className="flex-grow">
-                        <p className="text-xl text-white">{group[0].content}</p>
-                      </div>
+              .filter(item => item.role === 'user')
+              .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+              .map((item) => (
+                <div key={item.id} className="mb-2">
+                  <div className="flex items-start">
+                    <div className="flex-grow">
+                      <p className="text-xl text-white">{item.content}</p>
                     </div>
-                  ) : (
-                    // Assistant messages - displayed horizontally
-                    <div className="flex flex-wrap gap-2 items-center">
-                      {group.map((message, messageIndex) => (
-                        <p key={messageIndex} className="text-xl text-yellow-200">
-                          {message.content}
-                        </p>
-                      ))}
-                    </div>
-                  )}
+                  </div>
                 </div>
               ))}
+
+            {/* Display assistant outputs horizontally */}
+            <div className="flex flex-wrap gap-2 items-center">
+              {transcripts
+                .filter(item => item.role === 'assistant')
+                .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+                .map((item) => (
+                  <p key={item.id} className="text-xl text-yellow-200">
+                    {item.content}
+                  </p>
+                ))}
+            </div>
           </div>
           {/* Reference container below (full width, auto height) */}
           <div className="w-full">
@@ -196,14 +176,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           }} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs">
             <span className="material-icons mr-1 text-base">cancel</span>Cancel
           </button>
-          <button 
-            id="endCallButton" 
-            onClick={() => {
-              endCall();
-              setCurrentInterface('interface3');
-            }} 
-            className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs"
-          >
+          <button id="endCallButton" onClick={endCall} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs">
             <span className="material-icons mr-1 text-base">navigate_next</span>Next
           </button>
         </div>
