@@ -169,40 +169,77 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             if (outputContent) {
               // Accumulate the output
               const newAccumulatedOutput = accumulatedOutput + outputContent;
-              console.log('New content received:', outputContent);
               console.log('Accumulated content:', newAccumulatedOutput);
 
-              // Update or create transcript
-              if (!lastTranscriptId) {
-                // Create new transcript
-                const newTranscript: Transcript = {
-                  id: Date.now() as unknown as number,
-                  callId: callDetails?.id || `call-${Date.now()}`,
-                  role: 'assistant',
-                  content: newAccumulatedOutput,
-                  timestamp: new Date(),
-                  isModelOutput: true
+              // Function to check for sentence endings
+              const hasSentenceEnding = (text: string): boolean => {
+                // Check for various sentence endings including Vietnamese
+                return /[.!?。？！]\s*$/.test(text) || // Basic punctuation
+                       /[:]\s*$/.test(text) || // Colon for dialogues
+                       /\n\n/.test(text); // Double newline
+              };
+
+              // Function to extract complete sentences
+              const extractSentences = (text: string): { 
+                complete: string[],
+                remaining: string 
+              } => {
+                const sentences = text.split(/(?<=[.!?。？！])\s+/);
+                if (sentences.length > 1) {
+                  const completeSentences = sentences.slice(0, -1);
+                  return {
+                    complete: completeSentences,
+                    remaining: sentences[sentences.length - 1]
+                  };
+                }
+                return {
+                  complete: [],
+                  remaining: text
                 };
-                setTranscripts(prev => [...prev, newTranscript]);
-                setLastTranscriptId(newTranscript.id);
+              };
+
+              // Check if we have complete sentences or if the message is done
+              if (hasSentenceEnding(newAccumulatedOutput) || message.done) {
+                // If message is done, treat all accumulated content as complete
+                if (message.done) {
+                  if (newAccumulatedOutput.trim()) {
+                    const newTranscript: Transcript = {
+                      id: Date.now() as unknown as number,
+                      callId: callDetails?.id || `call-${Date.now()}`,
+                      role: 'assistant',
+                      content: newAccumulatedOutput.trim(),
+                      timestamp: new Date(),
+                      isModelOutput: true
+                    };
+                    setTranscripts(prev => [...prev, newTranscript]);
+                  }
+                  setAccumulatedOutput('');
+                  setLastTranscriptId(null);
+                } else {
+                  // Extract complete sentences
+                  const { complete, remaining } = extractSentences(newAccumulatedOutput);
+                  
+                  // Add each complete sentence as a separate transcript
+                  complete.forEach(sentence => {
+                    if (sentence.trim()) {
+                      const newTranscript: Transcript = {
+                        id: Date.now() as unknown as number,
+                        callId: callDetails?.id || `call-${Date.now()}`,
+                        role: 'assistant',
+                        content: sentence.trim(),
+                        timestamp: new Date(),
+                        isModelOutput: true
+                      };
+                      setTranscripts(prev => [...prev, newTranscript]);
+                    }
+                  });
+
+                  // Keep the remaining incomplete sentence
+                  setAccumulatedOutput(remaining);
+                }
               } else {
-                // Update existing transcript
-                setTranscripts(prev =>
-                  prev.map(t =>
-                    t.id === lastTranscriptId
-                      ? { ...t, content: newAccumulatedOutput }
-                      : t
-                  )
-                );
-              }
-
-              // Update accumulated output
-              setAccumulatedOutput(newAccumulatedOutput);
-
-              // If message is done, prepare for next message
-              if (message.done) {
-                setLastTranscriptId(null);
-                setAccumulatedOutput('');
+                // Keep accumulating if no complete sentence yet
+                setAccumulatedOutput(newAccumulatedOutput);
               }
             }
           }
