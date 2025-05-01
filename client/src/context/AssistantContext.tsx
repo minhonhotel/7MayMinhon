@@ -177,28 +177,33 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
               const newAccumulatedOutput = accumulatedOutput + outputContent;
               console.log('Total accumulated:', newAccumulatedOutput);
 
-              // Function to check for sentence endings
-              const hasCompleteSentence = (text: string): boolean => {
-                // Check for various sentence endings including Vietnamese
-                const endings = /[.!?。？！]\s*$/;
-                const doubleNewline = /\n\n/;
-                const dialogueEnd = /[:]\s*$/;
-                return endings.test(text) || doubleNewline.test(text) || dialogueEnd.test(text);
-              };
+              // Define sentence end markers
+              const sentenceEndMarkers = ['.', '!', '?', '。', '？', '！'];
+              
+              // Find the last sentence end position
+              let lastSentenceEnd = -1;
+              for (const marker of sentenceEndMarkers) {
+                const pos = newAccumulatedOutput.lastIndexOf(marker);
+                if (pos > lastSentenceEnd) {
+                  lastSentenceEnd = pos;
+                }
+              }
 
-              // Check if we have a complete sentence or if the message is done
-              const isComplete = hasCompleteSentence(newAccumulatedOutput) || message.done;
-              console.log('Is complete sentence?', isComplete);
-
-              if (isComplete) {
+              // If we found a sentence end or the message is done
+              if (lastSentenceEnd !== -1 || message.done) {
                 console.log('Complete sentence detected or message done');
+                
+                // Get the complete sentence
+                const completeSentence = lastSentenceEnd !== -1 
+                  ? newAccumulatedOutput.substring(0, lastSentenceEnd + 1)
+                  : newAccumulatedOutput;
                 
                 // Create new transcript with the complete sentence
                 const newTranscript: Transcript = {
                   id: Date.now() as unknown as number,
                   callId: callDetails?.id || `call-${Date.now()}`,
                   role: 'assistant',
-                  content: newAccumulatedOutput.trim(),
+                  content: completeSentence.trim(),
                   timestamp: new Date(),
                   isModelOutput: true
                 };
@@ -211,12 +216,13 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                   return newTranscripts;
                 });
 
-                // Reset accumulated output if message is done or we have a complete sentence
-                if (message.done) {
-                  console.log('Message done, resetting accumulated output');
-                  setAccumulatedOutput('');
+                // Keep the remaining content for the next iteration
+                if (lastSentenceEnd !== -1) {
+                  const remaining = newAccumulatedOutput.substring(lastSentenceEnd + 1);
+                  console.log('Remaining content for next iteration:', remaining);
+                  setAccumulatedOutput(remaining);
                 } else {
-                  console.log('Complete sentence processed, resetting accumulated output');
+                  console.log('Message done, resetting accumulated output');
                   setAccumulatedOutput('');
                 }
               } else {
