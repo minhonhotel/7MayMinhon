@@ -377,7 +377,7 @@ export async function extractServiceRequests(summary: string): Promise<ServiceRe
     try {
       const options = { timeout: 20000 };
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-4.1-nano",
         messages: [
           { role: "system", content: "You are a precise hotel service data extraction specialist that outputs structured JSON only." },
           { role: "user", content: prompt }
@@ -459,7 +459,7 @@ export async function translateToVietnamese(text: string): Promise<string> {
     `;
 
     const chatCompletion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4.1-nano",
       messages: [
         { role: "system", content: "Bạn là một chuyên gia dịch thuật chuyên nghiệp cho khách sạn, dịch từ tiếng Anh sang tiếng Việt." },
         { role: "user", content: prompt }
@@ -530,15 +530,15 @@ export async function generateCallSummary(transcripts: Array<{role: string, cont
     const options = { timeout: 30000 };
     
     const chatCompletion = await openai.chat.completions.create({
-      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+      model: "gpt-4.1-nano",
       messages: [
         { role: "system", content: "You are a professional hotel service summarization specialist who creates concise and useful summaries." },
         { role: "user", content: prompt }
       ],
-      max_tokens: 800, // Increased tokens limit for comprehensive summaries
-      temperature: 0.5, // More deterministic for consistent summaries
-      presence_penalty: 0.1, // Slight penalty to avoid repetition
-      frequency_penalty: 0.1, // Slight penalty to avoid repetition
+      max_tokens: 800,
+      temperature: 0.5,
+      presence_penalty: 0.1,
+      frequency_penalty: 0.1,
     }, options);
 
     // Return the generated summary
