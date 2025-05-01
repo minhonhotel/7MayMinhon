@@ -117,7 +117,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
         <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4">
           {/* Replace old orb with new SiriCallButton */}
-          <div className="flex flex-col items-center justify-center w-[120px] h-[120px] mb-4">
+          <div className="relative flex items-center justify-center">
             <SiriCallButton
               containerId="siri-button"
               isListening={!isMuted}
@@ -132,35 +132,30 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           <div
             id="realTimeConversation"
             ref={conversationRef}
-            className="relative p-2 w-full min-h-[128px] max-h-[256px] overflow-y-auto"
+            className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto"
           >
-            {(() => {
-              // Sort transcripts by timestamp and filter incomplete messages
-              const sortedTranscripts = transcripts
-                .filter(t => t.role === 'user' || t.isComplete) // Only show complete assistant messages
-                .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
-              
-              return sortedTranscripts.map((item) => (
-                <div key={item.id} className="mb-2 last:mb-0">
-                  <div className="flex items-start">
-                    <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
-                      <span className="material-icons text-sm">
-                        {item.role === 'user' ? 'person' : 'support_agent'}
-                      </span>
-                    </div>
-                    <div className="flex-grow">
-                      <p className="text-xs mb-0.5 text-gray-400">
-                        {item.role === 'user' ? 'You' : 'Assistant'}
-                      </p>
-                      <p className="text-base font-normal whitespace-nowrap overflow-x-auto" 
-                         style={{ color: item.role === 'user' ? '#93C5FD' : '#FEF9C3' }}>
-                        {item.content}
-                      </p>
-                    </div>
+            {/* Display transcripts in chronological order */}
+            {transcripts.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()).map((item) => (
+              <div key={item.id} className="mb-2">
+                <div className="flex items-start mb-1">
+                  <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
+                    <span className="material-icons text-sm">
+                      {item.role === 'user' ? 'person' : 'support_agent'}
+                    </span>
+                  </div>
+                  <div className="flex-grow">
+                    <p className="text-xs mb-0.5 text-gray-400">
+                      {item.role === 'user' ? 'You' : `Assistant${item.isModelOutput ? ' (Real-time)' : ''}`}
+                    </p>
+                    <p className={`text-base font-normal ${
+                      item.role === 'user' ? 'text-blue-300' : 'text-yellow-100'
+                    }`}>
+                      {item.content}
+                    </p>
                   </div>
                 </div>
-              ));
-            })()}
+              </div>
+            ))}
           </div>
           {/* Reference container below (full width, auto height) */}
           <div className="w-full">

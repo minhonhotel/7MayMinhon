@@ -147,23 +147,33 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         // Message handler for transcripts and reports
         const handleMessage = async (message: any) => {
           console.log('Raw message received:', message);
+          console.log('Message type:', message.type);
+          console.log('Message role:', message.role);
+          console.log('Message content structure:', {
+            content: message.content,
+            text: message.text,
+            transcript: message.transcript
+          });
           
           // For model output - handle this first
           if (message.type === 'model-output') {
+            console.log('Model output detected - Full message:', message);
+            
+            // Try to get content from any available field
             const outputContent = message.content || message.text || message.transcript || message.output;
             if (outputContent) {
+              console.log('Adding model output to conversation:', outputContent);
+              
               // Accumulate the output
               const newAccumulatedOutput = accumulatedOutput + outputContent;
               setAccumulatedOutput(newAccumulatedOutput);
               
-              // Check if we have a complete sentence
-              const isCompleteSentence = 
-                newAccumulatedOutput.match(/[.!?]\s*$/) || // Ends with punctuation
-                newAccumulatedOutput.includes('\n\n') || // Contains multiple line breaks
-                message.done; // Message indicates it's complete
-              
-              // Only create transcript for complete sentences
-              if (isCompleteSentence) {
+              // Check if we have a complete sentence (ends with ., !, ? or multiple line breaks)
+              if (
+                outputContent.match(/[.!?]\s*$/) || // Ends with punctuation
+                outputContent.includes('\n\n') || // Contains multiple line breaks
+                message.done // Message indicates it's complete
+              ) {
                 // Create new transcript with accumulated output
                 const newTranscript: Transcript = {
                   id: Date.now() as unknown as number,
@@ -171,21 +181,60 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                   role: 'assistant',
                   content: newAccumulatedOutput.trim(),
                   timestamp: new Date(),
-                  isModelOutput: true,
-                  isComplete: true
+                  isModelOutput: true
                 };
 
-                // Add new transcript
-                setTranscripts(prev => [...prev, newTranscript]);
+                // Update or add transcript
+                setTranscripts(prev => {
+                  if (lastTranscriptId) {
+                    // Update existing transcript
+                    return prev.map(t => 
+                      t.id === lastTranscriptId 
+                        ? { ...t, content: newAccumulatedOutput.trim() }
+                        : t
+                    );
+                  } else {
+                    // Add new transcript
+                    return [...prev, newTranscript];
+                  }
+                });
 
-                // Reset accumulated output
+                // Reset accumulated output and last transcript ID
                 setAccumulatedOutput('');
+                setLastTranscriptId(null);
+              } else {
+                // If we don't have a complete sentence yet, update the last transcript
+                if (!lastTranscriptId) {
+                  // Create new transcript for incomplete sentence
+                  const newTranscript: Transcript = {
+                    id: Date.now() as unknown as number,
+                    callId: callDetails?.id || `call-${Date.now()}`,
+                    role: 'assistant',
+                    content: newAccumulatedOutput.trim(),
+                    timestamp: new Date(),
+                    isModelOutput: true
+                  };
+                  setTranscripts(prev => [...prev, newTranscript]);
+                  setLastTranscriptId(newTranscript.id);
+                } else {
+                  // Update existing transcript
+                  setTranscripts(prev =>
+                    prev.map(t =>
+                      t.id === lastTranscriptId
+                        ? { ...t, content: newAccumulatedOutput.trim() }
+                        : t
+                    )
+                  );
+                }
               }
+            } else {
+              console.warn('Model output message received but no content found:', message);
             }
           }
           
-          // For user transcripts only
+          // For user transcripts only - ignore assistant transcripts
           if (message.type === 'transcript' && message.role === 'user') {
+            console.log('Adding user transcript:', message);
             const newTranscript: Transcript = {
               id: Date.now() as unknown as number,
               callId: callDetails?.id || `call-${Date.now()}`,
