@@ -186,69 +186,38 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                 return endings.test(text) || doubleNewline.test(text) || dialogueEnd.test(text);
               };
 
-              // Function to extract complete sentences
-              const extractSentences = (text: string): {
-                completeSentences: string[];
-                remaining: string;
-              } => {
-                // Split by sentence endings but keep the endings
-                const parts = text.split(/(?<=[.!?。？！])\s+/);
-                if (parts.length > 1) {
-                  // All but the last part are complete sentences
-                  return {
-                    completeSentences: parts.slice(0, -1),
-                    remaining: parts[parts.length - 1]
-                  };
-                }
-                return {
-                  completeSentences: [],
-                  remaining: text
-                };
-              };
+              // Check if we have a complete sentence or if the message is done
+              const isComplete = hasCompleteSentence(newAccumulatedOutput) || message.done;
+              console.log('Is complete sentence?', isComplete);
 
-              // Check if we have complete sentences
-              if (hasCompleteSentence(newAccumulatedOutput) || message.done) {
+              if (isComplete) {
                 console.log('Complete sentence detected or message done');
                 
+                // Create new transcript with the complete sentence
+                const newTranscript: Transcript = {
+                  id: Date.now() as unknown as number,
+                  callId: callDetails?.id || `call-${Date.now()}`,
+                  role: 'assistant',
+                  content: newAccumulatedOutput.trim(),
+                  timestamp: new Date(),
+                  isModelOutput: true
+                };
+
+                // Add the transcript to state
+                console.log('Adding new transcript:', newTranscript);
+                setTranscripts(prev => {
+                  const newTranscripts = [...prev, newTranscript];
+                  console.log('Updated transcripts:', newTranscripts);
+                  return newTranscripts;
+                });
+
+                // Reset accumulated output if message is done or we have a complete sentence
                 if (message.done) {
-                  // If message is done, display all remaining content
-                  if (newAccumulatedOutput.trim()) {
-                    console.log('Creating transcript for final content:', newAccumulatedOutput);
-                    const newTranscript: Transcript = {
-                      id: Date.now() as unknown as number,
-                      callId: callDetails?.id || `call-${Date.now()}`,
-                      role: 'assistant',
-                      content: newAccumulatedOutput.trim(),
-                      timestamp: new Date(),
-                      isModelOutput: true
-                    };
-                    setTranscripts(prev => [...prev, newTranscript]);
-                  }
+                  console.log('Message done, resetting accumulated output');
                   setAccumulatedOutput('');
                 } else {
-                  // Extract and display complete sentences
-                  const { completeSentences, remaining } = extractSentences(newAccumulatedOutput);
-                  console.log('Complete sentences:', completeSentences);
-                  console.log('Remaining content:', remaining);
-
-                  // Add each complete sentence as a transcript
-                  completeSentences.forEach(sentence => {
-                    if (sentence.trim()) {
-                      console.log('Creating transcript for sentence:', sentence);
-                      const newTranscript: Transcript = {
-                        id: Date.now() as unknown as number,
-                        callId: callDetails?.id || `call-${Date.now()}`,
-                        role: 'assistant',
-                        content: sentence.trim(),
-                        timestamp: new Date(),
-                        isModelOutput: true
-                      };
-                      setTranscripts(prev => [...prev, newTranscript]);
-                    }
-                  });
-
-                  // Keep the remaining incomplete sentence
-                  setAccumulatedOutput(remaining);
+                  console.log('Complete sentence processed, resetting accumulated output');
+                  setAccumulatedOutput('');
                 }
               } else {
                 // Keep accumulating if no complete sentence yet
