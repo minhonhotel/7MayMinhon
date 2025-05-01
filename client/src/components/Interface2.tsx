@@ -21,8 +21,9 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     modelOutput
   } = useAssistant();
   
-  // Add state for references
+  // Add state for references and temporary buffer
   const [references, setReferences] = useState<ReferenceItem[]>([]);
+  const [temporaryBuffer, setTemporaryBuffer] = useState('');
   
   // Initialize reference service
   useEffect(() => {
@@ -44,6 +45,14 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     });
     setReferences(matches);
   }, [transcripts]);
+
+  // Update temporary buffer when new model output arrives
+  useEffect(() => {
+    if (modelOutput && modelOutput.length > 0) {
+      const latestOutput = modelOutput[modelOutput.length - 1];
+      setTemporaryBuffer(prev => prev + latestOutput);
+    }
+  }, [modelOutput]);
   
   // Wrapper for endCall to include local duration if needed
   const endCall = () => {
@@ -100,7 +109,26 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     if (conversationRef.current && isActive) {
       conversationRef.current.scrollTop = conversationRef.current.scrollHeight;
     }
-  }, [transcripts, isActive]);
+  }, [transcripts, isActive, temporaryBuffer]);
+  
+  useEffect(() => {
+    console.log("Tất cả container có thể:", document.querySelectorAll('*[class*="conversation"]'));
+  }, []);
+  
+  // Kiểm tra câu hoàn chỉnh
+  let lastSentenceEndIndex = -1;
+  for (const marker of sentenceEndMarkers) {
+    const index = temporaryBuffer.lastIndexOf(marker);
+    if (index > lastSentenceEndIndex) {
+      lastSentenceEndIndex = index;
+    }
+  }
+  
+  if (lastSentenceEndIndex !== -1) {
+    const completeSentence = temporaryBuffer.substring(0, lastSentenceEndIndex + 1);
+    fullBuffer += completeSentence;
+    // Cập nhật transcript với văn bản hoàn chỉnh
+  }
   
   return (
     <div 
@@ -132,7 +160,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           <div
             id="realTimeConversation"
             ref={conversationRef}
-            className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto"
+            className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto realtime-conversation-container"
           >
             {/* Display transcripts in chronological order */}
             {transcripts.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()).map((item) => (
@@ -147,21 +175,37 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                     <p className="text-xs mb-0.5 text-gray-400">
                       {item.role === 'user' ? 'You' : `Assistant${item.isModelOutput ? ' (Real-time)' : ''}`}
                     </p>
-                    <p className={`text-base font-normal whitespace-pre-line ${
+                    <p className={`text-base font-normal ${
                       item.role === 'user' ? 'text-blue-300' : 'text-yellow-100'
                     }`}>
-                      {item.content}
+                      {item.content || '...'}
                     </p>
                   </div>
                 </div>
               </div>
             ))}
+            {/* Show temporary buffer if exists */}
+            {temporaryBuffer && (
+              <div className="mb-2">
+                <div className="flex items-start mb-1">
+                  <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
+                    <span className="material-icons text-sm">support_agent</span>
+                  </div>
+                  <div className="flex-grow">
+                    <p className="text-xs mb-0.5 text-gray-400">Assistant (Typing...)</p>
+                    <p className="text-base font-normal text-yellow-100">{temporaryBuffer}</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
+          
           {/* Reference container below (full width, auto height) */}
           <div className="w-full">
             <Reference references={references} />
           </div>
         </div>
+        
         {/* Right: Control buttons */}
         <div className="w-1/4 lg:w-1/3 flex flex-col items-center lg:items-end p-2 space-y-2 overflow-auto" style={{ maxHeight: '100%' }}>
           <button id="backButton" onClick={() => setCurrentInterface('interface1')} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs">
