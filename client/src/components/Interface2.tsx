@@ -134,20 +134,31 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             ref={conversationRef}
             className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto"
           >
-            {/* Display all messages in chronological order */}
+            {/* Display user messages vertically */}
             {transcripts
+              .filter(item => item.role === 'user')
               .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
               .map((item) => (
                 <div key={item.id} className="mb-2">
-                  <div className="flex items-start mb-1">
+                  <div className="flex items-start">
                     <div className="flex-grow">
-                      <p className={`text-xl ${item.role === 'user' ? 'text-white' : 'text-yellow-200'}`}>
-                        {item.content}
-                      </p>
+                      <p className="text-xl text-white">{item.content}</p>
                     </div>
                   </div>
                 </div>
               ))}
+
+            {/* Display assistant outputs horizontally */}
+            <div className="flex flex-wrap gap-2 items-center">
+              {transcripts
+                .filter(item => item.role === 'assistant')
+                .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+                .map((item) => (
+                  <p key={item.id} className="text-xl text-yellow-200">
+                    {item.content}
+                  </p>
+                ))}
+            </div>
           </div>
           {/* Reference container below (full width, auto height) */}
           <div className="w-full">
