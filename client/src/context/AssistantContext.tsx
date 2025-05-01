@@ -138,12 +138,12 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         const vapi = await initVapi(publicKey);
 
         // Setup event listeners after successful initialization
-      vapi.on('volume-level', (level: number) => {
-        setMicLevel(level);
-      });
+        vapi.on('volume-level', (level: number) => {
+          setMicLevel(level);
+        });
 
-      // Message handler for transcripts and reports
-      const handleMessage = async (message: any) => {
+        // Message handler for transcripts and reports
+        const handleMessage = async (message: any) => {
           console.log('Raw message received:', message);
           console.log('Message type:', message.type);
           console.log('Message role:', message.role);
@@ -163,9 +163,9 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
               console.log('Adding model output to conversation:', outputContent);
               
               // Add as transcript with isModelOutput flag
-          const newTranscript: Transcript = {
-            id: Date.now() as unknown as number,
-            callId: callDetails?.id || `call-${Date.now()}`,
+              const newTranscript: Transcript = {
+                id: Date.now() as unknown as number,
+                callId: callDetails?.id || `call-${Date.now()}`,
                 role: 'assistant',
                 content: outputContent,
                 timestamp: new Date(),
@@ -182,7 +182,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             }
           }
           
-          // Only handle user transcripts, ignore regular assistant transcripts
+          // Only handle user transcripts, ignore assistant transcripts
           if (message.type === 'transcript' && message.role === 'user') {
             console.log('Adding user transcript:', message);
             const newTranscript: Transcript = {
@@ -193,13 +193,13 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
               timestamp: new Date()
             };
             setTranscripts(prev => [...prev, newTranscript]);
-        }
-      };
-      
-      vapi.on('message', handleMessage);
+          }
+        };
+        
+        vapi.on('message', handleMessage);
       } catch (error) {
         console.error('Error setting up Vapi:', error);
-    }
+      }
     };
 
     setupVapi();
@@ -280,35 +280,35 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       }
       
       console.log("Call started successfully:", call);
-        
-        // Reset email sent flag for new call
-        setEmailSentForCurrentSession(false);
-        
+
+      // Reset email sent flag for new call
+      setEmailSentForCurrentSession(false);
+      
       // Initialize call details
-          setCallDetails({
-            id: call.id || `call-${Date.now()}`,
-            roomNumber: '',
-            duration: '00:00',
-            category: 'Room Service'
-          });
-        
+      setCallDetails({
+        id: call.id || `call-${Date.now()}`,
+        roomNumber: '',
+        duration: '00:00',
+        category: 'Room Service'
+      });
+      
       // Clear previous transcripts and model outputs
-        setTranscripts([]);
+      setTranscripts([]);
       setModelOutput([]);
-        
-        // Change interface to call in progress
-        setCurrentInterface('interface2');
+      
+      // Change interface to call in progress
+      setCurrentInterface('interface2');
       
       // Start call duration timer
       const timer = setInterval(() => {
         setCallDuration(prev => prev + 1);
       }, 1000);
       setCallTimer(timer);
-        
-        // Reset call duration
-        setCallDuration(0);
 
-      } catch (error) {
+      // Reset call duration
+      setCallDuration(0);
+
+    } catch (error) {
       console.error("Error starting call:", error);
     }
   };
@@ -328,6 +328,11 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     
     // Initialize with default values
     setOrderSummary(initialOrderSummary);
+    
+    // We'll update this with AI-generated data once the summary is received
+    
+    // Request OpenAI-generated summary from server using transcripts
+    console.log('Requesting AI-generated summary from server...');
     
     // Format call duration for API
     const formattedDuration = callDuration ? 
@@ -364,9 +369,6 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       timestamp: new Date()
     };
     setCallSummary(loadingSummary);
-
-    // Change interface to summary before making the API call
-    setCurrentInterface('interface3');
     
     // Send transcript data to server for OpenAI processing
     fetch('/api/store-summary', {
@@ -375,11 +377,14 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        // Send empty summary so backend knows to generate one with OpenAI
         summary: '', 
         transcripts: transcriptData,
         timestamp: new Date().toISOString(),
         callId: callDetails?.id || `call-${Date.now()}`,
+        // Send the call duration for storage
         callDuration: formattedDuration,
+        // Use flag from vapiClient to force basic summary if needed
         forceBasicSummary: FORCE_BASIC_SUMMARY
       }),
     })
@@ -392,9 +397,11 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     .then(data => {
       console.log('AI-generated summary received:', data);
       
+      // Update the call summary in state with the AI-generated one
       if (data.success && data.summary && data.summary.content) {
         const summaryContent = data.summary.content;
         
+        // Create summary object
         const aiSummary: CallSummary = {
           id: Date.now() as unknown as number,
           callId: callDetails?.id || `call-${Date.now()}`,
@@ -403,33 +410,44 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         };
         setCallSummary(aiSummary);
         
+        // Store any extracted service requests if available
         if (data.serviceRequests && Array.isArray(data.serviceRequests) && data.serviceRequests.length > 0) {
           console.log('Service requests extracted:', data.serviceRequests);
           setServiceRequests(data.serviceRequests);
         }
         
+        // Extract order details from AI summary
         try {
           console.log('Parsing AI summary to extract order details...');
+          
+          // Get the parsed details
           const parsedDetails = parseSummaryToOrderDetails(summaryContent);
           
+          // Only update orderSummary if the AI parsed useful information
           if (Object.keys(parsedDetails).length > 0) {
+            // Create a new order summary by merging parsed details with defaults
             setOrderSummary(prevSummary => {
               if (!prevSummary) return initialOrderSummary;
               
+              // Start with existing order summary
               const updatedSummary = { ...prevSummary };
               
+              // Update with AI-extracted information, only if present
               if (parsedDetails.orderType) updatedSummary.orderType = parsedDetails.orderType;
               if (parsedDetails.deliveryTime) updatedSummary.deliveryTime = parsedDetails.deliveryTime;
               if (parsedDetails.roomNumber) updatedSummary.roomNumber = parsedDetails.roomNumber;
               if (parsedDetails.specialInstructions) updatedSummary.specialInstructions = parsedDetails.specialInstructions;
               
+              // Only update items if we extracted some
               if (parsedDetails.items && parsedDetails.items.length > 0) {
                 updatedSummary.items = parsedDetails.items;
               }
               
+              // Update total amount based on items or extracted value
               if (parsedDetails.totalAmount) {
                 updatedSummary.totalAmount = parsedDetails.totalAmount;
               } else {
+                // Recalculate based on current items
                 updatedSummary.totalAmount = updatedSummary.items.reduce(
                   (total, item) => total + (item.price * item.quantity), 
                   0
@@ -442,14 +460,14 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           }
         } catch (parseError) {
           console.error('Error extracting order details from AI summary:', parseError);
+          // Keep existing order summary on error
         }
-      } else {
-        throw new Error('Invalid summary data received from server');
       }
     })
     .catch(error => {
       console.error('Error getting AI-generated summary:', error);
       
+      // Fallback to basic summary if OpenAI fails
       const fallbackSummary: CallSummary = {
         id: Date.now() as unknown as number,
         callId: callDetails?.id || `call-${Date.now()}`,
@@ -458,6 +476,9 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       };
       setCallSummary(fallbackSummary);
     });
+    
+    // Change interface to summary
+    setCurrentInterface('interface3');
   };
 
   // Function to translate text to Vietnamese
