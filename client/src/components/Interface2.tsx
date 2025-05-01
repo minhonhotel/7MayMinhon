@@ -176,7 +176,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             <span className="material-icons mr-1 text-base">cancel</span>Cancel
           </button>
           <button id="endCallButton" onClick={endCall} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs">
-            <span className="material-icons mr-1 text-base">call_end</span>End Call
+            <span className="material-icons mr-1 text-base">navigate_next</span>Next
           </button>
         </div>
       </div>
