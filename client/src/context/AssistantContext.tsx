@@ -138,18 +138,30 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       });
       // Message handler for transcripts and reports
       const handleMessage = async (message: any) => {
-        console.log('Message received:', message);
+        console.log('Raw message received:', message);
+        console.log('Message type:', message.type);
+        console.log('Message content:', message.content);
+        console.log('Message full structure:', JSON.stringify(message, null, 2));
         
         // Debug all message types from Vapi
         if (message.type) {
-          console.log(`Message type: ${message.type}`);
+          console.log(`Message type detected: ${message.type}`);
         }
         
-        if (message.type === 'model_output') {
-          // Handle direct model output
-          addModelOutput(message.content);
-        } else if (message.type === 'transcript' && message.transcriptType === 'final') {
-          // Keep existing transcript handling as fallback
+        // Check for model output messages
+        if (message.type === 'model-output' || message.type === 'model_output' || message.modelOutput) {
+          console.log('Model output detected!');
+          console.log('Model output content:', message.content || message.modelOutput);
+          const outputContent = message.content || message.modelOutput;
+          if (outputContent) {
+            console.log('Adding model output:', outputContent);
+            addModelOutput(outputContent);
+          }
+        } 
+        
+        // Handle transcripts
+        if (message.type === 'transcript' && message.transcriptType === 'final') {
+          console.log('Final transcript received:', message);
           const newTranscript: Transcript = {
             id: Date.now() as unknown as number,
             callId: callDetails?.id || `call-${Date.now()}`,
