@@ -104,11 +104,14 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
   // Persist activeOrders to localStorage whenever it changes
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    try {
-      localStorage.setItem('activeOrders', JSON.stringify(activeOrders));
-    } catch {
-      console.error('Failed to persist activeOrders to localStorage');
-    }
+    const saveToStorage = () => {
+      try {
+        localStorage.setItem('activeOrders', JSON.stringify(activeOrders));
+      } catch (err) {
+        console.error('Failed to persist activeOrders to localStorage', err);
+      }
+    };
+    saveToStorage();
   }, [activeOrders]);
 
   const addActiveOrder = (order: ActiveOrder) => {
@@ -124,7 +127,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       timestamp: new Date()
     };
     setTranscripts(prev => [...prev, newTranscript]);
-  }, []);
+  }, [callDetails?.id]);
 
   // Initialize Vapi when component mounts
   useEffect(() => {
@@ -138,9 +141,10 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         const vapi = await initVapi(publicKey);
 
         // Setup event listeners after successful initialization
-        vapi.on('volume-level', (level: number) => {
+        const volumeHandler = (level: number) => {
           setMicLevel(level);
-        });
+        };
+        vapi.on('volume-level', volumeHandler);
 
         // Message handler for transcripts and reports
         const handleMessage = async (message: any) => {
@@ -157,8 +161,8 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           if (message.type === 'model-output') {
             console.log('Model output detected - Full message:', message);
             
-            // Try to get content from any available field
-            const outputContent = message.content || message.text || message.transcript || message.output;
+            // Try to get content from any available field and ensure it's a string
+            const outputContent = String(message.content || message.text || message.transcript || message.output || '');
             if (outputContent) {
               console.log('Adding model output to conversation:', outputContent);
               
@@ -189,7 +193,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
               id: Date.now() as unknown as number,
               callId: callDetails?.id || `call-${Date.now()}`,
               role: 'user',
-              content: message.content || message.transcript || '',
+              content: String(message.content || message.transcript || ''),
               timestamp: new Date()
             };
             setTranscripts(prev => [...prev, newTranscript]);
@@ -197,20 +201,19 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         };
         
         vapi.on('message', handleMessage);
+
+        // Cleanup function
+        return () => {
+          vapi.off('volume-level', volumeHandler);
+          vapi.off('message', handleMessage);
+        };
       } catch (error) {
-        console.error('Error setting up Vapi:', error);
+        console.error('Failed to initialize Vapi:', error);
       }
     };
 
     setupVapi();
-    
-    return () => {
-      const vapi = getVapiInstance();
-      if (vapi) {
-        vapi.stop();
-      }
-    };
-  }, []);
+  }, []); // Empty dependency array since this should only run once on mount
 
   useEffect(() => {
     if (currentInterface === 'interface2') {
@@ -315,149 +318,37 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
   // End call function
   const endCall = () => {
-    const vapi = getVapiInstance();
-    if (vapi) {
-      vapi.stop();
-    }
-    
-    // Stop the timer
-    if (callTimer) {
-      clearInterval(callTimer);
-      setCallTimer(null);
-    }
-    
-    // Initialize with default values
-    setOrderSummary(initialOrderSummary);
-    
-    // Format call duration for API
-    const formattedDuration = callDuration ? 
-      `${Math.floor(callDuration / 60)}:${(callDuration % 60).toString().padStart(2, '0')}` : 
-      '0:00';
-      
-    console.log('Sending call duration to summary endpoint:', formattedDuration);
-    
-    // Prepare transcripts for the API
-    const transcriptData = transcripts.map(message => ({
-      role: message.role,
-      content: message.content
-    }));
-    
-    // Check if we have enough transcript data
-    if (transcriptData.length < 2) {
-      console.log('Not enough transcript data to generate summary');
-      const noTranscriptSummary: CallSummary = {
-        id: Date.now() as unknown as number,
-        callId: callDetails?.id || `call-${Date.now()}`,
-        content: "Call was too short to generate a summary. Please try a more detailed conversation.",
-        timestamp: new Date()
-      };
-      setCallSummary(noTranscriptSummary);
-      setCurrentInterface('interface3');
-      return;
-    }
-    
-    // Show loading state for summary
-    const loadingSummary: CallSummary = {
-      id: Date.now() as unknown as number,
-      callId: callDetails?.id || `call-${Date.now()}`,
-      content: "Generating AI summary of your conversation...",
-      timestamp: new Date()
-    };
-    setCallSummary(loadingSummary);
+    try {
+      const vapi = getVapiInstance();
+      if (vapi) {
+        vapi.stop();
+      }
 
-    // Change interface to summary before making the API call
-    setCurrentInterface('interface3');
-    
-    // Send transcript data to server for OpenAI processing
-    fetch('/api/store-summary', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        summary: '', 
-        transcripts: transcriptData,
-        timestamp: new Date().toISOString(),
-        callId: callDetails?.id || `call-${Date.now()}`,
-        callDuration: formattedDuration,
-        forceBasicSummary: FORCE_BASIC_SUMMARY
-      }),
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status}`);
+      // Clear timer if it exists
+      if (callTimer) {
+        clearInterval(callTimer);
+        setCallTimer(null);
       }
-      return response.json();
-    })
-    .then(data => {
-      console.log('AI-generated summary received:', data);
-      
-      if (data.success && data.summary && data.summary.content) {
-        const summaryContent = data.summary.content;
-        
-        const aiSummary: CallSummary = {
-          id: Date.now() as unknown as number,
-          callId: callDetails?.id || `call-${Date.now()}`,
-          content: summaryContent,
-          timestamp: new Date(data.summary.timestamp || Date.now())
-        };
-        setCallSummary(aiSummary);
-        
-        if (data.serviceRequests && Array.isArray(data.serviceRequests) && data.serviceRequests.length > 0) {
-          console.log('Service requests extracted:', data.serviceRequests);
-          setServiceRequests(data.serviceRequests);
-        }
-        
-        try {
-          console.log('Parsing AI summary to extract order details...');
-          const parsedDetails = parseSummaryToOrderDetails(summaryContent);
-          
-          if (Object.keys(parsedDetails).length > 0) {
-            setOrderSummary(prevSummary => {
-              if (!prevSummary) return initialOrderSummary;
-              
-              const updatedSummary = { ...prevSummary };
-              
-              if (parsedDetails.orderType) updatedSummary.orderType = parsedDetails.orderType;
-              if (parsedDetails.deliveryTime) updatedSummary.deliveryTime = parsedDetails.deliveryTime;
-              if (parsedDetails.roomNumber) updatedSummary.roomNumber = parsedDetails.roomNumber;
-              if (parsedDetails.specialInstructions) updatedSummary.specialInstructions = parsedDetails.specialInstructions;
-              
-              if (parsedDetails.items && parsedDetails.items.length > 0) {
-                updatedSummary.items = parsedDetails.items;
-              }
-              
-              if (parsedDetails.totalAmount) {
-                updatedSummary.totalAmount = parsedDetails.totalAmount;
-              } else {
-                updatedSummary.totalAmount = updatedSummary.items.reduce(
-                  (total, item) => total + (item.price * item.quantity), 
-                  0
-                );
-              }
-              
-              console.log('Updated order summary with AI-extracted information:', updatedSummary);
-              return updatedSummary;
-            });
-          }
-        } catch (parseError) {
-          console.error('Error extracting order details from AI summary:', parseError);
-        }
-      } else {
-        throw new Error('Invalid summary data received from server');
+
+      // Reset states
+      setCallDuration(0);
+      setIsMuted(false);
+      setModelOutput([]);
+      setMicLevel(0);
+
+      console.log('Call ended successfully');
+    } catch (error) {
+      console.error('Error ending call:', error);
+      // Still reset states even if there's an error
+      if (callTimer) {
+        clearInterval(callTimer);
+        setCallTimer(null);
       }
-    })
-    .catch(error => {
-      console.error('Error getting AI-generated summary:', error);
-      
-      const fallbackSummary: CallSummary = {
-        id: Date.now() as unknown as number,
-        callId: callDetails?.id || `call-${Date.now()}`,
-        content: "Summary could not be generated. Please review the conversation transcript.",
-        timestamp: new Date()
-      };
-      setCallSummary(fallbackSummary);
-    });
+      setCallDuration(0);
+      setIsMuted(false);
+      setModelOutput([]);
+      setMicLevel(0);
+    }
   };
 
   // Function to translate text to Vietnamese
