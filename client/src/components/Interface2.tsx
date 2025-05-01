@@ -57,8 +57,14 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     if (modelOutput && modelOutput.length > 0) {
       const latestOutput = modelOutput[modelOutput.length - 1];
       
-      // Skip if output contains typing indicator or support_agent text
-      if (latestOutput.includes('(Typing...)') || latestOutput.includes('support_agent')) {
+      // Skip system messages and typing indicators
+      if (latestOutput.includes('(Typing...)') || 
+          latestOutput.includes('support_agent') ||
+          latestOutput.includes('_agent') ||
+          latestOutput === '!?' ||
+          latestOutput === '""' ||
+          latestOutput.trim().length === 0) {
+        console.log('Skipping system message:', latestOutput);
         return;
       }
       
@@ -66,17 +72,26 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
       
       // Clean the output before adding to buffer
       const cleanedOutput = latestOutput
-        .replace(/ntAssistant/g, '')
+        .replace(/_agentAssistant\s*\(Typing\.\.\.\)\??/g, '')
+        .replace(/support_agentAssistant\s*\(Typing\.\.\.\)\??/g, '')
+        .replace(/ntAssistant\s*\(Typing\.\.\.\)\??/g, '')
+        .replace(/Assistant\s*\(Typing\.\.\.\)\??/g, '')
         .replace(/\(Typing\.\.\.\)/g, '')
         .replace(/support_agent/g, '')
-        .replace(/Assistant/g, '')
+        .replace(/_agent/g, '')
+        .replace(/\s+/g, ' ')
         .trim();
         
-      if (!cleanedOutput) {
+      if (!cleanedOutput || cleanedOutput === '!?' || cleanedOutput === '""') {
+        console.log('Skipping empty output after cleaning');
         return;
       }
       
       setTemporaryBuffer(prev => {
+        // Don't add if it's just a repeat of the last content
+        if (prev.endsWith(cleanedOutput)) {
+          return prev;
+        }
         const newBuffer = prev + cleanedOutput;
         console.log('New temporary buffer:', newBuffer);
         return newBuffer;
@@ -101,8 +116,11 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     if (lastSentenceEndIndex !== -1) {
       const completeSentence = temporaryBuffer.substring(0, lastSentenceEndIndex + 1).trim();
       
-      // Skip if sentence is just "you" repeated
-      if (completeSentence.split(' ').every(word => word === 'you')) {
+      // Skip if sentence is just repeated words or system messages
+      if (completeSentence.split(' ').every(word => word === 'you') ||
+          completeSentence.includes('(Typing...)') ||
+          completeSentence.includes('support_agent') ||
+          completeSentence.includes('_agent')) {
         setTemporaryBuffer('');
         return;
       }
@@ -110,6 +128,10 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
       console.log('Found complete sentence:', completeSentence);
       
       setFullBuffer(prev => {
+        // Don't add if it's just a repeat
+        if (prev.endsWith(completeSentence)) {
+          return prev;
+        }
         const newBuffer = prev + completeSentence + ' ';
         console.log('Updated full buffer:', newBuffer);
         return newBuffer;
