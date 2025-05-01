@@ -147,33 +147,23 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         // Message handler for transcripts and reports
         const handleMessage = async (message: any) => {
           console.log('Raw message received:', message);
-          console.log('Message type:', message.type);
-          console.log('Message role:', message.role);
-          console.log('Message content structure:', {
-            content: message.content,
-            text: message.text,
-            transcript: message.transcript
-          });
           
           // For model output - handle this first
           if (message.type === 'model-output') {
-            console.log('Model output detected - Full message:', message);
-            
-            // Try to get content from any available field
             const outputContent = message.content || message.text || message.transcript || message.output;
             if (outputContent) {
-              console.log('Adding model output to conversation:', outputContent);
-              
               // Accumulate the output
               const newAccumulatedOutput = accumulatedOutput + outputContent;
               setAccumulatedOutput(newAccumulatedOutput);
               
-              // Check if we have a complete sentence (ends with ., !, ? or multiple line breaks)
-              if (
-                outputContent.match(/[.!?]\s*$/) || // Ends with punctuation
-                outputContent.includes('\n\n') || // Contains multiple line breaks
-                message.done // Message indicates it's complete
-              ) {
+              // Check if we have a complete sentence
+              const isCompleteSentence = 
+                newAccumulatedOutput.match(/[.!?]\s*$/) || // Ends with punctuation
+                newAccumulatedOutput.includes('\n\n') || // Contains multiple line breaks
+                message.done; // Message indicates it's complete
+              
+              // Only create transcript for complete sentences
+              if (isCompleteSentence) {
                 // Create new transcript with accumulated output
                 const newTranscript: Transcript = {
                   id: Date.now() as unknown as number,
@@ -191,14 +181,11 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                 // Reset accumulated output
                 setAccumulatedOutput('');
               }
-            } else {
-              console.warn('Model output message received but no content found:', message);
             }
           }
           
-          // For user transcripts only - ignore assistant transcripts
+          // For user transcripts only
           if (message.type === 'transcript' && message.role === 'user') {
-            console.log('Adding user transcript:', message);
             const newTranscript: Transcript = {
               id: Date.now() as unknown as number,
               callId: callDetails?.id || `call-${Date.now()}`,

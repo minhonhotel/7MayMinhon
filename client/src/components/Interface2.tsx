@@ -135,64 +135,29 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             className="relative p-2 w-full min-h-[128px] max-h-[256px] overflow-y-auto"
           >
             {(() => {
-              // Sort transcripts by timestamp
+              // Sort transcripts by timestamp and filter incomplete messages
               const sortedTranscripts = transcripts
                 .filter(t => t.role === 'user' || t.isComplete) // Only show complete assistant messages
                 .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
               
-              // Group consecutive messages
-              const groupedMessages: Array<{
-                id: string;
-                role: 'user' | 'assistant';
-                messages: typeof transcripts;
-              }> = [];
-              
-              let currentGroup: typeof groupedMessages[0] | null = null;
-              
-              sortedTranscripts.forEach((item) => {
-                if (!currentGroup || currentGroup.role !== item.role) {
-                  // Start new group
-                  currentGroup = {
-                    id: item.id.toString(),
-                    role: item.role,
-                    messages: [item]
-                  };
-                  groupedMessages.push(currentGroup);
-                } else {
-                  // Add to existing group
-                  currentGroup.messages.push(item);
-                }
-              });
-              
-              return groupedMessages.map((group) => (
-                <div key={group.id} className="mb-3">
-                  {group.role === 'user' ? (
-                    // User messages - show each separately
-                    group.messages.map((item) => (
-                      <div key={item.id} className="flex items-start mb-2 last:mb-0">
-                        <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
-                          <span className="material-icons text-sm">person</span>
-                        </div>
-                        <div className="flex-grow">
-                          <p className="text-xs mb-0.5 text-gray-400">You</p>
-                          <p className="text-base font-normal text-blue-300">{item.content}</p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    // Assistant messages - show each separately
-                    group.messages.map((item) => (
-                      <div key={item.id} className="flex items-start mb-2 last:mb-0">
-                        <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
-                          <span className="material-icons text-sm">support_agent</span>
-                        </div>
-                        <div className="flex-grow">
-                          <p className="text-xs mb-0.5 text-gray-400">Assistant</p>
-                          <p className="text-base font-normal text-yellow-100 whitespace-nowrap overflow-x-auto">{item.content}</p>
-                        </div>
-                      </div>
-                    ))
-                  )}
+              return sortedTranscripts.map((item) => (
+                <div key={item.id} className="mb-2 last:mb-0">
+                  <div className="flex items-start">
+                    <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
+                      <span className="material-icons text-sm">
+                        {item.role === 'user' ? 'person' : 'support_agent'}
+                      </span>
+                    </div>
+                    <div className="flex-grow">
+                      <p className="text-xs mb-0.5 text-gray-400">
+                        {item.role === 'user' ? 'You' : 'Assistant'}
+                      </p>
+                      <p className="text-base font-normal whitespace-nowrap overflow-x-auto" 
+                         style={{ color: item.role === 'user' ? '#93C5FD' : '#FEF9C3' }}>
+                        {item.content}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               ));
             })()}
