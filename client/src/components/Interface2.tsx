@@ -61,6 +61,8 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
       if (latestOutput.includes('(Typing...)') || 
           latestOutput.includes('support_agent') ||
           latestOutput.includes('_agent') ||
+          latestOutput.includes('onHotelvoicehelptodayHowHotel') ||
+          latestOutput.includes('voice help today') ||
           latestOutput === '!?' ||
           latestOutput === '""' ||
           latestOutput.trim().length === 0) {
@@ -72,18 +74,24 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
       
       // Clean the output before adding to buffer
       const cleanedOutput = latestOutput
-        .replace(/_agentAssistant\s*\(Typing\.\.\.\)\??/g, '')
-        .replace(/support_agentAssistant\s*\(Typing\.\.\.\)\??/g, '')
-        .replace(/ntAssistant\s*\(Typing\.\.\.\)\??/g, '')
-        .replace(/Assistant\s*\(Typing\.\.\.\)\??/g, '')
+        .replace(/support_agentAssistant\s*\(Typing\.\.\.\)[^"]*/g, '')
+        .replace(/onHotelvoicehelptodayHowHotel[^"]*/g, '')
+        .replace(/_agentAssistant\s*\(Typing\.\.\.\)[^"]*/g, '')
+        .replace(/ntAssistant\s*\(Typing\.\.\.\)[^"]*/g, '')
+        .replace(/Assistant\s*\(Typing\.\.\.\)[^"]*/g, '')
         .replace(/\(Typing\.\.\.\)/g, '')
         .replace(/support_agent/g, '')
         .replace(/_agent/g, '')
+        .replace(/Good!\s*Good!\s*Good!/g, 'Good!')
         .replace(/\s+/g, ' ')
         .trim();
         
-      if (!cleanedOutput || cleanedOutput === '!?' || cleanedOutput === '""') {
-        console.log('Skipping empty output after cleaning');
+      if (!cleanedOutput || 
+          cleanedOutput === '!?' || 
+          cleanedOutput === '""' ||
+          cleanedOutput.includes('onHotelvoicehelptodayHowHotel') ||
+          cleanedOutput.includes('voice help today')) {
+        console.log('Skipping empty or system output after cleaning');
         return;
       }
       
@@ -116,11 +124,13 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     if (lastSentenceEndIndex !== -1) {
       const completeSentence = temporaryBuffer.substring(0, lastSentenceEndIndex + 1).trim();
       
-      // Skip if sentence is just repeated words or system messages
+      // Skip if sentence contains system messages or is just repeated content
       if (completeSentence.split(' ').every(word => word === 'you') ||
           completeSentence.includes('(Typing...)') ||
           completeSentence.includes('support_agent') ||
-          completeSentence.includes('_agent')) {
+          completeSentence.includes('_agent') ||
+          completeSentence.includes('onHotelvoicehelptodayHowHotel') ||
+          completeSentence.includes('voice help today')) {
         setTemporaryBuffer('');
         return;
       }
@@ -137,7 +147,12 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
         return newBuffer;
       });
 
-      addModelOutput(completeSentence);
+      // Only add non-empty, non-system messages to model output
+      if (completeSentence.trim() && 
+          !completeSentence.includes('onHotelvoicehelptodayHowHotel') &&
+          !completeSentence.includes('voice help today')) {
+        addModelOutput(completeSentence);
+      }
       
       // Clear processed content from temporary buffer
       setTemporaryBuffer(temporaryBuffer.substring(lastSentenceEndIndex + 1).trim());
