@@ -128,137 +128,77 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
   // Initialize Vapi when component mounts
   useEffect(() => {
-    const vapi = initVapi();
-    
-    // Set up message listener to handle transcripts and end of call reports
-    if (vapi) {
-      // Listen to volume-level events to update micLevel
-      vapi.on('volume-level', (level: number) => {
-        setMicLevel(level);
-      });
-      // Message handler for transcripts and reports
-      const handleMessage = async (message: any) => {
-        console.log('Raw message received:', message);
-        
-        // Handle assistant's output
-        if (
-          message.type === 'first-message' ||
-          message.type === 'end-call-message' ||
-          message.type === 'voicemail-message' ||
-          message.type === 'model-output' ||
-          (message.role === 'assistant' && message.type === 'transcript')
-        ) {
-          console.log('Assistant output detected:', message);
+    const setupVapi = async () => {
+      try {
+        const vapi = await initVapi();
+        if (!vapi) {
+          console.error('Failed to initialize Vapi');
+          return;
+        }
+
+        // Setup event listeners after successful initialization
+        vapi.on('volume-level', (level: number) => {
+          setMicLevel(level);
+        });
+
+        // Message handler for transcripts and reports
+        const handleMessage = async (message: any) => {
+          console.log('Raw message received:', message);
           
-          // For model output
-          if (message.type === 'model-output') {
-            console.log('Model output detected:', message.content);
-            if (message.content) {
-              console.log('Adding model output to conversation:', message.content);
-              addModelOutput(message.content);
+          // Handle assistant's output
+          if (
+            message.type === 'first-message' ||
+            message.type === 'end-call-message' ||
+            message.type === 'voicemail-message' ||
+            message.type === 'model-output' ||
+            (message.role === 'assistant' && message.type === 'transcript')
+          ) {
+            console.log('Assistant output detected:', message);
+            
+            // For model output
+            if (message.type === 'model-output') {
+              console.log('Model output detected:', message.content);
+              if (message.content) {
+                console.log('Adding model output to conversation:', message.content);
+                addModelOutput(message.content);
+              }
+            }
+            
+            // For transcripts
+            if (message.type === 'transcript') {
+              console.log('Adding assistant transcript:', message);
+              const newTranscript: Transcript = {
+                id: Date.now() as unknown as number,
+                callId: callDetails?.id || `call-${Date.now()}`,
+                role: 'assistant',
+                content: message.transcript,
+                timestamp: new Date()
+              };
+              setTranscripts(prev => [...prev, newTranscript]);
             }
           }
           
-          // For transcripts
-          if (message.type === 'transcript') {
-            console.log('Adding assistant transcript:', message);
+          // Handle user's input
+          if (message.type === 'transcript' && message.role === 'user') {
+            console.log('User input detected:', message);
             const newTranscript: Transcript = {
               id: Date.now() as unknown as number,
               callId: callDetails?.id || `call-${Date.now()}`,
-              role: 'assistant',
+              role: 'user',
               content: message.transcript,
               timestamp: new Date()
             };
             setTranscripts(prev => [...prev, newTranscript]);
           }
-        }
+        };
         
-        // Handle user's input
-        if (message.type === 'transcript' && message.role === 'user') {
-          console.log('User input detected:', message);
-          const newTranscript: Transcript = {
-            id: Date.now() as unknown as number,
-            callId: callDetails?.id || `call-${Date.now()}`,
-            role: 'user',
-            content: message.transcript,
-            timestamp: new Date()
-          };
-          setTranscripts(prev => [...prev, newTranscript]);
-        }
-        
-        // Handle end of call report with summary
-        if (message.type === 'end_of_call_report') {
-          console.log('End of call report received:', message);
-          
-          // Get the summary content, with fallback if it's missing
-          const summaryContent = message.summary || "No summary was provided by the assistant for this conversation.";
-          
-          // Create a new summary object
-          const newSummary: CallSummary = {
-            id: Date.now() as unknown as number,
-            callId: callDetails?.id || `call-${Date.now()}`,
-            content: summaryContent,
-            timestamp: new Date()
-          };
-          
-          // Set the summary in state so we can use it in Interface3
-          setCallSummary(newSummary);
-          
-          console.log('Summary saved to context state:', newSummary);
-          
-          // Extract order details from summary
-          try {
-            console.log('Parsing Vapi summary to extract order details...');
-            
-            // Get the parsed details
-            const parsedDetails = parseSummaryToOrderDetails(summaryContent);
-            
-            // Only update orderSummary if useful information was extracted
-            if (Object.keys(parsedDetails).length > 0) {
-              setOrderSummary(prevSummary => {
-                if (!prevSummary) return initialOrderSummary;
-                
-                // Start with existing order summary
-                const updatedSummary = { ...prevSummary };
-                
-                // Update with extracted information
-                if (parsedDetails.orderType) updatedSummary.orderType = parsedDetails.orderType;
-                if (parsedDetails.deliveryTime) updatedSummary.deliveryTime = parsedDetails.deliveryTime;
-                if (parsedDetails.roomNumber) updatedSummary.roomNumber = parsedDetails.roomNumber;
-                if (parsedDetails.specialInstructions) updatedSummary.specialInstructions = parsedDetails.specialInstructions;
-                
-                // Only update items if we extracted some
-                if (parsedDetails.items && parsedDetails.items.length > 0) {
-                  updatedSummary.items = parsedDetails.items;
-                }
-                
-                // Update total amount
-                if (parsedDetails.totalAmount) {
-                  updatedSummary.totalAmount = parsedDetails.totalAmount;
-                } else {
-                  // Recalculate based on current items
-                  updatedSummary.totalAmount = updatedSummary.items.reduce(
-                    (total, item) => total + (item.price * item.quantity), 
-                    0
-                  );
-                }
-                
-                console.log('Updated order summary with Vapi-extracted information:', updatedSummary);
-                return updatedSummary;
-              });
-            }
-          } catch (parseError) {
-            console.error('Error extracting order details from Vapi summary:', parseError);
-            // Keep existing order summary on error
-          }
-          
-          // No need to manually update the container or send to server
-          // This is now handled in vapiClient.ts to follow the vanilla JS approach
-        }
-      };
-      
-      vapi.on('message', handleMessage);
-    }
+        vapi.on('message', handleMessage);
+      } catch (error) {
+        console.error('Error setting up Vapi:', error);
+      }
+    };
+
+    setupVapi();
     
     return () => {
       if (vapiInstance) {

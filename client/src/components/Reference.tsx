@@ -1,21 +1,52 @@
+/// <reference types="react" />
 import React, { useState, useEffect } from 'react';
 import { ReferenceItem } from '@/services/ReferenceService';
+
+// Add ImportMeta interface to fix env property error
+declare global {
+  interface ImportMeta {
+    env: {
+      BASE_URL: string;
+      [key: string]: string;
+    };
+  }
+}
 
 interface ReferenceProps {
   references: ReferenceItem[];
 }
 
-const Reference: React.FC<ReferenceProps> = ({ references }) => {
+interface DocContents {
+  [key: string]: string;
+}
+
+// Add JSX.IntrinsicElements interface
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      div: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+      img: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
+      p: React.DetailedHTMLProps<React.HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>;
+      button: React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
+      span: React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
+      pre: React.DetailedHTMLProps<React.HTMLAttributes<HTMLPreElement>, HTMLPreElement>;
+      embed: React.DetailedHTMLProps<React.EmbedHTMLAttributes<HTMLEmbedElement>, HTMLEmbedElement>;
+      h3: React.DetailedHTMLProps<React.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+    }
+  }
+}
+
+const Reference = ({ references }: ReferenceProps): JSX.Element => {
   // State to hold fetched text content for .txt documents
-  const [docContents, setDocContents] = useState<Record<string, string>>({});
+  const [docContents, setDocContents] = useState<DocContents>({});
 
   // Fetch text for any .txt documents to preview inline
   useEffect(() => {
-    references.forEach(ref => {
+    references.forEach((ref: ReferenceItem) => {
       if (ref.type === 'document' && ref.url.endsWith('.txt') && !docContents[ref.url]) {
         fetch(ref.url)
           .then(res => res.text())
-          .then(text => setDocContents(prev => ({ ...prev, [ref.url]: text })))
+          .then(text => setDocContents((prev: DocContents) => ({ ...prev, [ref.url]: text })))
           .catch(err => console.error('Error fetching document text:', err));
       }
     });
@@ -56,17 +87,22 @@ const Reference: React.FC<ReferenceProps> = ({ references }) => {
       case 'image':
         return (
           <div className="relative group">
-            <img
-              src={getAssetUrl(reference.url)}
-              alt={reference.title}
-              className="w-full h-48 object-cover rounded-lg cursor-pointer"
+            <div 
+              role="button"
               onClick={() => handleOpenLink(reference.url)}
-            />
-            <div className="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100 transition-opacity">
-              <p className="text-sm font-medium">{reference.title}</p>
-              {reference.description && (
-                <p className="text-xs">{reference.description}</p>
-              )}
+              className="cursor-pointer"
+            >
+              <img
+                src={getAssetUrl(reference.url)}
+                alt={reference.title}
+                className="w-full h-48 object-cover rounded-lg"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                <p className="text-sm font-medium">{reference.title}</p>
+                {reference.description && (
+                  <p className="text-xs">{reference.description}</p>
+                )}
+              </div>
             </div>
           </div>
         );
@@ -109,7 +145,11 @@ const Reference: React.FC<ReferenceProps> = ({ references }) => {
 
       case 'link':
         return (
-          <div className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+          <div 
+            role="button"
+            onClick={() => handleOpenLink(reference.url)}
+            className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+          >
             <span className="material-icons text-gray-500 mr-3">link</span>
             <div className="flex-grow">
               <p className="font-medium">{reference.title}</p>
@@ -117,12 +157,9 @@ const Reference: React.FC<ReferenceProps> = ({ references }) => {
                 <p className="text-sm text-gray-500">{reference.description}</p>
               )}
             </div>
-            <button
-              onClick={() => handleOpenLink(reference.url)}
-              className="ml-3 p-2 text-primary hover:bg-primary hover:text-white rounded-full transition-colors"
-            >
+            <div className="ml-3 p-2 text-primary hover:bg-primary hover:text-white rounded-full transition-colors">
               <span className="material-icons">open_in_new</span>
-            </button>
+            </div>
           </div>
         );
     }
@@ -132,7 +169,7 @@ const Reference: React.FC<ReferenceProps> = ({ references }) => {
     <div className="w-4/5 mx-auto rounded-lg border border-gray-200 p-5">
       <h3 className="font-semibold text-xl text-white mb-4">References</h3>
       <div className="grid grid-cols-3 gap-4">
-        {references.map((reference, index) => (
+        {references.map((reference: ReferenceItem, index: number) => (
           <div key={`${reference.url}-${index}`} className="border rounded-lg p-2">
             {renderReference(reference)}
           </div>
@@ -142,4 +179,4 @@ const Reference: React.FC<ReferenceProps> = ({ references }) => {
   );
 };
 
-export default Reference; 
+export default Reference;
