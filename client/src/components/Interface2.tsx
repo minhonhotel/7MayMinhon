@@ -134,28 +134,68 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             ref={conversationRef}
             className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto"
           >
-            {/* Display transcripts in chronological order */}
-            {transcripts.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()).map((item) => (
-              <div key={item.id} className="mb-2">
-                <div className="flex items-start mb-1">
-                  <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
-                    <span className="material-icons text-sm">
-                      {item.role === 'user' ? 'person' : 'support_agent'}
-                    </span>
-                  </div>
-                  <div className="flex-grow">
-                    <p className="text-xs mb-0.5 text-gray-400">
-                      {item.role === 'user' ? 'You' : `Assistant${item.isModelOutput ? ' (Real-time)' : ''}`}
-                    </p>
-                    <p className={`text-base font-normal ${
-                      item.role === 'user' ? 'text-blue-300' : 'text-yellow-100'
-                    }`}>
-                      {item.content}
-                    </p>
-                  </div>
+            {(() => {
+              // Sort transcripts by timestamp
+              const sortedTranscripts = transcripts.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+              
+              // Group consecutive assistant messages
+              const groupedMessages: Array<{
+                id: string;
+                role: 'user' | 'assistant';
+                messages: typeof transcripts;
+              }> = [];
+              
+              let currentGroup: typeof groupedMessages[0] | null = null;
+              
+              sortedTranscripts.forEach((item) => {
+                if (!currentGroup || currentGroup.role !== item.role) {
+                  // Start new group
+                  currentGroup = {
+                    id: item.id.toString(),
+                    role: item.role,
+                    messages: [item]
+                  };
+                  groupedMessages.push(currentGroup);
+                } else {
+                  // Add to existing group
+                  currentGroup.messages.push(item);
+                }
+              });
+              
+              return groupedMessages.map((group) => (
+                <div key={group.id} className="mb-2">
+                  {group.role === 'user' ? (
+                    // User messages - show each separately
+                    group.messages.map((item) => (
+                      <div key={item.id} className="flex items-start mb-1">
+                        <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
+                          <span className="material-icons text-sm">person</span>
+                        </div>
+                        <div className="flex-grow">
+                          <p className="text-xs mb-0.5 text-gray-400">You</p>
+                          <p className="text-base font-normal text-blue-300">{item.content}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    // Assistant messages - group together
+                    <div className="flex items-start">
+                      <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
+                        <span className="material-icons text-sm">support_agent</span>
+                      </div>
+                      <div className="flex-grow">
+                        <p className="text-xs mb-0.5 text-gray-400">Assistant</p>
+                        {group.messages.map((item) => (
+                          <p key={item.id} className="text-base font-normal text-yellow-100 mb-1 last:mb-0">
+                            {item.content}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              ));
+            })()}
           </div>
           {/* Reference container below (full width, auto height) */}
           <div className="w-full">
