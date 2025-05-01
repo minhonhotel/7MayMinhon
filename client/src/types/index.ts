@@ -1,9 +1,10 @@
 export interface Transcript {
   id: number;
   callId: string;
-  role: 'assistant' | 'user';
+  role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  isModelOutput?: boolean;
 }
 
 export interface CallSummary {

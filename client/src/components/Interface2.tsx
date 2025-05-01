@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useAssistant } from '@/context/AssistantContext';
 import Reference from './Reference';
+import SiriOrb from './SiriOrb';
 import { referenceService, ReferenceItem } from '@/services/ReferenceService';
 
 interface Interface2Props {
@@ -115,25 +116,11 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
       <div className="container mx-auto flex flex-row p-2 h-full gap-2">
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
         <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4">
-          {/* Siri orb style ring animation */}
-          <div className="relative w-[240px] h-[240px] mt-[10px] mb-4">
-            {/* Gradient border orb with siri-orb animation */}
-            <div className="absolute inset-0 rounded-full border-8 border-transparent border-t-blue-500 border-r-purple-500 border-b-pink-500 border-l-green-500 animate-siri-orb"></div>
-            {/* Center button */}
-            <button
-              id="inCallButton"
-              disabled
-              style={{ transform: `scale(${1 + micLevel * 0.1})` }}
-              className="relative w-full h-full bg-[#ffffff20] text-white rounded-full flex flex-col items-center justify-center text-sm"
-            >
-              <span className="text-4xl mb-2">●</span>
-              <span>Listening...</span>
-            </button>
-            {/* Time display centered at bottom of call indicator */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white">
-              <span className="text-lg font-bold">{formatDuration(localDuration)}</span>
-            </div>
-          </div>
+          {/* Replace old orb with new SiriOrb component */}
+          <SiriOrb 
+            micLevel={micLevel} 
+            duration={formatDuration(localDuration)}
+          />
           {/* Realtime conversation container spans full width */}
           <div
             id="realTimeConversation"

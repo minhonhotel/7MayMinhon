@@ -1,0 +1,117 @@
+/* Siri Orb Animation Styles */
+.siri-orb {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 65%, rgba(255,255,255,0) 100%);
+  box-shadow: 0 0 60px rgba(255,255,255,0.1);
+  animation: siri-pulse 2s ease-out infinite;
+}
+
+.siri-orb::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #0A84FF,
+    #30D158,
+    #FFD60A,
+    #FF375F,
+    #BF5AF2,
+    #0A84FF
+  );
+  animation: siri-rotate 4s linear infinite;
+  filter: blur(8px);
+  opacity: 0.8;
+}
+
+.siri-orb::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.siri-wave {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+  transform-origin: center;
+}
+
+.siri-wave-1 { animation: siri-wave 2s ease-out infinite; }
+.siri-wave-2 { animation: siri-wave 2s ease-out infinite 0.4s; }
+.siri-wave-3 { animation: siri-wave 2s ease-out infinite 0.8s; }
+
+.siri-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: white;
+  text-align: center;
+}
+
+@keyframes siri-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes siri-pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.1);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 30px rgba(255, 255, 255, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+@keyframes siri-wave {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.siri-listening-dot {
+  width: 12px;
+  height: 12px;
+  background-color: #fff;
+  border-radius: 50%;
+  margin-bottom: 8px;
+  animation: siri-dot-pulse 1s ease-in-out infinite;
+}
+
+@keyframes siri-dot-pulse {
+  0% { opacity: 0.4; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.siri-text {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+} 
