@@ -145,6 +145,8 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         // Message handler for transcripts and reports
         const handleMessage = async (message: any) => {
           console.log('Raw message received:', message);
+          console.log('Message type:', message.type);
+          console.log('Message role:', message.role);
           
           // Handle assistant's output
           if (
@@ -158,10 +160,26 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             
             // For model output
             if (message.type === 'model-output') {
-              console.log('Model output detected:', message.content);
-              if (message.content) {
-                console.log('Adding model output to conversation:', message.content);
-                addModelOutput(message.content);
+              console.log('Model output detected - Full message:', message);
+              console.log('Model output content:', message.content);
+              console.log('Model output text:', message.text);
+              console.log('Model output transcript:', message.transcript);
+              
+              // Try to get content from any available field
+              const outputContent = message.content || message.text || message.transcript;
+              if (outputContent) {
+                console.log('Adding model output to conversation:', outputContent);
+                addModelOutput(outputContent);
+                
+                // Also add as transcript to ensure it shows up in conversation
+                const newTranscript: Transcript = {
+                  id: Date.now() as unknown as number,
+                  callId: callDetails?.id || `call-${Date.now()}`,
+                  role: 'assistant',
+                  content: outputContent,
+                  timestamp: new Date()
+                };
+                setTranscripts(prev => [...prev, newTranscript]);
               }
             }
             
@@ -172,7 +190,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                 id: Date.now() as unknown as number,
                 callId: callDetails?.id || `call-${Date.now()}`,
                 role: 'assistant',
-                content: message.transcript,
+                content: message.content || message.transcript || '', // Try both content and transcript fields
                 timestamp: new Date()
               };
               setTranscripts(prev => [...prev, newTranscript]);
@@ -186,7 +204,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
               id: Date.now() as unknown as number,
               callId: callDetails?.id || `call-${Date.now()}`,
               role: 'user',
-              content: message.transcript,
+              content: message.content || message.transcript || '', // Also update user message handling
               timestamp: new Date()
             };
             setTranscripts(prev => [...prev, newTranscript]);
