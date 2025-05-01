@@ -117,7 +117,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
         <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4">
           {/* Replace old orb with new SiriCallButton */}
-          <div className="relative flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center w-[120px] h-[120px] mb-4">
             <SiriCallButton
               containerId="siri-button"
               isListening={!isMuted}
