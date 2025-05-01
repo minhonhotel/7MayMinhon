@@ -180,34 +180,19 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             } else {
               console.warn('Model output message received but no content found:', message);
             }
-            return; // Exit early after handling model output
           }
           
-          // For regular transcripts
-          if (message.type === 'transcript') {
-            console.log('Transcript message detected:', message);
-            
-            if (message.role === 'assistant') {
-              console.log('Adding assistant transcript:', message);
-              const newTranscript: Transcript = {
-                id: Date.now() as unknown as number,
-                callId: callDetails?.id || `call-${Date.now()}`,
-                role: 'assistant',
-                content: message.content || message.transcript || '', 
-                timestamp: new Date()
-              };
-              setTranscripts(prev => [...prev, newTranscript]);
-            } else if (message.role === 'user') {
-              console.log('Adding user transcript:', message);
-              const newTranscript: Transcript = {
-                id: Date.now() as unknown as number,
-                callId: callDetails?.id || `call-${Date.now()}`,
-                role: 'user',
-                content: message.content || message.transcript || '',
-                timestamp: new Date()
-              };
-              setTranscripts(prev => [...prev, newTranscript]);
-            }
+          // For user transcripts only - ignore assistant transcripts
+          if (message.type === 'transcript' && message.role === 'user') {
+            console.log('Adding user transcript:', message);
+            const newTranscript: Transcript = {
+              id: Date.now() as unknown as number,
+              callId: callDetails?.id || `call-${Date.now()}`,
+              role: 'user',
+              content: message.content || message.transcript || '',
+              timestamp: new Date()
+            };
+            setTranscripts(prev => [...prev, newTranscript]);
           }
         };
         
