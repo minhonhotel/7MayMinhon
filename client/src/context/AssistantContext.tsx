@@ -169,15 +169,15 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
               const outputContent = message.content || message.text || message.transcript;
               if (outputContent) {
                 console.log('Adding model output to conversation:', outputContent);
-                addModelOutput(outputContent);
                 
-                // Also add as transcript to ensure it shows up in conversation
+                // Add as transcript with isModelOutput flag
                 const newTranscript: Transcript = {
                   id: Date.now() as unknown as number,
                   callId: callDetails?.id || `call-${Date.now()}`,
                   role: 'assistant',
                   content: outputContent,
-                  timestamp: new Date()
+                  timestamp: new Date(),
+                  isModelOutput: true
                 };
                 setTranscripts(prev => [...prev, newTranscript]);
               }
@@ -190,7 +190,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                 id: Date.now() as unknown as number,
                 callId: callDetails?.id || `call-${Date.now()}`,
                 role: 'assistant',
-                content: message.content || message.transcript || '', // Try both content and transcript fields
+                content: message.content || message.transcript || '', 
                 timestamp: new Date()
               };
               setTranscripts(prev => [...prev, newTranscript]);
@@ -204,7 +204,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
               id: Date.now() as unknown as number,
               callId: callDetails?.id || `call-${Date.now()}`,
               role: 'user',
-              content: message.content || message.transcript || '', // Also update user message handling
+              content: message.content || message.transcript || '',
               timestamp: new Date()
             };
             setTranscripts(prev => [...prev, newTranscript]);

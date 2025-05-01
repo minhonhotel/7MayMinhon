@@ -134,14 +134,8 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             ref={conversationRef}
             className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto"
           >
-            {/* Display both transcripts and model outputs in chronological order */}
-            {[...transcripts, ...modelOutput.map((content, index) => ({
-              id: `model-${index}`,
-              role: 'assistant',
-              content,
-              timestamp: new Date(),
-              isModelOutput: true
-            }))].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()).map((item) => (
+            {/* Display transcripts in chronological order */}
+            {transcripts.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()).map((item) => (
               <div key={item.id} className="mb-2">
                 <div className="flex items-start mb-1">
                   <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
