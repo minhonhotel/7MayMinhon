@@ -169,6 +169,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
               setAccumulatedOutput(newAccumulatedOutput);
               
               // Check if we have a complete sentence (ends with ., !, ? or multiple line breaks)
+              // or if this is the final message (done flag)
               if (
                 outputContent.match(/[.!?]\s*$/) || // Ends with punctuation
                 outputContent.includes('\n\n') || // Contains multiple line breaks
@@ -184,49 +185,13 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                   isModelOutput: true
                 };
 
-                // Update or add transcript
-                setTranscripts(prev => {
-                  if (lastTranscriptId) {
-                    // Update existing transcript
-                    return prev.map(t => 
-                      t.id === lastTranscriptId 
-                        ? { ...t, content: newAccumulatedOutput.trim() }
-                        : t
-                    );
-                  } else {
-                    // Add new transcript
-                    return [...prev, newTranscript];
-                  }
-                });
+                // Add the complete sentence as a new transcript
+                setTranscripts(prev => [...prev, newTranscript]);
 
-                // Reset accumulated output and last transcript ID
+                // Reset accumulated output
                 setAccumulatedOutput('');
-                setLastTranscriptId(null);
-              } else {
-                // If we don't have a complete sentence yet, update the last transcript
-                if (!lastTranscriptId) {
-                  // Create new transcript for incomplete sentence
-                  const newTranscript: Transcript = {
-                    id: Date.now() as unknown as number,
-                    callId: callDetails?.id || `call-${Date.now()}`,
-                    role: 'assistant',
-                    content: newAccumulatedOutput.trim(),
-                    timestamp: new Date(),
-                    isModelOutput: true
-                  };
-                  setTranscripts(prev => [...prev, newTranscript]);
-                  setLastTranscriptId(newTranscript.id);
-                } else {
-                  // Update existing transcript
-                  setTranscripts(prev =>
-                    prev.map(t =>
-                      t.id === lastTranscriptId
-                        ? { ...t, content: newAccumulatedOutput.trim() }
-                        : t
-                    )
-                  );
-                }
               }
+              // If sentence is not complete, just keep accumulating without updating the UI
             } else {
               console.warn('Model output message received but no content found:', message);
             }
