@@ -174,20 +174,9 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
               // Accumulate the output
               const newAccumulatedOutput = accumulatedOutput + outputContent;
               setAccumulatedOutput(newAccumulatedOutput);
-              
-              // Function to check if text ends with sentence-ending punctuation
-              const isCompleteSentence = (text: string) => {
-                // Check for common sentence endings
-                const endsWithPunctuation = /[.!?。？！]\s*$/.test(text);
-                const endsWithNewlines = text.endsWith('\n\n');
-                return endsWithPunctuation || endsWithNewlines;
-              };
 
-              // Check if we have a complete sentence or if it's the final message
-              const shouldDisplayOutput = message.done || isCompleteSentence(newAccumulatedOutput);
-              
-              if (shouldDisplayOutput && newAccumulatedOutput.trim()) {
-                // Create new transcript with the complete sentence
+              // If we don't have a current transcript, create one
+              if (!lastTranscriptId) {
                 const newTranscript: Transcript = {
                   id: Date.now() as unknown as number,
                   callId: callDetails?.id || `call-${Date.now()}`,
@@ -196,11 +185,21 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                   timestamp: new Date(),
                   isModelOutput: true
                 };
-
-                // Add the transcript
                 setTranscripts(prev => [...prev, newTranscript]);
-                
-                // Reset accumulated output for next sentence
+                setLastTranscriptId(newTranscript.id);
+              } else {
+                // Update existing transcript with accumulated content
+                setTranscripts(prev =>
+                  prev.map(t =>
+                    t.id === lastTranscriptId
+                      ? { ...t, content: newAccumulatedOutput.trim() }
+                      : t
+                  )
+                );
+              }
+
+              // If this is the final message, reset for next output
+              if (message.done) {
                 setAccumulatedOutput('');
                 setLastTranscriptId(null);
               }
