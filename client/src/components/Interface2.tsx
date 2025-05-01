@@ -147,7 +147,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                     <p className="text-xs mb-0.5 text-gray-400">
                       {item.role === 'user' ? 'You' : `Assistant${item.isModelOutput ? ' (Real-time)' : ''}`}
                     </p>
-                    <p className={`text-base font-normal ${
+                    <p className={`text-base font-normal whitespace-pre-line ${
                       item.role === 'user' ? 'text-blue-300' : 'text-yellow-100'
                     }`}>
                       {item.content}

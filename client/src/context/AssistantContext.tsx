@@ -168,30 +168,40 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
               const newAccumulatedOutput = accumulatedOutput + outputContent;
               setAccumulatedOutput(newAccumulatedOutput);
               
-              // Check if we have a complete sentence (ends with ., !, ? or multiple line breaks)
-              // or if this is the final message (done flag)
+              // Function to clean and format sentences
+              const formatSentences = (text: string) => {
+                return text
+                  .split(/(?<=[.!?])\s+/) // Split on sentence endings
+                  .filter(sentence => sentence.trim().length > 0) // Remove empty sentences
+                  .map(sentence => sentence.trim()) // Clean up whitespace
+                  .join('\n'); // Join with newlines
+              };
+              
+              // Check if we have complete sentences or if this is the final message
               if (
                 outputContent.match(/[.!?]\s*$/) || // Ends with punctuation
-                outputContent.includes('\n\n') || // Contains multiple line breaks
                 message.done // Message indicates it's complete
               ) {
-                // Create new transcript with accumulated output
+                // Format the accumulated output into clean sentences
+                const formattedContent = formatSentences(newAccumulatedOutput);
+                
+                // Create new transcript with formatted content
                 const newTranscript: Transcript = {
                   id: Date.now() as unknown as number,
                   callId: callDetails?.id || `call-${Date.now()}`,
                   role: 'assistant',
-                  content: newAccumulatedOutput.trim(),
+                  content: formattedContent,
                   timestamp: new Date(),
                   isModelOutput: true
                 };
 
-                // Add the complete sentence as a new transcript
+                // Add the complete sentences as a new transcript
                 setTranscripts(prev => [...prev, newTranscript]);
 
                 // Reset accumulated output
                 setAccumulatedOutput('');
               }
-              // If sentence is not complete, just keep accumulating without updating the UI
+              // If no complete sentence yet, just keep accumulating
             } else {
               console.warn('Model output message received but no content found:', message);
             }
