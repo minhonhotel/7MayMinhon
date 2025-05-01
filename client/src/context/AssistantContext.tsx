@@ -181,51 +181,15 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                   role: 'assistant',
                   content: newAccumulatedOutput.trim(),
                   timestamp: new Date(),
-                  isModelOutput: true
+                  isModelOutput: true,
+                  isComplete: true
                 };
 
-                // Update or add transcript
-                setTranscripts(prev => {
-                  if (lastTranscriptId) {
-                    // Update existing transcript
-                    return prev.map(t => 
-                      t.id === lastTranscriptId 
-                        ? { ...t, content: newAccumulatedOutput.trim() }
-                        : t
-                    );
-                  } else {
-                    // Add new transcript
-                    return [...prev, newTranscript];
-                  }
-                });
+                // Add new transcript
+                setTranscripts(prev => [...prev, newTranscript]);
 
-                // Reset accumulated output and last transcript ID
+                // Reset accumulated output
                 setAccumulatedOutput('');
-                setLastTranscriptId(null);
-              } else {
-                // If we don't have a complete sentence yet, update the last transcript
-                if (!lastTranscriptId) {
-                  // Create new transcript for incomplete sentence
-                  const newTranscript: Transcript = {
-                    id: Date.now() as unknown as number,
-                    callId: callDetails?.id || `call-${Date.now()}`,
-                    role: 'assistant',
-                    content: newAccumulatedOutput.trim(),
-                    timestamp: new Date(),
-                    isModelOutput: true
-                  };
-                  setTranscripts(prev => [...prev, newTranscript]);
-                  setLastTranscriptId(newTranscript.id);
-                } else {
-                  // Update existing transcript
-                  setTranscripts(prev =>
-                    prev.map(t =>
-                      t.id === lastTranscriptId
-                        ? { ...t, content: newAccumulatedOutput.trim() }
-                        : t
-                    )
-                  );
-                }
               }
             } else {
               console.warn('Model output message received but no content found:', message);

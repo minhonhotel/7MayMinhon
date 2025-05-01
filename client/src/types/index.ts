@@ -5,6 +5,7 @@ export interface Transcript {
   content: string;
   timestamp: Date;
   isModelOutput?: boolean;
+  isComplete?: boolean;
 }
 
 export interface CallSummary {

@@ -136,9 +136,11 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           >
             {(() => {
               // Sort transcripts by timestamp
-              const sortedTranscripts = transcripts.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+              const sortedTranscripts = transcripts
+                .filter(t => t.role === 'user' || t.isComplete) // Only show complete assistant messages
+                .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
               
-              // Group consecutive assistant messages
+              // Group consecutive messages
               const groupedMessages: Array<{
                 id: string;
                 role: 'user' | 'assistant';
@@ -178,7 +180,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                       </div>
                     ))
                   ) : (
-                    // Assistant messages - show each separately like user messages
+                    // Assistant messages - show each separately
                     group.messages.map((item) => (
                       <div key={item.id} className="flex items-start mb-2 last:mb-0">
                         <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
@@ -186,7 +188,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                         </div>
                         <div className="flex-grow">
                           <p className="text-xs mb-0.5 text-gray-400">Assistant</p>
-                          <p className="text-base font-normal text-yellow-100">{item.content}</p>
+                          <p className="text-base font-normal text-yellow-100 whitespace-nowrap overflow-x-auto">{item.content}</p>
                         </div>
                       </div>
                     ))
