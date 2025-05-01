@@ -551,8 +551,12 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
                 <button className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs" onClick={() => setCurrentInterface('interface1')}>
                   <span className="material-icons text-sm mr-1">cancel</span>Cancel
                 </button>
-                <button id="confirmOrderButton" className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs" onClick={handleConfirmOrder}>
-                  <span className="material-icons text-sm mr-1">check_circle</span>Confirm
+                <button
+                  onClick={handleConfirmOrder}
+                  className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition-colors"
+                >
+                  <span className="material-icons">send</span>
+                  <span>Press Here to Send Your Request To Receptionist</span>
                 </button>
               </div>
             </div>
