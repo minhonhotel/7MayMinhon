@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Transcript, OrderSummary, CallDetails, Order, InterfaceLayer, CallSummary, ServiceRequest, ActiveOrder } from '@/types';
-import { initVapi, vapiInstance, FORCE_BASIC_SUMMARY } from '@/lib/vapiClient';
+import { initVapi, getVapiInstance, FORCE_BASIC_SUMMARY } from '@/lib/vapiClient';
 import { apiRequest } from '@/lib/queryClient';
 import { parseSummaryToOrderDetails } from '@/lib/summaryParser';
 
@@ -130,11 +130,12 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const setupVapi = async () => {
       try {
-        const vapi = await initVapi();
-        if (!vapi) {
-          console.error('Failed to initialize Vapi');
-          return;
+        const publicKey = import.meta.env.VITE_VAPI_PUBLIC_KEY;
+        if (!publicKey) {
+          throw new Error('Vapi public key is not configured');
         }
+        
+        const vapi = await initVapi(publicKey);
 
         // Setup event listeners after successful initialization
         vapi.on('volume-level', (level: number) => {
@@ -201,8 +202,9 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     setupVapi();
     
     return () => {
-      if (vapiInstance) {
-        vapiInstance.stop();
+      const vapi = getVapiInstance();
+      if (vapi) {
+        vapi.stop();
       }
     };
   }, []);
@@ -245,52 +247,37 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
   // Toggle mute state
   const toggleMute = () => {
-    if (vapiInstance) {
-      vapiInstance.setMuted(!isMuted);
+    const vapi = getVapiInstance();
+    if (vapi) {
+      vapi.setMuted(!isMuted);
       setIsMuted(!isMuted);
     }
   };
 
   // Start call function
   const startCall = async () => {
-    // Record request received time
-    setRequestReceivedAt(new Date());
-    
-    if (!vapiInstance) {
+    const vapi = getVapiInstance();
+    if (!vapi) {
       console.error("Vapi instance is not initialized");
       return;
     }
 
+    setRequestReceivedAt(new Date());
+
     try {
-      console.log("Starting call with Vapi...");
+      // Use the assistant ID directly instead of configuration object
       const assistantId = import.meta.env.VITE_VAPI_ASSISTANT_ID;
-      
-      // Configure the assistant
-      const assistantConfig = {
-        id: assistantId || 'demo',
-        debug: true,
-        name: "Minhon Hotel Assistant",
-        model: "gpt-4",
-        systemPrompt: "You are a helpful hotel assistant for Minhon Hotel."
-      };
-      
-      console.log("Using assistant config:", assistantConfig);
-      
-      // Start the call with proper error handling
-      let call;
-      try {
-        // Pass the assistant configuration instead of just the ID
-        call = await vapiInstance.start(assistantConfig);
-        console.log("Call started successfully:", call);
-      } catch (startError) {
-        console.error("Failed to start call:", startError);
-        throw new Error("Failed to start call");
+      if (!assistantId) {
+        throw new Error('Assistant ID is not configured');
       }
-      
+
+      const call = await vapi.start(assistantId);
       if (!call) {
-        throw new Error("Failed to start call: call object is null");
+        throw new Error('Failed to start call: call object is null');
       }
       
+      console.log("Call started successfully:", call);
+
       // Reset email sent flag for new call
       setEmailSentForCurrentSession(false);
       
@@ -309,19 +296,25 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       // Change interface to call in progress
       setCurrentInterface('interface2');
       
+      // Start call duration timer
+      const timer = setInterval(() => {
+        setCallDuration(prev => prev + 1);
+      }, 1000);
+      setCallTimer(timer);
+
       // Reset call duration
       setCallDuration(0);
-      
+
     } catch (error) {
-      console.error("Error in startCall:", error);
-      // You might want to show an error message to the user here
+      console.error("Error starting call:", error);
     }
   };
 
   // End call function
   const endCall = () => {
-    if (vapiInstance) {
-      vapiInstance.stop();
+    const vapi = getVapiInstance();
+    if (vapi) {
+      vapi.stop();
     }
     
     // Stop the timer
