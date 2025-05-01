@@ -146,11 +146,13 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
         // Message handler for transcripts and reports
         const handleMessage = async (message: any) => {
-          console.log('Raw message received:', message);
+          console.log('=== Message Handler Started ===');
+          console.log('Raw message:', message);
+          console.log('Message type:', message.type);
           
           // For model output - handle this first
           if (message.type === 'model-output') {
-            console.log('Model output detected:', message);
+            console.log('=== Processing Model Output ===');
             
             // Get the content from the message
             let outputContent = '';
@@ -167,42 +169,51 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             }
             
             if (outputContent) {
+              console.log('=== Content Processing ===');
+              console.log('Current accumulated:', accumulatedOutput);
+              console.log('New content:', outputContent);
+              
               // Accumulate the output
               const newAccumulatedOutput = accumulatedOutput + outputContent;
-              console.log('Accumulated content:', newAccumulatedOutput);
+              console.log('Total accumulated:', newAccumulatedOutput);
 
               // Function to check for sentence endings
-              const hasSentenceEnding = (text: string): boolean => {
+              const hasCompleteSentence = (text: string): boolean => {
                 // Check for various sentence endings including Vietnamese
-                return /[.!?。？！]\s*$/.test(text) || // Basic punctuation
-                       /[:]\s*$/.test(text) || // Colon for dialogues
-                       /\n\n/.test(text); // Double newline
+                const endings = /[.!?。？！]\s*$/;
+                const doubleNewline = /\n\n/;
+                const dialogueEnd = /[:]\s*$/;
+                return endings.test(text) || doubleNewline.test(text) || dialogueEnd.test(text);
               };
 
               // Function to extract complete sentences
-              const extractSentences = (text: string): { 
-                complete: string[],
-                remaining: string 
+              const extractSentences = (text: string): {
+                completeSentences: string[];
+                remaining: string;
               } => {
-                const sentences = text.split(/(?<=[.!?。？！])\s+/);
-                if (sentences.length > 1) {
-                  const completeSentences = sentences.slice(0, -1);
+                // Split by sentence endings but keep the endings
+                const parts = text.split(/(?<=[.!?。？！])\s+/);
+                if (parts.length > 1) {
+                  // All but the last part are complete sentences
                   return {
-                    complete: completeSentences,
-                    remaining: sentences[sentences.length - 1]
+                    completeSentences: parts.slice(0, -1),
+                    remaining: parts[parts.length - 1]
                   };
                 }
                 return {
-                  complete: [],
+                  completeSentences: [],
                   remaining: text
                 };
               };
 
-              // Check if we have complete sentences or if the message is done
-              if (hasSentenceEnding(newAccumulatedOutput) || message.done) {
-                // If message is done, treat all accumulated content as complete
+              // Check if we have complete sentences
+              if (hasCompleteSentence(newAccumulatedOutput) || message.done) {
+                console.log('Complete sentence detected or message done');
+                
                 if (message.done) {
+                  // If message is done, display all remaining content
                   if (newAccumulatedOutput.trim()) {
+                    console.log('Creating transcript for final content:', newAccumulatedOutput);
                     const newTranscript: Transcript = {
                       id: Date.now() as unknown as number,
                       callId: callDetails?.id || `call-${Date.now()}`,
@@ -214,14 +225,16 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                     setTranscripts(prev => [...prev, newTranscript]);
                   }
                   setAccumulatedOutput('');
-                  setLastTranscriptId(null);
                 } else {
-                  // Extract complete sentences
-                  const { complete, remaining } = extractSentences(newAccumulatedOutput);
-                  
-                  // Add each complete sentence as a separate transcript
-                  complete.forEach(sentence => {
+                  // Extract and display complete sentences
+                  const { completeSentences, remaining } = extractSentences(newAccumulatedOutput);
+                  console.log('Complete sentences:', completeSentences);
+                  console.log('Remaining content:', remaining);
+
+                  // Add each complete sentence as a transcript
+                  completeSentences.forEach(sentence => {
                     if (sentence.trim()) {
+                      console.log('Creating transcript for sentence:', sentence);
                       const newTranscript: Transcript = {
                         id: Date.now() as unknown as number,
                         callId: callDetails?.id || `call-${Date.now()}`,
@@ -239,6 +252,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                 }
               } else {
                 // Keep accumulating if no complete sentence yet
+                console.log('No complete sentence yet, continuing to accumulate');
                 setAccumulatedOutput(newAccumulatedOutput);
               }
             }
@@ -246,7 +260,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           
           // For user transcripts only
           if (message.type === 'transcript' && message.role === 'user') {
-            console.log('Adding user transcript:', message);
+            console.log('=== Processing User Transcript ===');
             const newTranscript: Transcript = {
               id: Date.now() as unknown as number,
               callId: callDetails?.id || `call-${Date.now()}`,
