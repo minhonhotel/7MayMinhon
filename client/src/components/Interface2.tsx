@@ -3,10 +3,14 @@ import { useAssistant } from '@/context/AssistantContext';
 import Reference from './Reference';
 import SiriCallButton from './SiriCallButton';
 import { referenceService, ReferenceItem } from '@/services/ReferenceService';
+import { Transcript } from '@/types';
 
 interface Interface2Props {
   isActive: boolean;
 }
+
+// Define sentence end markers
+const sentenceEndMarkers = ['.', '!', '?', '。', '！', '?', ' ', '\n\n'];
 
 const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   const { 
@@ -18,12 +22,14 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     toggleMute,
     setCurrentInterface,
     micLevel,
-    modelOutput
+    modelOutput,
+    addModelOutput
   } = useAssistant();
   
   // Add state for references and temporary buffer
   const [references, setReferences] = useState<ReferenceItem[]>([]);
   const [temporaryBuffer, setTemporaryBuffer] = useState('');
+  const [fullBuffer, setFullBuffer] = useState('');
   
   // Initialize reference service
   useEffect(() => {
@@ -50,9 +56,45 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   useEffect(() => {
     if (modelOutput && modelOutput.length > 0) {
       const latestOutput = modelOutput[modelOutput.length - 1];
-      setTemporaryBuffer(prev => prev + latestOutput);
+      console.log('Latest model output:', latestOutput);
+      setTemporaryBuffer(prev => {
+        const newBuffer = prev + latestOutput;
+        console.log('New temporary buffer:', newBuffer);
+        return newBuffer;
+      });
     }
   }, [modelOutput]);
+
+  // Process complete sentences
+  useEffect(() => {
+    if (!temporaryBuffer) return;
+
+    console.log('Processing temporary buffer:', temporaryBuffer);
+    let lastSentenceEndIndex = -1;
+    
+    for (const marker of sentenceEndMarkers) {
+      const index = temporaryBuffer.lastIndexOf(marker);
+      if (index > lastSentenceEndIndex) {
+        lastSentenceEndIndex = index;
+      }
+    }
+
+    if (lastSentenceEndIndex !== -1) {
+      const completeSentence = temporaryBuffer.substring(0, lastSentenceEndIndex + 1);
+      console.log('Found complete sentence:', completeSentence);
+      
+      setFullBuffer(prev => {
+        const newBuffer = prev + completeSentence;
+        console.log('Updated full buffer:', newBuffer);
+        return newBuffer;
+      });
+
+      addModelOutput(completeSentence);
+      
+      // Clear processed content from temporary buffer
+      setTemporaryBuffer(temporaryBuffer.substring(lastSentenceEndIndex + 1));
+    }
+  }, [temporaryBuffer]);
   
   // Wrapper for endCall to include local duration if needed
   const endCall = () => {
@@ -114,21 +156,6 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   useEffect(() => {
     console.log("Tất cả container có thể:", document.querySelectorAll('*[class*="conversation"]'));
   }, []);
-  
-  // Kiểm tra câu hoàn chỉnh
-  let lastSentenceEndIndex = -1;
-  for (const marker of sentenceEndMarkers) {
-    const index = temporaryBuffer.lastIndexOf(marker);
-    if (index > lastSentenceEndIndex) {
-      lastSentenceEndIndex = index;
-    }
-  }
-  
-  if (lastSentenceEndIndex !== -1) {
-    const completeSentence = temporaryBuffer.substring(0, lastSentenceEndIndex + 1);
-    fullBuffer += completeSentence;
-    // Cập nhật transcript với văn bản hoàn chỉnh
-  }
   
   return (
     <div 
