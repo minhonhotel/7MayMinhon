@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useAssistant } from '@/context/AssistantContext';
 import Reference from './Reference';
-import SiriOrb from './SiriOrb';
+import SiriCallButton from './SiriCallButton';
 import { referenceService, ReferenceItem } from '@/services/ReferenceService';
 
 interface Interface2Props {
@@ -95,10 +95,10 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     };
   }, [isActive, callDuration]);
   
-  // Scroll to top of conversation when new messages arrive
+  // Scroll to bottom of conversation when new messages arrive
   useEffect(() => {
     if (conversationRef.current && isActive) {
-      conversationRef.current.scrollTop = 0;
+      conversationRef.current.scrollTop = conversationRef.current.scrollHeight;
     }
   }, [transcripts, isActive]);
   
@@ -116,11 +116,18 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
       <div className="container mx-auto flex flex-row p-2 h-full gap-2">
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
         <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4">
-          {/* Replace old orb with new SiriOrb component */}
-          <SiriOrb 
-            micLevel={micLevel} 
-            duration={formatDuration(localDuration)}
-          />
+          {/* Replace old orb with new SiriCallButton */}
+          <div className="relative flex items-center justify-center">
+            <SiriCallButton
+              containerId="siri-button"
+              isListening={!isMuted}
+              volumeLevel={micLevel}
+            />
+            <div className="absolute bottom-[-30px] text-white text-sm">
+              {formatDuration(localDuration)}
+            </div>
+          </div>
+          
           {/* Realtime conversation container spans full width */}
           <div
             id="realTimeConversation"
@@ -134,7 +141,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               content,
               timestamp: new Date(),
               isModelOutput: true
-            }))].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).map((item) => (
+            }))].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()).map((item) => (
               <div key={item.id} className="mb-2">
                 <div className="flex items-start mb-1">
                   <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
