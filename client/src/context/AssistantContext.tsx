@@ -135,9 +135,12 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
     console.log('Processing raw message:', message);
     
+    // Only process model-output for assistant's responses
     if (message.type === 'model-output') {
+      console.log('Processing model output from VAPI:', message);
       const outputContent = message.content || message.text || message.transcript || message.output;
       if (outputContent) {
+        console.log('Adding VAPI model output as assistant response:', outputContent);
         const newTranscript: Transcript = {
           id: Date.now() as unknown as number,
           callId: callDetails?.id || `call-${Date.now()}`,
@@ -147,8 +150,12 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           isModelOutput: true
         };
         setTranscripts(prev => [...prev, newTranscript]);
+      } else {
+        console.warn('Model output received from VAPI but no content found:', message);
       }
-    } else if (message.type === 'transcript' && message.role === 'user') {
+    } 
+    // For user transcripts
+    else if (message.type === 'transcript' && message.role === 'user') {
       const newTranscript: Transcript = {
         id: Date.now() as unknown as number,
         callId: callDetails?.id || `call-${Date.now()}`,
@@ -185,7 +192,14 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
         // Message handler for transcripts and reports
         const handleMessage = async (message: any) => {
-          console.log('Raw message received:', message);
+          console.log('Message received from VAPI:', {
+            type: message.type,
+            role: message.role,
+            content: message.content,
+            text: message.text,
+            transcript: message.transcript,
+            output: message.output
+          });
           
           // Generate a unique ID for the message
           const messageId = `${message.type}-${Date.now()}`;
