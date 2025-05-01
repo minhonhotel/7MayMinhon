@@ -100,8 +100,6 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
   });
   const [micLevel, setMicLevel] = useState<number>(0);
   const [modelOutput, setModelOutput] = useState<string[]>([]);
-  const [rawMessages, setRawMessages] = useState<{[key: string]: any}>({});
-  const [isProcessingMessage, setIsProcessingMessage] = useState(false);
 
   // Persist activeOrders to localStorage whenever it changes
   useEffect(() => {
@@ -128,52 +126,6 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     setTranscripts(prev => [...prev, newTranscript]);
   }, []);
 
-  // Process raw message into transcript when complete
-  const processRawMessage = React.useCallback((messageId: string) => {
-    const message = rawMessages[messageId];
-    if (!message) return;
-
-    console.log('Processing raw message:', message);
-    
-    // Only process model-output for assistant's responses
-    if (message.type === 'model-output') {
-      console.log('Processing model output from VAPI:', message);
-      const outputContent = message.content || message.text || message.transcript || message.output;
-      if (outputContent) {
-        console.log('Adding VAPI model output as assistant response:', outputContent);
-        const newTranscript: Transcript = {
-          id: Date.now() as unknown as number,
-          callId: callDetails?.id || `call-${Date.now()}`,
-          role: 'assistant',
-          content: outputContent,
-          timestamp: new Date(),
-          isModelOutput: true
-        };
-        setTranscripts(prev => [...prev, newTranscript]);
-      } else {
-        console.warn('Model output received from VAPI but no content found:', message);
-      }
-    } 
-    // For user transcripts
-    else if (message.type === 'transcript' && message.role === 'user') {
-      const newTranscript: Transcript = {
-        id: Date.now() as unknown as number,
-        callId: callDetails?.id || `call-${Date.now()}`,
-        role: 'user',
-        content: message.content || message.transcript || '',
-        timestamp: new Date()
-      };
-      setTranscripts(prev => [...prev, newTranscript]);
-    }
-
-    // Remove processed message from raw messages
-    setRawMessages(prev => {
-      const updated = { ...prev };
-      delete updated[messageId];
-      return updated;
-    });
-  }, [callDetails, rawMessages]);
-
   // Initialize Vapi when component mounts
   useEffect(() => {
     const setupVapi = async () => {
@@ -192,32 +144,71 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
         // Message handler for transcripts and reports
         const handleMessage = async (message: any) => {
-          console.log('Message received from VAPI:', {
-            type: message.type,
-            role: message.role,
+          console.log('Raw message received:', message);
+          console.log('Message type:', message.type);
+          console.log('Message role:', message.role);
+          console.log('Message content structure:', {
             content: message.content,
             text: message.text,
-            transcript: message.transcript,
-            output: message.output
+            transcript: message.transcript
           });
           
-          // Generate a unique ID for the message
-          const messageId = `${message.type}-${Date.now()}`;
+          // For model output - handle this first
+          if (message.type === 'model-output') {
+            console.log('Model output detected - Full message:', message);
+            
+            // Try to get content from any available field
+            const outputContent = message.content || message.text || message.transcript || message.output;
+            if (outputContent) {
+              console.log('Adding model output to conversation:', outputContent);
+              
+              // Add as transcript with isModelOutput flag
+              const newTranscript: Transcript = {
+                id: Date.now() as unknown as number,
+                callId: callDetails?.id || `call-${Date.now()}`,
+                role: 'assistant',
+                content: outputContent,
+                timestamp: new Date(),
+                isModelOutput: true
+              };
+              console.log('Adding new transcript for model output:', newTranscript);
+              setTranscripts(prev => {
+                const updated = [...prev, newTranscript];
+                console.log('Updated transcripts array:', updated);
+                return updated;
+              });
+            } else {
+              console.warn('Model output message received but no content found:', message);
+            }
+            return; // Exit early after handling model output
+          }
           
-          // Store raw message
-          setRawMessages(prev => ({
-            ...prev,
-            [messageId]: message
-          }));
-
-          // Set processing flag
-          setIsProcessingMessage(true);
-
-          // Process message after a short delay to allow for any additional data
-          setTimeout(() => {
-            processRawMessage(messageId);
-            setIsProcessingMessage(false);
-          }, 100); // Small delay to ensure message is complete
+          // For regular transcripts
+          if (message.type === 'transcript') {
+            console.log('Transcript message detected:', message);
+            
+            if (message.role === 'assistant') {
+              console.log('Adding assistant transcript:', message);
+              const newTranscript: Transcript = {
+                id: Date.now() as unknown as number,
+                callId: callDetails?.id || `call-${Date.now()}`,
+                role: 'assistant',
+                content: message.content || message.transcript || '', 
+                timestamp: new Date()
+              };
+              setTranscripts(prev => [...prev, newTranscript]);
+            } else if (message.role === 'user') {
+              console.log('Adding user transcript:', message);
+              const newTranscript: Transcript = {
+                id: Date.now() as unknown as number,
+                callId: callDetails?.id || `call-${Date.now()}`,
+                role: 'user',
+                content: message.content || message.transcript || '',
+                timestamp: new Date()
+              };
+              setTranscripts(prev => [...prev, newTranscript]);
+            }
+          }
         };
         
         vapi.on('message', handleMessage);
@@ -234,7 +225,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         vapi.stop();
       }
     };
-  }, [processRawMessage]);
+  }, []);
 
   useEffect(() => {
     if (currentInterface === 'interface2') {
