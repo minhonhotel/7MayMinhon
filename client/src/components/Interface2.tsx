@@ -56,9 +56,28 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   useEffect(() => {
     if (modelOutput && modelOutput.length > 0) {
       const latestOutput = modelOutput[modelOutput.length - 1];
-      console.log('Latest model output:', latestOutput);
+      
+      // Skip if output contains typing indicator or support_agent text
+      if (latestOutput.includes('(Typing...)') || latestOutput.includes('support_agent')) {
+        return;
+      }
+      
+      console.log('Processing new model output:', latestOutput);
+      
+      // Clean the output before adding to buffer
+      const cleanedOutput = latestOutput
+        .replace(/ntAssistant/g, '')
+        .replace(/\(Typing\.\.\.\)/g, '')
+        .replace(/support_agent/g, '')
+        .replace(/Assistant/g, '')
+        .trim();
+        
+      if (!cleanedOutput) {
+        return;
+      }
+      
       setTemporaryBuffer(prev => {
-        const newBuffer = prev + latestOutput;
+        const newBuffer = prev + cleanedOutput;
         console.log('New temporary buffer:', newBuffer);
         return newBuffer;
       });
@@ -80,11 +99,18 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     }
 
     if (lastSentenceEndIndex !== -1) {
-      const completeSentence = temporaryBuffer.substring(0, lastSentenceEndIndex + 1);
+      const completeSentence = temporaryBuffer.substring(0, lastSentenceEndIndex + 1).trim();
+      
+      // Skip if sentence is just "you" repeated
+      if (completeSentence.split(' ').every(word => word === 'you')) {
+        setTemporaryBuffer('');
+        return;
+      }
+      
       console.log('Found complete sentence:', completeSentence);
       
       setFullBuffer(prev => {
-        const newBuffer = prev + completeSentence;
+        const newBuffer = prev + completeSentence + ' ';
         console.log('Updated full buffer:', newBuffer);
         return newBuffer;
       });
@@ -92,7 +118,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
       addModelOutput(completeSentence);
       
       // Clear processed content from temporary buffer
-      setTemporaryBuffer(temporaryBuffer.substring(lastSentenceEndIndex + 1));
+      setTemporaryBuffer(temporaryBuffer.substring(lastSentenceEndIndex + 1).trim());
     }
   }, [temporaryBuffer]);
   
