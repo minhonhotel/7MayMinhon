@@ -134,27 +134,41 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             ref={conversationRef}
             className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto"
           >
-            {/* Display only user messages and real-time assistant outputs */}
+            {/* Display user messages */}
             {transcripts
-              .filter(item => item.role === 'user' || item.isModelOutput)
+              .filter(item => item.role === 'user')
               .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
               .map((item) => (
                 <div key={item.id} className="mb-2">
                   <div className="flex items-start mb-1">
                     <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
                       <span className="material-icons text-base">
-                        {item.role === 'user' ? 'person' : 'support_agent'}
+                        person
                       </span>
                     </div>
                     <div className="flex-grow">
-                      <p className="text-sm mb-1 text-yellow-400">
-                        {item.role === 'user' ? 'You' : 'Assistant (Real-time)'}
-                      </p>
-                      <p className="text-xl font-semibold text-yellow-200">{item.content}</p>
+                      <p className="text-xl text-white">{item.content}</p>
                     </div>
                   </div>
                 </div>
               ))}
+
+            {/* Display assistant real-time outputs inline */}
+            <div className="flex flex-wrap gap-2 mb-2">
+              {transcripts
+                .filter(item => item.isModelOutput)
+                .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+                .map((item) => (
+                  <div key={item.id} className="flex items-center">
+                    <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
+                      <span className="material-icons text-base">
+                        support_agent
+                      </span>
+                    </div>
+                    <p className="text-xl text-yellow-200">{item.content}</p>
+                  </div>
+                ))}
+            </div>
           </div>
           {/* Reference container below (full width, auto height) */}
           <div className="w-full">
