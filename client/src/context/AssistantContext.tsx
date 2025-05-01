@@ -232,6 +232,31 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
   const handleMessage = async (message: any) => {
     console.log('=== Message Handler Started ===');
     console.log('Raw message:', message);
+
+    // Helper function to clean system messages
+    const cleanSystemMessage = (content: string): string => {
+      if (!content) return '';
+
+      // Skip if it's just system indicators
+      if (content.includes('(Typing...)') || 
+          content.includes('support_agent') ||
+          content.includes('_agent') ||
+          content.includes('GoodNhonHotelvoiceassistant') ||
+          content.includes('(Real-time)person')) {
+        return '';
+      }
+
+      return content
+        .replace(/\(Typing\.\.\.\).*?support_agentAssistant/g, '')
+        .replace(/GoodNhonHotelvoiceassistant.*?Mion/g, '')
+        .replace(/support_agentAssistant\s*\(Real-time\)person.*?How are you doing\??/g, '')
+        .replace(/\(Typing\.\.\.\)/g, '')
+        .replace(/support_agent/g, '')
+        .replace(/_agent/g, '')
+        .replace(/YouHi\./g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    };
     
     // For model output - handle this first
     if (message.type === 'model-output') {
@@ -256,10 +281,17 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      console.log('Model output content:', outputContent);
+      // Clean the output
+      const cleanedOutput = cleanSystemMessage(outputContent);
+      if (!cleanedOutput) {
+        console.log('Skipping system message or empty output');
+        return;
+      }
+
+      console.log('Cleaned model output:', cleanedOutput);
 
       // Add to model output array
-      setModelOutput(prev => [...prev, outputContent]);
+      setModelOutput(prev => [...prev, cleanedOutput]);
 
       // Update or create transcript for assistant
       setTranscripts(prev => {
@@ -271,7 +303,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           const updated = [...prev];
           updated[existingIndex] = {
             ...updated[existingIndex],
-            content: updated[existingIndex].content + outputContent
+            content: updated[existingIndex].content + cleanedOutput
           };
           return updated;
         } else {
@@ -280,7 +312,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             id: Date.now(),
             callId: callDetails?.id || `call-${Date.now()}`,
             role: 'assistant',
-            content: outputContent,
+            content: cleanedOutput,
             timestamp: new Date(),
             isModelOutput: true
           };
