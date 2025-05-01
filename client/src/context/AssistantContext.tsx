@@ -170,68 +170,38 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             }
 
             if (!outputContent) {
-              console.warn("Nhận được event model-output không hợp lệ", message);
+              console.warn("Received invalid model output event", message);
               return;
             }
 
-            // Add new output to pending buffer
-            const newPendingBuffer = pendingBuffer + outputContent;
-            console.log('Buffer hiện tại:', newPendingBuffer);
+            console.log('Model output content:', outputContent);
 
-            // Find the last sentence end position
-            let lastSentenceEndIndex = -1;
-            const sentenceEndMarkers = ['.', '!', '?', '。', '？', '！'];
-            
-            for (const marker of sentenceEndMarkers) {
-              const index = newPendingBuffer.lastIndexOf(marker);
-              if (index > lastSentenceEndIndex) {
-                lastSentenceEndIndex = index;
-              }
-            }
-
-            // If we found a sentence end or message is done
-            if (lastSentenceEndIndex !== -1 || message.done) {
-              // Get the complete sentence
-              const completeSentence = lastSentenceEndIndex !== -1 
-                ? newPendingBuffer.substring(0, lastSentenceEndIndex + 1)
-                : newPendingBuffer;
-
-              // Update complete text
-              const newCompleteText = completeText + completeSentence;
-              setCompleteText(newCompleteText);
-
-              // Create new transcript with the complete text
-              const newTranscript: Transcript = {
-                id: Date.now() as unknown as number,
-                callId: callDetails?.id || `call-${Date.now()}`,
-                role: 'assistant',
-                content: newCompleteText,
-                timestamp: new Date(),
-                isModelOutput: true
-              };
-
-              // Update transcripts
-              setTranscripts(prev => {
-                // Remove previous assistant transcript if exists
-                const filtered = prev.filter(t => !(t.role === 'assistant' && t.isModelOutput));
-                return [...filtered, newTranscript];
-              });
-
-              // Keep remaining text for next iteration
-              if (lastSentenceEndIndex !== -1) {
-                const remaining = newPendingBuffer.substring(lastSentenceEndIndex + 1);
-                console.log('Remaining for next iteration:', remaining);
-                setPendingBuffer(remaining);
+            // Update or create transcript for assistant
+            setTranscripts(prev => {
+              // Find existing assistant transcript
+              const existingIndex = prev.findIndex(t => t.role === 'assistant' && t.isModelOutput);
+              
+              if (existingIndex >= 0) {
+                // Update existing transcript
+                const updated = [...prev];
+                updated[existingIndex] = {
+                  ...updated[existingIndex],
+                  content: updated[existingIndex].content + outputContent
+                };
+                return updated;
               } else {
-                console.log('Message done, clearing buffer');
-                setPendingBuffer('');
-                setCompleteText('');
+                // Create new transcript
+                const newTranscript: Transcript = {
+                  id: Date.now() as unknown as number,
+                  callId: callDetails?.id || `call-${Date.now()}`,
+                  role: 'assistant',
+                  content: outputContent,
+                  timestamp: new Date(),
+                  isModelOutput: true
+                };
+                return [...prev, newTranscript];
               }
-            } else {
-              // Keep accumulating if no complete sentence
-              console.log('No complete sentence yet, accumulating');
-              setPendingBuffer(newPendingBuffer);
-            }
+            });
           }
           
           // For user transcripts
