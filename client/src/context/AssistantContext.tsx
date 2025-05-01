@@ -329,11 +329,6 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     // Initialize with default values
     setOrderSummary(initialOrderSummary);
     
-    // We'll update this with AI-generated data once the summary is received
-    
-    // Request OpenAI-generated summary from server using transcripts
-    console.log('Requesting AI-generated summary from server...');
-    
     // Format call duration for API
     const formattedDuration = callDuration ? 
       `${Math.floor(callDuration / 60)}:${(callDuration % 60).toString().padStart(2, '0')}` : 
@@ -369,6 +364,9 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       timestamp: new Date()
     };
     setCallSummary(loadingSummary);
+
+    // Change interface to summary before making the API call
+    setCurrentInterface('interface3');
     
     // Send transcript data to server for OpenAI processing
     fetch('/api/store-summary', {
@@ -377,14 +375,11 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        // Send empty summary so backend knows to generate one with OpenAI
         summary: '', 
         transcripts: transcriptData,
         timestamp: new Date().toISOString(),
         callId: callDetails?.id || `call-${Date.now()}`,
-        // Send the call duration for storage
         callDuration: formattedDuration,
-        // Use flag from vapiClient to force basic summary if needed
         forceBasicSummary: FORCE_BASIC_SUMMARY
       }),
     })
@@ -397,11 +392,9 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     .then(data => {
       console.log('AI-generated summary received:', data);
       
-      // Update the call summary in state with the AI-generated one
       if (data.success && data.summary && data.summary.content) {
         const summaryContent = data.summary.content;
         
-        // Create summary object
         const aiSummary: CallSummary = {
           id: Date.now() as unknown as number,
           callId: callDetails?.id || `call-${Date.now()}`,
@@ -410,44 +403,33 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         };
         setCallSummary(aiSummary);
         
-        // Store any extracted service requests if available
         if (data.serviceRequests && Array.isArray(data.serviceRequests) && data.serviceRequests.length > 0) {
           console.log('Service requests extracted:', data.serviceRequests);
           setServiceRequests(data.serviceRequests);
         }
         
-        // Extract order details from AI summary
         try {
           console.log('Parsing AI summary to extract order details...');
-          
-          // Get the parsed details
           const parsedDetails = parseSummaryToOrderDetails(summaryContent);
           
-          // Only update orderSummary if the AI parsed useful information
           if (Object.keys(parsedDetails).length > 0) {
-            // Create a new order summary by merging parsed details with defaults
             setOrderSummary(prevSummary => {
               if (!prevSummary) return initialOrderSummary;
               
-              // Start with existing order summary
               const updatedSummary = { ...prevSummary };
               
-              // Update with AI-extracted information, only if present
               if (parsedDetails.orderType) updatedSummary.orderType = parsedDetails.orderType;
               if (parsedDetails.deliveryTime) updatedSummary.deliveryTime = parsedDetails.deliveryTime;
               if (parsedDetails.roomNumber) updatedSummary.roomNumber = parsedDetails.roomNumber;
               if (parsedDetails.specialInstructions) updatedSummary.specialInstructions = parsedDetails.specialInstructions;
               
-              // Only update items if we extracted some
               if (parsedDetails.items && parsedDetails.items.length > 0) {
                 updatedSummary.items = parsedDetails.items;
               }
               
-              // Update total amount based on items or extracted value
               if (parsedDetails.totalAmount) {
                 updatedSummary.totalAmount = parsedDetails.totalAmount;
               } else {
-                // Recalculate based on current items
                 updatedSummary.totalAmount = updatedSummary.items.reduce(
                   (total, item) => total + (item.price * item.quantity), 
                   0
@@ -460,14 +442,14 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           }
         } catch (parseError) {
           console.error('Error extracting order details from AI summary:', parseError);
-          // Keep existing order summary on error
         }
+      } else {
+        throw new Error('Invalid summary data received from server');
       }
     })
     .catch(error => {
       console.error('Error getting AI-generated summary:', error);
       
-      // Fallback to basic summary if OpenAI fails
       const fallbackSummary: CallSummary = {
         id: Date.now() as unknown as number,
         callId: callDetails?.id || `call-${Date.now()}`,
@@ -476,9 +458,6 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       };
       setCallSummary(fallbackSummary);
     });
-    
-    // Change interface to summary
-    setCurrentInterface('interface3');
   };
 
   // Function to translate text to Vietnamese
