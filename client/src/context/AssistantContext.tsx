@@ -139,33 +139,45 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       // Message handler for transcripts and reports
       const handleMessage = async (message: any) => {
         console.log('Raw message received:', message);
-        console.log('Message type:', message.type);
-        console.log('Message content:', message.content);
-        console.log('Message full structure:', JSON.stringify(message, null, 2));
         
-        // Debug all message types from Vapi
-        if (message.type) {
-          console.log(`Message type detected: ${message.type}`);
+        // Handle assistant's output (firstMessage, endCallMessage, voicemailMessage, or messages with role "assistant")
+        if (
+          message.type === 'first-message' ||
+          message.type === 'end-call-message' ||
+          message.type === 'voicemail-message' ||
+          (message.role === 'assistant' && message.type === 'model-output') ||
+          (message.role === 'assistant' && message.type === 'transcript')
+        ) {
+          console.log('Assistant output detected:', message);
+          // For model output
+          if (message.type === 'model-output') {
+            const outputContent = message.content || message.modelOutput;
+            if (outputContent) {
+              console.log('Adding assistant model output:', outputContent);
+              addModelOutput(outputContent);
+            }
+          }
+          // For transcripts
+          if (message.type === 'transcript') {
+            console.log('Adding assistant transcript:', message);
+            const newTranscript: Transcript = {
+              id: Date.now() as unknown as number,
+              callId: callDetails?.id || `call-${Date.now()}`,
+              role: 'assistant',
+              content: message.transcript,
+              timestamp: new Date()
+            };
+            setTranscripts(prev => [...prev, newTranscript]);
+          }
         }
         
-        // Check for model output messages
-        if (message.type === 'model-output' || message.type === 'model_output' || message.modelOutput) {
-          console.log('Model output detected!');
-          console.log('Model output content:', message.content || message.modelOutput);
-          const outputContent = message.content || message.modelOutput;
-          if (outputContent) {
-            console.log('Adding model output:', outputContent);
-            addModelOutput(outputContent);
-          }
-        } 
-        
-        // Handle transcripts
-        if (message.type === 'transcript' && message.transcriptType === 'final') {
-          console.log('Final transcript received:', message);
+        // Handle user's input (messages with role "user" in transcript)
+        if (message.type === 'transcript' && message.role === 'user') {
+          console.log('User input detected:', message);
           const newTranscript: Transcript = {
             id: Date.now() as unknown as number,
             callId: callDetails?.id || `call-${Date.now()}`,
-            role: message.role,
+            role: 'user',
             content: message.transcript,
             timestamp: new Date()
           };

@@ -140,35 +140,26 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             ref={conversationRef}
             className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto"
           >
-            {/* Display transcripts */}
-            {[...transcripts].reverse().map((transcript) => (
-              <div key={transcript.id} className="mb-2">
+            {/* Display both transcripts and model outputs in chronological order */}
+            {[...transcripts, ...modelOutput.map((content, index) => ({
+              id: `model-${index}`,
+              role: 'assistant',
+              content,
+              timestamp: new Date(),
+              isModelOutput: true
+            }))].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).map((item) => (
+              <div key={item.id} className="mb-2">
                 <div className="flex items-start mb-1">
                   <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
                     <span className="material-icons text-base">
-                      {transcript.role === 'user' ? 'person' : 'support_agent'}
+                      {item.role === 'user' ? 'person' : 'support_agent'}
                     </span>
                   </div>
                   <div className="flex-grow">
                     <p className="text-sm mb-1 text-yellow-400">
-                      {transcript.role === 'user' ? 'You' : 'Assistant'}
+                      {item.role === 'user' ? 'You' : `Assistant${item.isModelOutput ? ' (Real-time)' : ''}`}
                     </p>
-                    <p className="text-xl font-semibold text-yellow-200">{transcript.content}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {/* Display model output */}
-            {modelOutput.length > 0 && [...modelOutput].reverse().map((output, index) => (
-              <div key={`model-${index}`} className="mb-2">
-                <div className="flex items-start mb-1">
-                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
-                    <span className="material-icons text-base">support_agent</span>
-                  </div>
-                  <div className="flex-grow">
-                    <p className="text-sm mb-1 text-yellow-400">Assistant (Real-time)</p>
-                    <p className="text-xl font-semibold text-yellow-200">{output}</p>
+                    <p className="text-xl font-semibold text-yellow-200">{item.content}</p>
                   </div>
                 </div>
               </div>
