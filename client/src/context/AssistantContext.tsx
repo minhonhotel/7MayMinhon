@@ -147,44 +147,47 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           console.log('Raw message received:', message);
           console.log('Message type:', message.type);
           console.log('Message role:', message.role);
+          console.log('Message content structure:', {
+            content: message.content,
+            text: message.text,
+            transcript: message.transcript
+          });
           
-          // Handle assistant's output
-          if (
-            message.type === 'first-message' ||
-            message.type === 'end-call-message' ||
-            message.type === 'voicemail-message' ||
-            message.type === 'model-output' ||
-            (message.role === 'assistant' && message.type === 'transcript')
-          ) {
-            console.log('Assistant output detected:', message);
+          // For model output - handle this first
+          if (message.type === 'model-output') {
+            console.log('Model output detected - Full message:', message);
             
-            // For model output
-            if (message.type === 'model-output') {
-              console.log('Model output detected - Full message:', message);
-              console.log('Model output content:', message.content);
-              console.log('Model output text:', message.text);
-              console.log('Model output transcript:', message.transcript);
+            // Try to get content from any available field
+            const outputContent = message.content || message.text || message.transcript || message.output;
+            if (outputContent) {
+              console.log('Adding model output to conversation:', outputContent);
               
-              // Try to get content from any available field
-              const outputContent = message.content || message.text || message.transcript;
-              if (outputContent) {
-                console.log('Adding model output to conversation:', outputContent);
-                
-                // Add as transcript with isModelOutput flag
-                const newTranscript: Transcript = {
-                  id: Date.now() as unknown as number,
-                  callId: callDetails?.id || `call-${Date.now()}`,
-                  role: 'assistant',
-                  content: outputContent,
-                  timestamp: new Date(),
-                  isModelOutput: true
-                };
-                setTranscripts(prev => [...prev, newTranscript]);
-              }
+              // Add as transcript with isModelOutput flag
+              const newTranscript: Transcript = {
+                id: Date.now() as unknown as number,
+                callId: callDetails?.id || `call-${Date.now()}`,
+                role: 'assistant',
+                content: outputContent,
+                timestamp: new Date(),
+                isModelOutput: true
+              };
+              console.log('Adding new transcript for model output:', newTranscript);
+              setTranscripts(prev => {
+                const updated = [...prev, newTranscript];
+                console.log('Updated transcripts array:', updated);
+                return updated;
+              });
+            } else {
+              console.warn('Model output message received but no content found:', message);
             }
+            return; // Exit early after handling model output
+          }
+          
+          // For regular transcripts
+          if (message.type === 'transcript') {
+            console.log('Transcript message detected:', message);
             
-            // For transcripts
-            if (message.type === 'transcript') {
+            if (message.role === 'assistant') {
               console.log('Adding assistant transcript:', message);
               const newTranscript: Transcript = {
                 id: Date.now() as unknown as number,
@@ -194,20 +197,17 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
                 timestamp: new Date()
               };
               setTranscripts(prev => [...prev, newTranscript]);
+            } else if (message.role === 'user') {
+              console.log('Adding user transcript:', message);
+              const newTranscript: Transcript = {
+                id: Date.now() as unknown as number,
+                callId: callDetails?.id || `call-${Date.now()}`,
+                role: 'user',
+                content: message.content || message.transcript || '',
+                timestamp: new Date()
+              };
+              setTranscripts(prev => [...prev, newTranscript]);
             }
-          }
-          
-          // Handle user's input
-          if (message.type === 'transcript' && message.role === 'user') {
-            console.log('User input detected:', message);
-            const newTranscript: Transcript = {
-              id: Date.now() as unknown as number,
-              callId: callDetails?.id || `call-${Date.now()}`,
-              role: 'user',
-              content: message.content || message.transcript || '',
-              timestamp: new Date()
-            };
-            setTranscripts(prev => [...prev, newTranscript]);
           }
         };
         
