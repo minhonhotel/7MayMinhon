@@ -149,11 +149,6 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           console.log('Raw message received:', message);
           console.log('Message type:', message.type);
           console.log('Message role:', message.role);
-          console.log('Message content structure:', {
-            content: message.content,
-            text: message.text,
-            transcript: message.transcript
-          });
           
           // For model output - handle this first
           if (message.type === 'model-output') {
@@ -162,60 +157,40 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
             // Try to get content from any available field
             const outputContent = message.content || message.text || message.transcript || message.output;
             if (outputContent) {
-              console.log('Adding model output to conversation:', outputContent);
-              
               // Accumulate the output
               const newAccumulatedOutput = accumulatedOutput + outputContent;
               setAccumulatedOutput(newAccumulatedOutput);
               
-              // Function to clean and format sentences
-              const formatSentences = (text: string) => {
-                // Split into sentences while keeping the punctuation
-                const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
-                
-                // Clean and join sentences
-                return sentences
-                  .map(sentence => sentence.trim()) // Clean up whitespace
-                  .filter(sentence => sentence.length > 0) // Remove empty sentences
-                  .join('\n'); // Join with newlines
-              };
+              // Check if we have a complete sentence
+              const isCompleteSentence = 
+                outputContent.match(/[.!?]\s*$/) || // Ends with punctuation
+                outputContent.includes('\n\n') || // Contains multiple line breaks
+                message.done; // Message indicates it's complete
               
-              // Check if we have complete sentences or if this is the final message
-              if (
-                newAccumulatedOutput.match(/[.!?](\s+|$)/) || // Ends with punctuation
-                message.done // Message indicates it's complete
-              ) {
-                // Format the accumulated output into clean sentences
-                const formattedContent = formatSentences(newAccumulatedOutput);
+              if (isCompleteSentence) {
+                console.log('Complete sentence detected:', newAccumulatedOutput);
                 
-                if (formattedContent) {
-                  // Create new transcript with formatted content
-                  const newTranscript: Transcript = {
-                    id: Date.now() as unknown as number,
-                    callId: callDetails?.id || `call-${Date.now()}`,
-                    role: 'assistant',
-                    content: formattedContent,
-                    timestamp: new Date(),
-                    isModelOutput: true
-                  };
+                // Create new transcript with the complete sentence
+                const newTranscript: Transcript = {
+                  id: Date.now() as unknown as number,
+                  callId: callDetails?.id || `call-${Date.now()}`,
+                  role: 'assistant',
+                  content: newAccumulatedOutput.trim(),
+                  timestamp: new Date(),
+                  isModelOutput: true
+                };
 
-                  console.log('Adding formatted sentences:', formattedContent);
-                  // Add the complete sentences as a new transcript
-                  setTranscripts(prev => [...prev, newTranscript]);
-
-                  // Reset accumulated output
-                  setAccumulatedOutput('');
-                } else {
-                  // If formatting resulted in empty content, keep accumulating
-                  console.log('No complete sentences found yet, continuing to accumulate');
-                }
+                // Add the complete sentence to transcripts
+                setTranscripts(prev => [...prev, newTranscript]);
+                
+                // Reset accumulated output for next sentence
+                setAccumulatedOutput('');
+                setLastTranscriptId(null);
               }
-            } else {
-              console.warn('Model output message received but no content found:', message);
             }
           }
           
-          // For user transcripts only - ignore assistant transcripts
+          // For user transcripts only
           if (message.type === 'transcript' && message.role === 'user') {
             console.log('Adding user transcript:', message);
             const newTranscript: Transcript = {
