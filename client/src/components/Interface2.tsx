@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useAssistant } from '@/context/AssistantContext';
 import Reference from './Reference';
 import SiriCallButton from './SiriCallButton';
@@ -24,6 +24,11 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   // Add state for references
   const [references, setReferences] = useState<ReferenceItem[]>([]);
   
+  // Local duration state for backup timer functionality
+  const [localDuration, setLocalDuration] = useState(0);
+  
+  const conversationRef = useRef<HTMLDivElement>(null);
+  
   // Initialize reference service
   useEffect(() => {
     referenceService.initialize();
@@ -45,20 +50,27 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     setReferences(matches);
   }, [transcripts]);
   
-  // Wrapper for endCall to include local duration if needed
-  const endCall = () => {
+  // Handler for Cancel button - End call and go back to interface1
+  const handleCancel = useCallback(() => {
+    // Capture the current duration for the email
+    const finalDuration = callDuration > 0 ? callDuration : localDuration;
+    console.log('Canceling call with duration:', finalDuration);
+    
+    // Call the context's endCall and switch to interface1
+    contextEndCall();
+    setCurrentInterface('interface1');
+  }, [callDuration, localDuration, contextEndCall, setCurrentInterface]);
+
+  // Handler for Next button - End call and proceed to interface3
+  const handleNext = useCallback(() => {
     // Capture the current duration for the email
     const finalDuration = callDuration > 0 ? callDuration : localDuration;
     console.log('Ending call with duration:', finalDuration);
     
-    // Pass the final duration to context's endCall
+    // Call the context's endCall and switch to interface3
     contextEndCall();
-  };
-  
-  // Local duration state for backup timer functionality
-  const [localDuration, setLocalDuration] = useState(0);
-  
-  const conversationRef = useRef<HTMLDivElement>(null);
+    setCurrentInterface('interface3');
+  }, [callDuration, localDuration, contextEndCall, setCurrentInterface]);
   
   // Format duration for display
   const formatDuration = (seconds: number) => {
@@ -162,13 +174,10 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           <button id="backButton" onClick={() => setCurrentInterface('interface1')} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs">
             <span className="material-icons mr-1 text-base">arrow_back</span>Back
           </button>
-          <button id="cancelButton" onClick={() => {
-            endCall();
-            setCurrentInterface('interface1');
-          }} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs">
+          <button id="cancelButton" onClick={handleCancel} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs">
             <span className="material-icons mr-1 text-base">cancel</span>Cancel
           </button>
-          <button id="endCallButton" onClick={endCall} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs">
+          <button id="endCallButton" onClick={handleNext} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs">
             <span className="material-icons mr-1 text-base">navigate_next</span>Next
           </button>
         </div>
