@@ -386,31 +386,41 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     // Function to make API call with retry logic
     const storeSummaryWithRetry = async (retryCount = 0) => {
       try {
+        console.log(`Attempt ${retryCount + 1} to store summary...`);
+        
+        const payload = {
+          summary: '', 
+          transcripts: transcriptData,
+          timestamp: new Date().toISOString(),
+          callId: callDetails?.id || `call-${Date.now()}`,
+          callDuration: formattedDuration,
+          forceBasicSummary: FORCE_BASIC_SUMMARY
+        };
+        
+        console.log('Sending payload:', payload);
+        
         const response = await fetch('/api/store-summary', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            summary: '', 
-            transcripts: transcriptData,
-            timestamp: new Date().toISOString(),
-            callId: callDetails?.id || `call-${Date.now()}`,
-            callDuration: formattedDuration,
-            forceBasicSummary: FORCE_BASIC_SUMMARY
-          }),
+          body: JSON.stringify(payload),
         });
 
         if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.status}`);
+          const errorText = await response.text();
+          console.error(`Server responded with ${response.status}:`, errorText);
+          throw new Error(`Network response was not ok: ${response.status} - ${errorText}`);
         }
 
         const data = await response.json();
+        console.log('Successfully received response:', data);
         return data;
       } catch (error) {
         console.error(`Attempt ${retryCount + 1} failed:`, error);
-        if (retryCount < 2) { // Try up to 3 times
-          await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
+        if (retryCount < 2) {
+          console.log(`Waiting before retry ${retryCount + 2}...`);
+          await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds before retry
           return storeSummaryWithRetry(retryCount + 1);
         }
         throw error;
@@ -420,77 +430,77 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     // Call API with retry logic
     storeSummaryWithRetry()
       .then(data => {
-        console.log('AI-generated summary received:', data);
+        console.log('Processing AI-generated summary:', data);
         
-        if (data.success && data.summary && data.summary.content) {
-          const summaryContent = data.summary.content;
-          
-          // Create summary object
-          const aiSummary: CallSummary = {
-            id: Date.now() as unknown as number,
-            callId: callDetails?.id || `call-${Date.now()}`,
-            content: summaryContent,
-            timestamp: new Date(data.summary.timestamp || Date.now())
-          };
-          setCallSummary(aiSummary);
-          
-          // Store any extracted service requests if available
-          if (data.serviceRequests && Array.isArray(data.serviceRequests) && data.serviceRequests.length > 0) {
-            console.log('Service requests extracted:', data.serviceRequests);
-            setServiceRequests(data.serviceRequests);
-          }
-          
-          // Extract order details from AI summary
-          try {
-            console.log('Parsing AI summary to extract order details...');
-            const parsedDetails = parseSummaryToOrderDetails(summaryContent);
-            
-            if (Object.keys(parsedDetails).length > 0) {
-              setOrderSummary(prevSummary => {
-                if (!prevSummary) return initialOrderSummary;
-                
-                const updatedSummary = { ...prevSummary };
-                
-                if (parsedDetails.orderType) updatedSummary.orderType = parsedDetails.orderType;
-                if (parsedDetails.deliveryTime) updatedSummary.deliveryTime = parsedDetails.deliveryTime;
-                if (parsedDetails.roomNumber) updatedSummary.roomNumber = parsedDetails.roomNumber;
-                if (parsedDetails.specialInstructions) updatedSummary.specialInstructions = parsedDetails.specialInstructions;
-                
-                if (parsedDetails.items && parsedDetails.items.length > 0) {
-                  updatedSummary.items = parsedDetails.items;
+        if (!data.success) {
+          throw new Error('Server indicated failure in response');
+        }
+        
+        if (!data.summary || !data.summary.content) {
+          throw new Error('Server response missing summary content');
+        }
+        
+        const summaryContent = data.summary.content;
+        console.log('Summary content:', summaryContent);
+        
+        // Create summary object
+        const aiSummary: CallSummary = {
+          id: Date.now() as unknown as number,
+          callId: callDetails?.id || `call-${Date.now()}`,
+          content: summaryContent,
+          timestamp: new Date(data.summary.timestamp || Date.now())
+        };
+        setCallSummary(aiSummary);
+        
+        // Process additional data if available
+        if (data.serviceRequests?.length > 0) {
+          console.log('Processing service requests:', data.serviceRequests);
+          setServiceRequests(data.serviceRequests);
+        }
+        
+        // Extract order details
+        try {
+          const parsedDetails = parseSummaryToOrderDetails(summaryContent);
+          if (Object.keys(parsedDetails).length > 0) {
+            console.log('Parsed order details:', parsedDetails);
+            setOrderSummary(prevSummary => {
+              const updatedSummary = { ...prevSummary || initialOrderSummary };
+              
+              // Update fields if present in parsed details
+              Object.entries(parsedDetails).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                  updatedSummary[key] = value;
                 }
-                
-                if (parsedDetails.totalAmount) {
-                  updatedSummary.totalAmount = parsedDetails.totalAmount;
-                } else {
-                  updatedSummary.totalAmount = updatedSummary.items.reduce(
-                    (total, item) => total + (item.price * item.quantity), 
-                    0
-                  );
-                }
-                
-                return updatedSummary;
               });
-            }
-          } catch (parseError) {
-            console.error('Error extracting order details from AI summary:', parseError);
+              
+              // Recalculate total if needed
+              if (!parsedDetails.totalAmount && updatedSummary.items?.length > 0) {
+                updatedSummary.totalAmount = updatedSummary.items.reduce(
+                  (total, item) => total + (item.price * item.quantity), 
+                  0
+                );
+              }
+              
+              return updatedSummary;
+            });
           }
+        } catch (parseError) {
+          console.error('Failed to parse order details:', parseError);
         }
       })
       .catch(error => {
-        console.error('Error getting AI-generated summary:', error);
+        console.error('Failed to process summary:', error);
         
-        // Fallback to basic summary if OpenAI fails
+        const errorMessage = error.message || "An unexpected error occurred";
         const fallbackSummary: CallSummary = {
           id: Date.now() as unknown as number,
           callId: callDetails?.id || `call-${Date.now()}`,
-          content: "Summary could not be generated. Please review the conversation transcript.",
+          content: `Summary generation failed: ${errorMessage}. Please review the conversation transcript.`,
           timestamp: new Date()
         };
         setCallSummary(fallbackSummary);
       })
       .finally(() => {
-        // Always change interface to summary
         setCurrentInterface('interface3');
       });
   };

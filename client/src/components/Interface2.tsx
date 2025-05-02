@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useAssistant } from '@/context/AssistantContext';
 import Reference from './Reference';
 import SiriCallButton from './SiriCallButton';
@@ -27,16 +27,12 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   // Initialize reference service
   useEffect(() => {
     referenceService.initialize();
-  }, []);
+  }, []); // Empty dependency array since this should only run once
   
-  // Update references when new transcripts arrive
-  useEffect(() => {
-    // Only look at user messages for reference requests
-    const userMessages = transcripts.filter(t => t.role === 'user');
-    const matches: ReferenceItem[] = [];
-    
-    // Use a stable reference for the matches array
+  // Memoize the reference finding function
+  const findNewReferences = useCallback((userMessages: Transcript[]) => {
     const existingUrls = new Set(references.map(r => r.url));
+    const matches: ReferenceItem[] = [];
     
     userMessages.forEach(msg => {
       const found = referenceService.findReferences(msg.content);
@@ -46,22 +42,26 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
         }
       });
     });
-
-    // Only update if we have new matches
-    if (matches.length > 0) {
-      setReferences(prev => [...prev, ...matches]);
-    }
-  }, [transcripts]); // Remove references from dependency array
+    
+    return matches;
+  }, [references]);
   
-  // Wrapper for endCall to include local duration if needed
-  const endCall = () => {
-    // Capture the current duration for the email
+  // Update references when new transcripts arrive
+  useEffect(() => {
+    const userMessages = transcripts.filter(t => t.role === 'user');
+    const newMatches = findNewReferences(userMessages);
+    
+    if (newMatches.length > 0) {
+      setReferences(prev => [...prev, ...newMatches]);
+    }
+  }, [transcripts, findNewReferences]);
+  
+  // Memoize the endCall handler
+  const handleEndCall = useCallback(() => {
     const finalDuration = callDuration > 0 ? callDuration : localDuration;
     console.log('Ending call with duration:', finalDuration);
-    
-    // Pass the final duration to context's endCall
     contextEndCall();
-  };
+  }, [callDuration, localDuration, contextEndCall]);
   
   // Local duration state for backup timer functionality
   const [localDuration, setLocalDuration] = useState(0);
@@ -69,54 +69,43 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   const conversationRef = useRef<HTMLDivElement>(null);
   
   // Format duration for display
-  const formatDuration = (seconds: number) => {
+  const formatDuration = useCallback((seconds: number) => {
     const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
     const secs = (seconds % 60).toString().padStart(2, '0');
     return `${minutes}:${secs}`;
-  };
+  }, []);
   
-  // Local timer as a backup to ensure we always have a working timer
+  // Local timer as a backup
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
     
-    // Only start the timer when this interface is active
     if (isActive) {
-      console.log('Interface2 is active, starting local timer');
-      // Initialize with the current duration from context
       setLocalDuration(callDuration || 0);
       
-      // Start the local timer
       timer = setInterval(() => {
-        setLocalDuration(prev => {
-          const newDuration = prev + 1;
-          console.log('Local call duration updated:', newDuration);
-          return newDuration;
-        });
+        setLocalDuration(prev => prev + 1);
       }, 1000);
     }
     
     return () => {
       if (timer) {
-        console.log('Cleaning up local timer in Interface2');
         clearInterval(timer);
       }
     };
   }, [isActive, callDuration]);
   
-  // Scroll to bottom of conversation when new messages arrive
+  // Scroll to bottom of conversation
+  const scrollToBottom = useCallback(() => {
+    if (conversationRef.current && isActive) {
+      conversationRef.current.scrollTop = conversationRef.current.scrollHeight;
+    }
+  }, [isActive]);
+  
   useEffect(() => {
-    const scrollToBottom = () => {
-      if (conversationRef.current && isActive) {
-        conversationRef.current.scrollTop = conversationRef.current.scrollHeight;
-      }
-    };
-    
     scrollToBottom();
-    // Add a small delay to ensure content is rendered
     const timeoutId = setTimeout(scrollToBottom, 100);
-    
     return () => clearTimeout(timeoutId);
-  }, [transcripts, isActive]);
+  }, [transcripts, scrollToBottom]);
   
   return (
     <div 
@@ -183,12 +172,12 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             <span className="material-icons mr-1 text-base">arrow_back</span>Back
           </button>
           <button id="cancelButton" onClick={() => {
-            endCall();
+            handleEndCall();
             setCurrentInterface('interface1');
           }} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs">
             <span className="material-icons mr-1 text-base">cancel</span>Cancel
           </button>
-          <button id="endCallButton" onClick={endCall} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs">
+          <button id="endCallButton" onClick={handleEndCall} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs">
             <span className="material-icons mr-1 text-base">navigate_next</span>Next
           </button>
         </div>
@@ -197,4 +186,4 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   );
 };
 
-export default Interface2;
+export default React.memo(Interface2);
