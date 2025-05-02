@@ -274,9 +274,25 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         throw new Error('Assistant ID is not configured');
       }
 
-      const call = await vapi.start(assistantId);
-      if (!call) {
-        throw new Error('Failed to start call: call object is null');
+      // Add retry logic for starting the call
+      let retryCount = 0;
+      let call = null;
+      
+      while (retryCount < 3 && !call) {
+        try {
+          call = await vapi.start(assistantId);
+          if (!call) {
+            throw new Error('Call object is null');
+          }
+        } catch (error) {
+          console.error(`Attempt ${retryCount + 1} failed:`, error);
+          retryCount++;
+          if (retryCount < 3) {
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
+          } else {
+            throw error;
+          }
+        }
       }
       
       console.log("Call started successfully:", call);
@@ -310,6 +326,8 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
     } catch (error) {
       console.error("Error starting call:", error);
+      // Show error to user
+      alert("Failed to start call. Please try again.");
     }
   };
 
@@ -328,11 +346,6 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
     
     // Initialize with default values
     setOrderSummary(initialOrderSummary);
-    
-    // We'll update this with AI-generated data once the summary is received
-    
-    // Request OpenAI-generated summary from server using transcripts
-    console.log('Requesting AI-generated summary from server...');
     
     // Format call duration for API
     const formattedDuration = callDuration ? 
@@ -369,116 +382,117 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       timestamp: new Date()
     };
     setCallSummary(loadingSummary);
-    
-    // Send transcript data to server for OpenAI processing
-    fetch('/api/store-summary', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        // Send empty summary so backend knows to generate one with OpenAI
-        summary: '', 
-        transcripts: transcriptData,
-        timestamp: new Date().toISOString(),
-        callId: callDetails?.id || `call-${Date.now()}`,
-        // Send the call duration for storage
-        callDuration: formattedDuration,
-        // Use flag from vapiClient to force basic summary if needed
-        forceBasicSummary: FORCE_BASIC_SUMMARY
-      }),
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status}`);
+
+    // Function to make API call with retry logic
+    const storeSummaryWithRetry = async (retryCount = 0) => {
+      try {
+        const response = await fetch('/api/store-summary', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            summary: '', 
+            transcripts: transcriptData,
+            timestamp: new Date().toISOString(),
+            callId: callDetails?.id || `call-${Date.now()}`,
+            callDuration: formattedDuration,
+            forceBasicSummary: FORCE_BASIC_SUMMARY
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error(`Attempt ${retryCount + 1} failed:`, error);
+        if (retryCount < 2) { // Try up to 3 times
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
+          return storeSummaryWithRetry(retryCount + 1);
+        }
+        throw error;
       }
-      return response.json();
-    })
-    .then(data => {
-      console.log('AI-generated summary received:', data);
-      
-      // Update the call summary in state with the AI-generated one
-      if (data.success && data.summary && data.summary.content) {
-        const summaryContent = data.summary.content;
+    };
+
+    // Call API with retry logic
+    storeSummaryWithRetry()
+      .then(data => {
+        console.log('AI-generated summary received:', data);
         
-        // Create summary object
-        const aiSummary: CallSummary = {
+        if (data.success && data.summary && data.summary.content) {
+          const summaryContent = data.summary.content;
+          
+          // Create summary object
+          const aiSummary: CallSummary = {
+            id: Date.now() as unknown as number,
+            callId: callDetails?.id || `call-${Date.now()}`,
+            content: summaryContent,
+            timestamp: new Date(data.summary.timestamp || Date.now())
+          };
+          setCallSummary(aiSummary);
+          
+          // Store any extracted service requests if available
+          if (data.serviceRequests && Array.isArray(data.serviceRequests) && data.serviceRequests.length > 0) {
+            console.log('Service requests extracted:', data.serviceRequests);
+            setServiceRequests(data.serviceRequests);
+          }
+          
+          // Extract order details from AI summary
+          try {
+            console.log('Parsing AI summary to extract order details...');
+            const parsedDetails = parseSummaryToOrderDetails(summaryContent);
+            
+            if (Object.keys(parsedDetails).length > 0) {
+              setOrderSummary(prevSummary => {
+                if (!prevSummary) return initialOrderSummary;
+                
+                const updatedSummary = { ...prevSummary };
+                
+                if (parsedDetails.orderType) updatedSummary.orderType = parsedDetails.orderType;
+                if (parsedDetails.deliveryTime) updatedSummary.deliveryTime = parsedDetails.deliveryTime;
+                if (parsedDetails.roomNumber) updatedSummary.roomNumber = parsedDetails.roomNumber;
+                if (parsedDetails.specialInstructions) updatedSummary.specialInstructions = parsedDetails.specialInstructions;
+                
+                if (parsedDetails.items && parsedDetails.items.length > 0) {
+                  updatedSummary.items = parsedDetails.items;
+                }
+                
+                if (parsedDetails.totalAmount) {
+                  updatedSummary.totalAmount = parsedDetails.totalAmount;
+                } else {
+                  updatedSummary.totalAmount = updatedSummary.items.reduce(
+                    (total, item) => total + (item.price * item.quantity), 
+                    0
+                  );
+                }
+                
+                return updatedSummary;
+              });
+            }
+          } catch (parseError) {
+            console.error('Error extracting order details from AI summary:', parseError);
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error getting AI-generated summary:', error);
+        
+        // Fallback to basic summary if OpenAI fails
+        const fallbackSummary: CallSummary = {
           id: Date.now() as unknown as number,
           callId: callDetails?.id || `call-${Date.now()}`,
-          content: summaryContent,
-          timestamp: new Date(data.summary.timestamp || Date.now())
+          content: "Summary could not be generated. Please review the conversation transcript.",
+          timestamp: new Date()
         };
-        setCallSummary(aiSummary);
-        
-        // Store any extracted service requests if available
-        if (data.serviceRequests && Array.isArray(data.serviceRequests) && data.serviceRequests.length > 0) {
-          console.log('Service requests extracted:', data.serviceRequests);
-          setServiceRequests(data.serviceRequests);
-        }
-        
-        // Extract order details from AI summary
-        try {
-          console.log('Parsing AI summary to extract order details...');
-          
-          // Get the parsed details
-          const parsedDetails = parseSummaryToOrderDetails(summaryContent);
-          
-          // Only update orderSummary if the AI parsed useful information
-          if (Object.keys(parsedDetails).length > 0) {
-            // Create a new order summary by merging parsed details with defaults
-            setOrderSummary(prevSummary => {
-              if (!prevSummary) return initialOrderSummary;
-              
-              // Start with existing order summary
-              const updatedSummary = { ...prevSummary };
-              
-              // Update with AI-extracted information, only if present
-              if (parsedDetails.orderType) updatedSummary.orderType = parsedDetails.orderType;
-              if (parsedDetails.deliveryTime) updatedSummary.deliveryTime = parsedDetails.deliveryTime;
-              if (parsedDetails.roomNumber) updatedSummary.roomNumber = parsedDetails.roomNumber;
-              if (parsedDetails.specialInstructions) updatedSummary.specialInstructions = parsedDetails.specialInstructions;
-              
-              // Only update items if we extracted some
-              if (parsedDetails.items && parsedDetails.items.length > 0) {
-                updatedSummary.items = parsedDetails.items;
-              }
-              
-              // Update total amount based on items or extracted value
-              if (parsedDetails.totalAmount) {
-                updatedSummary.totalAmount = parsedDetails.totalAmount;
-              } else {
-                // Recalculate based on current items
-                updatedSummary.totalAmount = updatedSummary.items.reduce(
-                  (total, item) => total + (item.price * item.quantity), 
-                  0
-                );
-              }
-              
-              console.log('Updated order summary with AI-extracted information:', updatedSummary);
-              return updatedSummary;
-            });
-          }
-        } catch (parseError) {
-          console.error('Error extracting order details from AI summary:', parseError);
-          // Keep existing order summary on error
-        }
-      }
-    })
-    .catch(error => {
-      console.error('Error getting AI-generated summary:', error);
-      
-      // Fallback to basic summary if OpenAI fails
-      const fallbackSummary: CallSummary = {
-        id: Date.now() as unknown as number,
-        callId: callDetails?.id || `call-${Date.now()}`,
-        content: "Summary could not be generated. Please review the conversation transcript.",
-        timestamp: new Date()
-      };
-      setCallSummary(fallbackSummary);
-    });
-    
-    // Change interface to summary
-    setCurrentInterface('interface3');
+        setCallSummary(fallbackSummary);
+      })
+      .finally(() => {
+        // Always change interface to summary
+        setCurrentInterface('interface3');
+      });
   };
 
   // Function to translate text to Vietnamese

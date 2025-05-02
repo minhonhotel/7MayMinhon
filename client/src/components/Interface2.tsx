@@ -34,16 +34,24 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     // Only look at user messages for reference requests
     const userMessages = transcripts.filter(t => t.role === 'user');
     const matches: ReferenceItem[] = [];
+    
+    // Use a stable reference for the matches array
+    const existingUrls = new Set(references.map(r => r.url));
+    
     userMessages.forEach(msg => {
       const found = referenceService.findReferences(msg.content);
       found.forEach(ref => {
-        if (!matches.find(m => m.url === ref.url)) {
+        if (!existingUrls.has(ref.url)) {
           matches.push(ref);
         }
       });
     });
-    setReferences(matches);
-  }, [transcripts]);
+
+    // Only update if we have new matches
+    if (matches.length > 0) {
+      setReferences(prev => [...prev, ...matches]);
+    }
+  }, [transcripts]); // Remove references from dependency array
   
   // Wrapper for endCall to include local duration if needed
   const endCall = () => {
@@ -97,9 +105,17 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   
   // Scroll to bottom of conversation when new messages arrive
   useEffect(() => {
-    if (conversationRef.current && isActive) {
-      conversationRef.current.scrollTop = conversationRef.current.scrollHeight;
-    }
+    const scrollToBottom = () => {
+      if (conversationRef.current && isActive) {
+        conversationRef.current.scrollTop = conversationRef.current.scrollHeight;
+      }
+    };
+    
+    scrollToBottom();
+    // Add a small delay to ensure content is rendered
+    const timeoutId = setTimeout(scrollToBottom, 100);
+    
+    return () => clearTimeout(timeoutId);
   }, [transcripts, isActive]);
   
   return (
