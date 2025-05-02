@@ -56,37 +56,66 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
 
   // Hàm xử lý text từ assistant
   const processAssistantText = (text: string): string => {
-    // Bước 1: Tách theo các dấu câu và khoảng trắng hiện có
-    let processed = text.replace(/([!?.,])/g, ' $1 ');
-    
-    // Bước 2: Tách các từ theo quy tắc camelCase/PascalCase
-    processed = processed.replace(/([a-z])([A-Z])/g, '$1 $2');
-    
-    // Bước 3: Tách các từ viết hoa liền nhau
-    processed = processed.replace(/([A-Z])([A-Z][a-z])/g, '$1 $2');
-    
-    // Bước 4: Loại bỏ khoảng trắng thừa
+    // Bước 1: Tách các từ viết liền nhau
+    let processed = text
+      // Tách từ có chữ thường theo sau là chữ hoa
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      // Tách từ có 2 chữ hoa theo sau là chữ thường (ví dụ: APIKey -> API Key)
+      .replace(/([A-Z])([A-Z])([a-z])/g, '$1 $2$3')
+      // Tách các từ bắt đầu bằng I'm, I'll, I've
+      .replace(/(I'm|I'll|I've)/g, ' $1 ')
+      // Tách các từ có số
+      .replace(/([a-zA-Z])(\d)/g, '$1 $2')
+      .replace(/(\d)([a-zA-Z])/g, '$1 $2')
+      // Tách theo dấu câu
+      .replace(/([.,!?])/g, ' $1 ');
+
+    // Bước 2: Xử lý các trường hợp đặc biệt
+    processed = processed
+      // Tách cụm từ 'toassist' -> 'to assist'
+      .replace(/([a-z])(to)([a-z])/gi, '$1 $2 $3')
+      // Tách cụm từ 'withtoday' -> 'with today'
+      .replace(/(with)(today)/gi, '$1 $2')
+      // Tách các từ ghép phổ biến
+      .replace(/(here)(to)/gi, '$1 $2')
+      .replace(/(glad)(to)/gi, '$1 $2')
+      .replace(/(can)(help)/gi, '$1 $2')
+      .replace(/(hotel)(services)/gi, '$1 $2')
+      .replace(/(local)(attractions)/gi, '$1 $2')
+      .replace(/(external)(bookings)/gi, '$1 $2');
+
+    // Bước 3: Loại bỏ khoảng trắng thừa và trim
     processed = processed.replace(/\s+/g, ' ').trim();
-    
+
     return processed;
   };
 
   // Process assistant message content with dictionary
   const processMessageContent = (content: string): string => {
-    // Xử lý text trước
-    const processedText = processAssistantText(content);
-    
-    // Sau đó mới tách và kiểm tra dictionary
-    const fragments = processedText.split(/(\s+)/);
-    const processedFragments = fragments.map(fragment => {
-      if (fragment.trim() === '') return fragment; // Keep spaces as is
+    // Kiểm tra content có phải là string không
+    if (typeof content !== 'string') {
+      console.warn('Content is not a string:', content);
+      return String(content || ''); // Convert to string or return empty string
+    }
+
+    try {
+      // Xử lý text trước
+      const processedText = processAssistantText(content);
+      console.log('Processed text:', processedText); // Log để debug
       
-      // Check dictionary for this fragment
-      const match = findInDictionary([fragment]);
-      return match ? match.keyword : fragment;
-    });
-    
-    return processedFragments.join('');
+      // Sau đó mới tách và kiểm tra dictionary
+      const fragments = processedText.split(/(\s+)/);
+      const processedFragments = fragments.map(fragment => {
+        if (!fragment || fragment.trim() === '') return fragment;
+        const match = findInDictionary([fragment]);
+        return match ? match.keyword : fragment;
+      });
+      
+      return processedFragments.join('');
+    } catch (error) {
+      console.error('Error processing message content:', error);
+      return content; // Return original content if processing fails
+    }
   };
 
   // Format duration for display
@@ -143,20 +172,25 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                       <p className="text-xl font-semibold text-yellow-200">
                         <span className="inline-flex flex-wrap">
                           {turn.messages.map((msg, idx) => {
-                            // Remove leading/trailing spaces
-                            const content = msg.content.trim();
-                            // Process content through dictionary
-                            const processedContent = processMessageContent(content);
-                            // Add appropriate spacing
-                            const needsSpaceBefore = idx > 0 && !processedContent.startsWith(',') && !processedContent.startsWith('.') && !processedContent.startsWith('?') && !processedContent.startsWith('!');
-                            // Get visible characters for this message
-                            const visibleContent = processedContent.slice(0, visibleChars[msg.id] || 0);
-                            return (
-                              <span key={msg.id}>
-                                {needsSpaceBefore ? ' ' : ''}
-                                {visibleContent}
-                              </span>
-                            );
+                            try {
+                              // Remove leading/trailing spaces
+                              const content = typeof msg.content === 'string' ? msg.content.trim() : String(msg.content || '');
+                              // Process content through dictionary
+                              const processedContent = processMessageContent(content);
+                              // Add appropriate spacing
+                              const needsSpaceBefore = idx > 0 && !processedContent.startsWith(',') && !processedContent.startsWith('.') && !processedContent.startsWith('?') && !processedContent.startsWith('!');
+                              // Get visible characters for this message
+                              const visibleContent = processedContent.slice(0, visibleChars[msg.id] || 0);
+                              return (
+                                <span key={msg.id}>
+                                  {needsSpaceBefore ? ' ' : ''}
+                                  {visibleContent}
+                                </span>
+                              );
+                            } catch (error) {
+                              console.error('Error rendering message:', error);
+                              return null; // Skip rendering this message if there's an error
+                            }
                           })}
                         </span>
                       </p>
