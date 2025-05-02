@@ -24,7 +24,8 @@ Tạo file `.env` ở thư mục gốc với các thông tin sau:
 DATABASE_URL=postgresql://username:password@localhost:5432/minhotel
 
 # API Keys
-OPENAI_API_KEY=your_openai_api_key
+VITE_OPENAI_API_KEY=your_openai_api_key
+VITE_OPENAI_PROJECT_ID=your_openai_project_id
 VITE_VAPI_PUBLIC_KEY=your_vapi_public_key
 VITE_VAPI_ASSISTANT_ID=your_vapi_assistant_id
 

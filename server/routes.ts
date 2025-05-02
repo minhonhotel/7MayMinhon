@@ -16,7 +16,7 @@ import { verifyJWT } from './middleware/auth';
 
 // Initialize OpenAI client 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.VITE_OPENAI_API_KEY
 });
 
 // Define WebSocket client interface
@@ -269,7 +269,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (transcripts && (!summaryText || summaryText === '')) {
         // Check if we should try using OpenAI or go straight to fallback
         // Allow forcing basic summary from client or if no API key available
-        const useOpenAi = !req.query.skipAi && !forceBasicSummary && process.env.OPENAI_API_KEY;
+        const useOpenAi = !req.query.skipAi && !forceBasicSummary && process.env.VITE_OPENAI_API_KEY;
         
         if (useOpenAi) {
           console.log('Generating summary with OpenAI from provided transcripts');

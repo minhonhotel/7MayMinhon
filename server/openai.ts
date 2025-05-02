@@ -2,9 +2,9 @@ import OpenAI from "openai";
 
 // Initialize OpenAI client
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.VITE_OPENAI_API_KEY
 });
-const projectId = process.env.OPENAI_PROJECT_ID || "";
+const projectId = process.env.VITE_OPENAI_PROJECT_ID || "";
 
 // Service category definitions for better classification
 export const SERVICE_CATEGORIES = {
