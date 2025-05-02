@@ -12,7 +12,6 @@ export interface CallSummary {
   callId: string;
   content: string;
   timestamp: Date;
-  isError?: boolean;
   roomNumber?: string;
   duration?: string;
 }
