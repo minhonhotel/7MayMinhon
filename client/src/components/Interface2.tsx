@@ -79,11 +79,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
       
       // Start the local timer
       timer = setInterval(() => {
-        setLocalDuration(prev => {
-          const newDuration = prev + 1;
-          console.log('Local call duration updated:', newDuration);
-          return newDuration;
-        });
+        setLocalDuration(prev => prev + 1);
       }, 1000);
     }
     

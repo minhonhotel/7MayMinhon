@@ -124,7 +124,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       timestamp: new Date()
     };
     setTranscripts(prev => [...prev, newTranscript]);
-  }, []);
+  }, [callDetails?.id]);
 
   // Initialize Vapi when component mounts
   useEffect(() => {
@@ -258,60 +258,65 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
   };
 
   // Start call function
-  const startCall = async () => {
-    const vapi = getVapiInstance();
-    if (!vapi) {
-      console.error("Vapi instance is not initialized");
-      return;
-    }
-
-    setRequestReceivedAt(new Date());
-
+  const startCall = React.useCallback(async () => {
     try {
-      // Use the assistant ID directly instead of configuration object
-      const assistantId = import.meta.env.VITE_VAPI_ASSISTANT_ID;
-      if (!assistantId) {
-        throw new Error('Assistant ID is not configured');
-      }
-
-      const call = await vapi.start(assistantId);
-      if (!call) {
-        throw new Error('Failed to start call: call object is null');
-      }
-      
-      console.log("Call started successfully:", call);
-
-      // Reset email sent flag for new call
+      // Reset email sent flag for new session
       setEmailSentForCurrentSession(false);
       
-      // Initialize call details
+      // Reset call details
+      const callId = `call-${Date.now()}`;
       setCallDetails({
-        id: call.id || `call-${Date.now()}`,
+        id: callId,
         roomNumber: '',
-        duration: '00:00',
-        category: 'Room Service'
+        duration: 0,
+        category: ''
       });
       
       // Clear previous transcripts and model outputs
       setTranscripts([]);
       setModelOutput([]);
       
-      // Change interface to call in progress
-      setCurrentInterface('interface2');
-      
+      // Initialize Vapi
+      const vapi = getVapiInstance();
+      if (!vapi) {
+        console.error('Vapi instance not initialized');
+        return;
+      }
+
+      // Get assistant ID from environment variable
+      const assistantId = import.meta.env.VITE_VAPI_ASSISTANT_ID;
+      if (!assistantId) {
+        console.error('Assistant ID not configured');
+        return;
+      }
+
+      // Start the call
+      const call = await vapi.startCall(assistantId);
+      if (!call) {
+        console.error('Failed to start call - call object is null');
+        return;
+      }
+
+      console.log('Call started successfully');
+
+      // Reset call duration to 0
+      setCallDuration(0);
+
       // Start call duration timer
       const timer = setInterval(() => {
         setCallDuration(prev => prev + 1);
       }, 1000);
+
+      // Store timer ID for cleanup
       setCallTimer(timer);
 
-      // Reset call duration
-      setCallDuration(0);
+      // Update interface to show call in progress
+      setCurrentInterface('interface2');
 
     } catch (error) {
-      console.error("Error starting call:", error);
+      console.error('Error starting call:', error);
     }
-  };
+  }, []);
 
   // End call function
   const endCall = () => {

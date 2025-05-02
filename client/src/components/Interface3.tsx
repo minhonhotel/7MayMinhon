@@ -91,89 +91,24 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
           else if (request.serviceType === 'tours-activities') price = 35;
           else if (request.serviceType === 'spa') price = 30;
           
-          // Summarize details into a comprehensive description
-          // Start with a clean request text
-          let description = "";
-          
-          // Create a more structured and readable format with all available details
-          // Important information first
-          if (details.roomNumber && details.roomNumber !== "unknown" && details.roomNumber !== "Not specified") 
-            description += `Room Number: ${details.roomNumber}\n`;
-            
-          if (details.date && details.date !== "Not specified") 
-            description += `Date: ${details.date}\n`;
-            
-          if (details.time && details.time !== "Not specified") 
-            description += `Time: ${details.time}\n`;
-          
-          // Add secondary but still critical information
-          if (details.people) {
-            // people is a number in the type definition, so just use it directly
-            description += `Number of People: ${details.people}\n`;
-          }
-          
-          if (details.location && details.location !== "Not specified") 
-            description += `Location: ${details.location}\n`;
-            
-          if (details.amount && details.amount !== "Not specified") 
-            description += `Amount: ${details.amount}\n`;
-          
-          // Add the full request details at the end
-          description += `\nRequest: ${request.requestText}`;
-          
-          // Add any additional details last, but only if they're meaningful
-          if (details.otherDetails && 
-              details.otherDetails !== "Not specified" && 
-              details.otherDetails !== "None" &&
-              !details.otherDetails.includes("Not specified"))
-            description += `\n\nAdditional Details: ${details.otherDetails}`;
-          
           return {
-            id: (index + 1).toString(),
-            name: request.requestText.length > 60 
-              ? request.requestText.substring(0, 57) + '...' 
-              : request.requestText,
-            description: description,
-            quantity: quantity,
-            price: price,
-            serviceType: request.serviceType
+            id: `item-${index}`,
+            name: request.serviceType,
+            description: request.requestText,
+            quantity,
+            price
           };
         });
-        
-        // Create a comma-separated list of unique service types
-        const uniqueServiceTypes = Array.from(new Set(serviceRequests.map(r => r.serviceType)));
-        const serviceTypes = uniqueServiceTypes.join(',');
-        
-        // Determine delivery time based on most urgent request
-        let deliveryTime = orderSummary.deliveryTime;
-        if (serviceRequests.some(r => 
-            r.details && 
-            r.details.time && 
-            typeof r.details.time === 'string' && 
-            r.details.time.toLowerCase().includes('immediate'))) {
-          deliveryTime = 'asap';
-        }
-        
-        // Get room number if available
-        const roomNumberDetail = serviceRequests.find(r => 
-          r.details && 
-          r.details.roomNumber && 
-          r.details.roomNumber !== "unknown" && 
-          r.details.roomNumber !== "Not specified"
-        )?.details?.roomNumber;
-        
-        // Update order summary with new items and enhanced info
+
+        // Update order summary with new items
         setOrderSummary({
           ...orderSummary,
           items: newItems,
-          totalAmount: newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-          orderType: serviceTypes, // Update service types from detected categories
-          roomNumber: roomNumberDetail || orderSummary.roomNumber,
-          deliveryTime: deliveryTime // Update delivery time based on detected urgency
+          totalAmount: newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
         });
       }
     }
-  }, [serviceRequests, isActive, orderSummary, setOrderSummary]);
+  }, [serviceRequests, orderSummary, setOrderSummary]);
   
   // Helper function to get readable service name from service type
   const getServiceName = (serviceType: string): string => {

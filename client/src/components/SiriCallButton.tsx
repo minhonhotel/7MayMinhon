@@ -22,6 +22,7 @@ const SiriCallButton: React.FC<SiriCallButtonProps> = ({
     return () => {
       if (buttonRef.current) {
         buttonRef.current.cleanup();
+        buttonRef.current = null;
       }
     };
   }, [containerId]);
