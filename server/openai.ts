@@ -2,9 +2,9 @@ import OpenAI from "openai";
 
 // Initialize OpenAI client
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  organization: process.env.OPENAI_PROJECT_ID
+  apiKey: process.env.OPENAI_API_KEY
 });
+const projectId = process.env.OPENAI_PROJECT_ID || "";
 
 // Service category definitions for better classification
 export const SERVICE_CATEGORIES = {
@@ -372,9 +372,9 @@ export async function extractServiceRequests(summary: string): Promise<ServiceRe
     `;
     
     try {
-      const options = { timeout: 20000 };
+      const options = { timeout: 20000, headers: { 'OpenAi-Project': projectId } };
       const response = await openai.chat.completions.create({
-        model: "gpt-4.1-nano",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: "You are a precise hotel service data extraction specialist that outputs structured JSON only." },
           { role: "user", content: prompt }
@@ -456,14 +456,14 @@ export async function translateToVietnamese(text: string): Promise<string> {
     `;
 
     const chatCompletion = await openai.chat.completions.create({
-      model: "gpt-4.1-nano",
+      model: "gpt-4o",
       messages: [
         { role: "system", content: "Bạn là một chuyên gia dịch thuật chuyên nghiệp cho khách sạn, dịch từ tiếng Anh sang tiếng Việt." },
         { role: "user", content: prompt }
       ],
       max_tokens: 1000,
       temperature: 0.3,
-    });
+    }, { headers: { 'OpenAi-Project': projectId } });
 
     return chatCompletion.choices[0].message.content?.trim() || "Không thể dịch văn bản.";
   } catch (error: any) {
@@ -524,18 +524,21 @@ export async function generateCallSummary(transcripts: Array<{role: string, cont
     `;
 
     // Call the OpenAI API with GPT-4o
-    const options = { timeout: 30000 };
+    const options = {
+      timeout: 30000, // 30 second timeout to prevent hanging
+      headers: { 'OpenAi-Project': projectId }
+    };
     
     const chatCompletion = await openai.chat.completions.create({
-      model: "gpt-4.1-nano",
+      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
       messages: [
         { role: "system", content: "You are a professional hotel service summarization specialist who creates concise and useful summaries." },
         { role: "user", content: prompt }
       ],
-      max_tokens: 800,
-      temperature: 0.5,
-      presence_penalty: 0.1,
-      frequency_penalty: 0.1,
+      max_tokens: 800, // Increased tokens limit for comprehensive summaries
+      temperature: 0.5, // More deterministic for consistent summaries
+      presence_penalty: 0.1, // Slight penalty to avoid repetition
+      frequency_penalty: 0.1, // Slight penalty to avoid repetition
     }, options);
 
     // Return the generated summary
