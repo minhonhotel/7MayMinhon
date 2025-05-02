@@ -268,7 +268,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       setCallDetails({
         id: callId,
         roomNumber: '',
-        duration: 0,
+        duration: '0',
         category: ''
       });
       
@@ -291,7 +291,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       }
 
       // Start the call
-      const call = await vapi.startCall(assistantId);
+      const call = await vapi.start(assistantId);
       if (!call) {
         console.error('Failed to start call - call object is null');
         return;
