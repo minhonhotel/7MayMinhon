@@ -137,8 +137,10 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
   }, [callSummary, orderSummary, setOrderSummary]);
 
   useEffect(() => {
-    processCallSummary();
-  }, [processCallSummary]);
+    if (isActive) {
+      processCallSummary();
+    }
+  }, [isActive, processCallSummary]);
   
   // Helper function to get readable service name from service type
   const getServiceName = (serviceType: string): string => {
