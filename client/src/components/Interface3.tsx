@@ -491,7 +491,7 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
                   className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition-colors"
                 >
                   <span className="material-icons">send</span>
-                  <span>Send to Receptionist</span>
+                  <span>Press Here to Send Your Request To Receptionist</span>
                 </button>
               </div>
             </div>
