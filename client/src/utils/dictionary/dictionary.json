@@ -1,0 +1,134 @@
+{
+  "entries": [
+    {
+      "keyword": "Nguyen Dinh Chieu",
+      "fragments": ["Ng", "uyen", "Di", "nh", "Ch", "ieu"],
+      "type": "name"
+    },
+    {
+      "keyword": "Minhon",
+      "fragments": ["Mi", "Nh", "o", "n", "Min", "hon"],
+      "type": "name"
+    },
+    {
+      "keyword": "check-in",
+      "fragments": ["ch", "eck", "in", "check"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "check-out",
+      "fragments": ["ch", "eck", "out", "check"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "xin chào",
+      "fragments": ["x", "in", "ch", "ào", "xin"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "khách sạn",
+      "fragments": ["kh", "ách", "s", "ạn"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "cảm ơn",
+      "fragments": ["c", "ảm", "ơ", "n"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "tạm biệt",
+      "fragments": ["t", "ạm", "bi", "ệt"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "phòng đơn",
+      "fragments": ["ph", "òng", "đ", "ơn"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "phòng đôi",
+      "fragments": ["ph", "òng", "đ", "ôi"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "đặt phòng",
+      "fragments": ["đ", "ặt", "ph", "òng"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "hủy phòng",
+      "fragments": ["h", "ủy", "ph", "òng"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "dịch vụ",
+      "fragments": ["d", "ịch", "v", "ụ"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "tiện nghi",
+      "fragments": ["ti", "ện", "ng", "hi"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "nhà hàng",
+      "fragments": ["nh", "à", "h", "àng"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "bể bơi",
+      "fragments": ["b", "ể", "b", "ơi"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "phòng họp",
+      "fragments": ["ph", "òng", "h", "ọp"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "wifi",
+      "fragments": ["w", "i", "f", "i"],
+      "type": "word"
+    },
+    {
+      "keyword": "điều hòa",
+      "fragments": ["đi", "ều", "h", "òa"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "giặt ủi",
+      "fragments": ["gi", "ặt", "ủ", "i"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "đón khách",
+      "fragments": ["đ", "ón", "kh", "ách"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "trả phòng",
+      "fragments": ["tr", "ả", "ph", "òng"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "thanh toán",
+      "fragments": ["th", "anh", "to", "án"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "hóa đơn",
+      "fragments": ["h", "óa", "đ", "ơn"],
+      "type": "phrase"
+    },
+    {
+      "keyword": "booking",
+      "fragments": ["bo", "ok", "ing"],
+      "type": "word"
+    },
+    {
+      "keyword": "reservation",
+      "fragments": ["re", "ser", "va", "tion"],
+      "type": "word"
+    }
+  ]
+} 
