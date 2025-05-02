@@ -8,6 +8,23 @@ interface Interface2Props {
   isActive: boolean;
 }
 
+// Interface cho trạng thái hiển thị của mỗi message
+interface VisibleCharState {
+  [messageId: string]: number;
+}
+
+// Interface cho một turn trong cuộc hội thoại
+interface ConversationTurn {
+  id: string;
+  role: 'user' | 'assistant';
+  timestamp: Date;
+  messages: Array<{
+    id: string;
+    content: string;
+    timestamp: Date;
+  }>;
+}
+
 const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   const { 
     transcripts, 
@@ -21,6 +38,13 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     modelOutput
   } = useAssistant();
   
+  // State cho Paint-on effect
+  const [visibleChars, setVisibleChars] = useState<VisibleCharState>({});
+  const animationFrames = useRef<{[key: string]: number}>({});
+  
+  // State để lưu trữ các turns đã được xử lý
+  const [conversationTurns, setConversationTurns] = useState<ConversationTurn[]>([]);
+  
   // Add state for references
   const [references, setReferences] = useState<ReferenceItem[]>([]);
   
@@ -28,6 +52,14 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   const [localDuration, setLocalDuration] = useState(0);
   
   const conversationRef = useRef<HTMLDivElement>(null);
+
+  // Cleanup function for animations
+  const cleanupAnimations = () => {
+    Object.values(animationFrames.current).forEach(frameId => {
+      cancelAnimationFrame(frameId);
+    });
+    animationFrames.current = {};
+  };
   
   // Initialize reference service
   useEffect(() => {
@@ -49,7 +81,88 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     });
     setReferences(matches);
   }, [transcripts]);
-  
+
+  // Process transcripts into conversation turns
+  useEffect(() => {
+    const sortedTranscripts = [...transcripts].sort((a, b) => 
+      a.timestamp.getTime() - b.timestamp.getTime()
+    );
+
+    const turns: ConversationTurn[] = [];
+    let currentTurn: ConversationTurn | null = null;
+
+    sortedTranscripts.forEach((message) => {
+      if (message.role === 'user') {
+        // Always create a new turn for user messages
+        currentTurn = {
+          id: message.id.toString(),
+          role: 'user',
+          timestamp: message.timestamp,
+          messages: [{ 
+            id: message.id.toString(), 
+            content: message.content,
+            timestamp: message.timestamp 
+          }]
+        };
+        turns.push(currentTurn);
+      } else {
+        // For assistant messages
+        if (!currentTurn || currentTurn.role === 'user') {
+          // Start new assistant turn
+          currentTurn = {
+            id: message.id.toString(),
+            role: 'assistant',
+            timestamp: message.timestamp,
+            messages: []
+          };
+          turns.push(currentTurn);
+        }
+        // Add message to current assistant turn
+        currentTurn.messages.push({
+          id: message.id.toString(),
+          content: message.content,
+          timestamp: message.timestamp
+        });
+      }
+    });
+
+    setConversationTurns(turns);
+  }, [transcripts]);
+
+  // Paint-on animation effect
+  useEffect(() => {
+    // Get all assistant messages from all turns
+    const assistantMessages = conversationTurns
+      .filter(turn => turn.role === 'assistant')
+      .flatMap(turn => turn.messages);
+    
+    assistantMessages.forEach(message => {
+      // Skip if already animated
+      if (visibleChars[message.id] === message.content.length) return;
+      
+      let currentChar = visibleChars[message.id] || 0;
+      const content = message.content;
+      
+      const animate = () => {
+        if (currentChar < content.length) {
+          setVisibleChars(prev => ({
+            ...prev,
+            [message.id]: currentChar + 1
+          }));
+          currentChar++;
+          animationFrames.current[message.id] = requestAnimationFrame(animate);
+        } else {
+          delete animationFrames.current[message.id];
+        }
+      };
+      
+      animationFrames.current[message.id] = requestAnimationFrame(animate);
+    });
+    
+    // Cleanup on unmount or when turns change
+    return () => cleanupAnimations();
+  }, [conversationTurns]);
+
   // Handler for Cancel button - End call and go back to interface1
   const handleCancel = useCallback(() => {
     // Capture the current duration for the email
@@ -108,7 +221,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     if (conversationRef.current && isActive) {
       conversationRef.current.scrollTop = conversationRef.current.scrollHeight;
     }
-  }, [transcripts, isActive]);
+  }, [conversationTurns, isActive]);
   
   return (
     <div 
@@ -142,27 +255,41 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             ref={conversationRef}
             className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto"
           >
-            {/* Display transcripts in chronological order */}
-            {transcripts
-              .filter(item => item.role === 'user' || item.isModelOutput)
-              .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
-              .map((item) => (
-                <div key={item.id} className="mb-2">
-                  <div className="flex items-start mb-1">
-                    <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2 flex-shrink-0">
-                      <span className="material-icons text-base">
-                        {item.role === 'user' ? 'person' : 'support_agent'}
-                      </span>
-                    </div>
-                    <div className="flex-grow">
-                      <p className="text-sm mb-1 text-yellow-400">
-                        {item.role === 'user' ? 'You' : 'Assistant (Real-time)'}
+            {/* Display conversation turns */}
+            {conversationTurns.map((turn) => (
+              <div key={turn.id} className="mb-2">
+                <div className="flex items-start mb-1">
+                  <div className="flex-grow">
+                    {turn.role === 'user' ? (
+                      // User message - display as is
+                      <p className="text-xl font-semibold text-white">
+                        {turn.messages[0].content}
                       </p>
-                      <p className="text-xl font-semibold text-yellow-200">{item.content}</p>
-                    </div>
+                    ) : (
+                      // Assistant messages - display inline with proper spacing and paint-on effect
+                      <p className="text-xl font-semibold text-yellow-200">
+                        <span className="inline-flex flex-wrap">
+                          {turn.messages.map((msg, idx) => {
+                            // Remove leading/trailing spaces
+                            const content = msg.content.trim();
+                            // Add appropriate spacing
+                            const needsSpaceBefore = idx > 0 && !content.startsWith(',') && !content.startsWith('.') && !content.startsWith('?') && !content.startsWith('!');
+                            // Get visible characters for this message
+                            const visibleContent = content.slice(0, visibleChars[msg.id] || 0);
+                            return (
+                              <span key={msg.id}>
+                                {needsSpaceBefore ? ' ' : ''}
+                                {visibleContent}
+                              </span>
+                            );
+                          })}
+                        </span>
+                      </p>
+                    )}
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
           {/* Reference container below (full width, auto height) */}
           <div className="w-full">
