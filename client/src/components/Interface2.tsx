@@ -3,7 +3,10 @@ import { useAssistant } from '@/context/AssistantContext';
 import Reference from './Reference';
 import SiriCallButton from './SiriCallButton';
 import { referenceService, ReferenceItem } from '@/services/ReferenceService';
-import { findInDictionary } from '@/utils/dictionary';
+
+interface Interface2Props {
+  isActive: boolean;
+}
 
 // Interface cho trạng thái hiển thị của mỗi message
 interface VisibleCharState {
@@ -20,10 +23,6 @@ interface ConversationTurn {
     content: string;
     timestamp: Date;
   }>;
-}
-
-interface Interface2Props {
-  isActive: boolean;
 }
 
 const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
@@ -54,81 +53,176 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   
   const conversationRef = useRef<HTMLDivElement>(null);
 
-  // Hàm xử lý text từ assistant
-  const processAssistantText = (text: string): string => {
-    try {
-      // Bước 1: Tách text thành các từ
-      const words = text.split(/([A-Z][a-z]+|[A-Z]{2,}(?=[A-Z][a-z]|\d|\W|$)|[0-9]+|[a-z]+|[.,!?])/g)
-        .filter(word => word.trim().length > 0);
-
-      // Bước 2: Xử lý từng từ với Dictionary
-      const processedWords = words.map((word, index) => {
-        // Kiểm tra từ điển cho từ hiện tại
-        const dictionaryMatch = findInDictionary([word]);
-        if (dictionaryMatch) {
-          return dictionaryMatch.keyword;
+  // Cleanup function for animations
+  const cleanupAnimations = () => {
+    Object.values(animationFrames.current).forEach(frameId => {
+      cancelAnimationFrame(frameId);
+    });
+    animationFrames.current = {};
+  };
+  
+  // Initialize reference service
+  useEffect(() => {
+    referenceService.initialize();
+  }, []);
+  
+  // Update references when new transcripts arrive
+  useEffect(() => {
+    // Only look at user messages for reference requests
+    const userMessages = transcripts.filter(t => t.role === 'user');
+    const matches: ReferenceItem[] = [];
+    userMessages.forEach(msg => {
+      const found = referenceService.findReferences(msg.content);
+      found.forEach(ref => {
+        if (!matches.find(m => m.url === ref.url)) {
+          matches.push(ref);
         }
-
-        // Kiểm tra từ điển cho cụm từ (nếu có từ tiếp theo)
-        if (index < words.length - 1) {
-          const phraseMatch = findInDictionary([word, words[index + 1]]);
-          if (phraseMatch) {
-            words[index + 1] = ''; // Đánh dấu từ tiếp theo đã được xử lý
-            return phraseMatch.keyword;
-          }
-        }
-
-        // Xử lý các trường hợp đặc biệt
-        if (word.match(/[.,!?]/)) {
-          return word + ' '; // Thêm khoảng trắng sau dấu câu
-        }
-
-        // Xử lý I'm, I'll, I've
-        if (word.match(/^(I'm|I'll|I've)$/)) {
-          return ' ' + word;
-        }
-
-        return word;
       });
+    });
+    setReferences(matches);
+  }, [transcripts]);
 
-      // Bước 3: Kết hợp các từ và xử lý khoảng trắng
-      let processed = processedWords
-        .filter(word => word.length > 0) // Loại bỏ các từ đã được đánh dấu
-        .join(' ')
-        .replace(/\s+/g, ' ') // Gộp nhiều khoảng trắng
-        .trim();
+  // Process transcripts into conversation turns
+  useEffect(() => {
+    const sortedTranscripts = [...transcripts].sort((a, b) => 
+      a.timestamp.getTime() - b.timestamp.getTime()
+    );
 
-      console.log('Processed text:', processed); // Log để debug
-      return processed;
-    } catch (error) {
-      console.error('Error in processAssistantText:', error);
-      return text; // Trả về text gốc nếu có lỗi
-    }
-  };
+    const turns: ConversationTurn[] = [];
+    let currentTurn: ConversationTurn | null = null;
 
-  // Process assistant message content with dictionary
-  const processMessageContent = (content: string): string => {
-    // Kiểm tra content có phải là string không
-    if (typeof content !== 'string') {
-      console.warn('Content is not a string:', content);
-      return String(content || '');
-    }
+    sortedTranscripts.forEach((message) => {
+      if (message.role === 'user') {
+        // Always create a new turn for user messages
+        currentTurn = {
+          id: message.id.toString(),
+          role: 'user',
+          timestamp: message.timestamp,
+          messages: [{ 
+            id: message.id.toString(), 
+            content: message.content,
+            timestamp: message.timestamp 
+          }]
+        };
+        turns.push(currentTurn);
+      } else {
+        // For assistant messages
+        if (!currentTurn || currentTurn.role === 'user') {
+          // Start new assistant turn
+          currentTurn = {
+            id: message.id.toString(),
+            role: 'assistant',
+            timestamp: message.timestamp,
+            messages: []
+          };
+          turns.push(currentTurn);
+        }
+        // Add message to current assistant turn
+        currentTurn.messages.push({
+          id: message.id.toString(),
+          content: message.content,
+          timestamp: message.timestamp
+        });
+      }
+    });
 
-    try {
-      return processAssistantText(content);
-    } catch (error) {
-      console.error('Error processing message content:', error);
-      return content;
-    }
-  };
+    setConversationTurns(turns);
+  }, [transcripts]);
 
+  // Paint-on animation effect
+  useEffect(() => {
+    // Get all assistant messages from all turns
+    const assistantMessages = conversationTurns
+      .filter(turn => turn.role === 'assistant')
+      .flatMap(turn => turn.messages);
+    
+    assistantMessages.forEach(message => {
+      // Skip if already animated
+      if (visibleChars[message.id] === message.content.length) return;
+      
+      let currentChar = visibleChars[message.id] || 0;
+      const content = message.content;
+      
+      const animate = () => {
+        if (currentChar < content.length) {
+          setVisibleChars(prev => ({
+            ...prev,
+            [message.id]: currentChar + 1
+          }));
+          currentChar++;
+          animationFrames.current[message.id] = requestAnimationFrame(animate);
+        } else {
+          delete animationFrames.current[message.id];
+        }
+      };
+      
+      animationFrames.current[message.id] = requestAnimationFrame(animate);
+    });
+    
+    // Cleanup on unmount or when turns change
+    return () => cleanupAnimations();
+  }, [conversationTurns]);
+
+  // Handler for Cancel button - End call and go back to interface1
+  const handleCancel = useCallback(() => {
+    // Capture the current duration for the email
+    const finalDuration = callDuration > 0 ? callDuration : localDuration;
+    console.log('Canceling call with duration:', finalDuration);
+    
+    // Call the context's endCall and switch to interface1
+    contextEndCall();
+    setCurrentInterface('interface1');
+  }, [callDuration, localDuration, contextEndCall, setCurrentInterface]);
+
+  // Handler for Next button - End call and proceed to interface3
+  const handleNext = useCallback(() => {
+    // Capture the current duration for the email
+    const finalDuration = callDuration > 0 ? callDuration : localDuration;
+    console.log('Ending call with duration:', finalDuration);
+    
+    // Call the context's endCall and switch to interface3
+    contextEndCall();
+    setCurrentInterface('interface3');
+  }, [callDuration, localDuration, contextEndCall, setCurrentInterface]);
+  
   // Format duration for display
   const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
     const secs = (seconds % 60).toString().padStart(2, '0');
     return `${minutes}:${secs}`;
   };
-
+  
+  // Local timer as a backup to ensure we always have a working timer
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+    
+    // Only start the timer when this interface is active
+    if (isActive) {
+      console.log('Interface2 is active, starting local timer');
+      // Initialize with the current duration from context
+      setLocalDuration(callDuration || 0);
+      
+      // Start the local timer
+      timer = setInterval(() => {
+        setLocalDuration(prev => prev + 1);
+      }, 1000);
+    }
+    
+    return () => {
+      if (timer) {
+        console.log('Cleaning up local timer in Interface2');
+        clearInterval(timer);
+      }
+    };
+  }, [isActive, callDuration]);
+  
+  // Scroll to bottom of conversation when new messages arrive
+  useEffect(() => {
+    if (conversationRef.current && isActive) {
+      conversationRef.current.scrollTop = conversationRef.current.scrollHeight;
+    }
+  }, [conversationTurns, isActive]);
+  
   return (
     <div 
       className={`absolute w-full h-full transition-opacity duration-500 ${
@@ -176,25 +270,18 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                       <p className="text-xl font-semibold text-yellow-200">
                         <span className="inline-flex flex-wrap">
                           {turn.messages.map((msg, idx) => {
-                            try {
-                              // Remove leading/trailing spaces
-                              const content = typeof msg.content === 'string' ? msg.content.trim() : String(msg.content || '');
-                              // Process content through dictionary
-                              const processedContent = processMessageContent(content);
-                              // Add appropriate spacing
-                              const needsSpaceBefore = idx > 0 && !processedContent.startsWith(',') && !processedContent.startsWith('.') && !processedContent.startsWith('?') && !processedContent.startsWith('!');
-                              // Get visible characters for this message
-                              const visibleContent = processedContent.slice(0, visibleChars[msg.id] || 0);
-                              return (
-                                <span key={msg.id}>
-                                  {needsSpaceBefore ? ' ' : ''}
-                                  {visibleContent}
-                                </span>
-                              );
-                            } catch (error) {
-                              console.error('Error rendering message:', error);
-                              return null; // Skip rendering this message if there's an error
-                            }
+                            // Remove leading/trailing spaces
+                            const content = msg.content.trim();
+                            // Add appropriate spacing
+                            const needsSpaceBefore = idx > 0 && !content.startsWith(',') && !content.startsWith('.') && !content.startsWith('?') && !content.startsWith('!');
+                            // Get visible characters for this message
+                            const visibleContent = content.slice(0, visibleChars[msg.id] || 0);
+                            return (
+                              <span key={msg.id}>
+                                {needsSpaceBefore ? ' ' : ''}
+                                {visibleContent}
+                              </span>
+                            );
                           })}
                         </span>
                       </p>
@@ -204,10 +291,26 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               </div>
             ))}
           </div>
+          {/* Reference container below (full width, auto height) */}
+          <div className="w-full">
+            <Reference references={references} />
+          </div>
+        </div>
+        {/* Right: Control buttons */}
+        <div className="w-1/4 lg:w-1/3 flex flex-col items-center lg:items-end p-2 space-y-2 overflow-auto" style={{ maxHeight: '100%' }}>
+          <button id="backButton" onClick={() => setCurrentInterface('interface1')} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs">
+            <span className="material-icons mr-1 text-base">arrow_back</span>Back
+          </button>
+          <button id="cancelButton" onClick={handleCancel} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs">
+            <span className="material-icons mr-1 text-base">cancel</span>Cancel
+          </button>
+          <button id="endCallButton" onClick={handleNext} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs">
+            <span className="material-icons mr-1 text-base">navigate_next</span>Next
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default Interface2; 
+export default Interface2;
