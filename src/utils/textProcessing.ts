@@ -17,25 +17,28 @@ function findLongestWord(text: string, start: number): { word: string; length: n
   let maxLength = 0;
   let longestWord = '';
   
-  // Xử lý số và dấu câu đặc biệt
+  // Xử lý dấu câu đặc biệt
+  const punctMatch = text.slice(start).match(/^[.,!?;:'"-{}[\]()]/);
+  if (punctMatch) {
+    return { word: punctMatch[0], length: 1 };
+  }
+  
+  // Xử lý số và thời gian
   const numberMatch = text.slice(start).match(/^\d+(:?\d+)?/);
   if (numberMatch) {
     return { word: numberMatch[0], length: numberMatch[0].length };
   }
   
-  const punctMatch = text.slice(start).match(/^[.,!?;:'"-]/);
-  if (punctMatch) {
-    return { word: punctMatch[0], length: 1 };
-  }
-  
   // Thử các độ dài khác nhau từ vị trí start
-  for (let length = 1; length <= Math.min(20, text.length - start); length++) {
+  for (let length = Math.min(20, text.length - start); length >= 1; length--) {
     const word = text.slice(start, start + length).toLowerCase();
     
     // Kiểm tra trong từ điển tiếng Anh
     if (englishDictionary.has(word)) {
-      maxLength = length;
-      longestWord = word;
+      if (length > maxLength) {
+        maxLength = length;
+        longestWord = word;
+      }
     }
     
     // Kiểm tra trong dictionary tùy chỉnh
@@ -73,11 +76,17 @@ export function processText(text: string): TokenizeResult {
     
     if (length > 0) {
       // Tìm thấy từ trong từ điển
-      // Giữ nguyên chữ hoa/thường của từ gốc nếu là tên riêng
       const originalWord = text.slice(position, position + length);
-      const finalWord = englishDictionary.has(word.toLowerCase()) ? 
-        (position === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word) :
-        originalWord;
+      
+      // Xử lý chữ hoa/thường
+      let finalWord = word;
+      if (position === 0 || text[position - 1] === '.' || text[position - 1] === '!') {
+        // Viết hoa chữ cái đầu câu
+        finalWord = word.charAt(0).toUpperCase() + word.slice(1);
+      } else if (!englishDictionary.has(word.toLowerCase())) {
+        // Giữ nguyên chữ hoa/thường cho tên riêng
+        finalWord = originalWord;
+      }
       
       words.push(finalWord);
       originalPositions.push(position);
@@ -108,13 +117,17 @@ export function applySmartSpacing(words: string[]): string {
     const isNumber = /^\d/.test(word);
     const isPrevNumber = /\d$/.test(prevWord);
     const isTimeUnit = /^(am|pm)$/i.test(word);
-    const isSpecialChar = /^[.,!?;:'"-]/.test(word);
-    const isPrevSpecialChar = /[.,!?;:'"-]$/.test(prevWord);
+    const isSpecialChar = /^[.,!?;:'"-{}[\]()]/.test(word);
+    const isPrevSpecialChar = /[.,!?;:'"-{}[\]()]$/.test(prevWord);
+    const isOpenBracket = /^[{[(]/.test(word);
+    const isCloseBracket = /^[})\]]/.test(word);
     
     const needsSpace = !isSpecialChar && // Không space trước dấu câu
                       !isPrevSpecialChar && // Không space sau dấu câu đặc biệt
                       !(isNumber && isPrevNumber) && // Không space giữa các số
                       !(isTimeUnit && isPrevNumber) && // Không space giữa số và AM/PM
+                      !isCloseBracket && // Không space trước dấu đóng ngoặc
+                      !isOpenBracket && // Không space sau dấu mở ngoặc
                       !word.match(/^[-']/) && // Không space trước gạch nối/nháy đơn
                       !prevWord.match(/[-']$/); // Không space sau gạch nối/nháy đơn
     

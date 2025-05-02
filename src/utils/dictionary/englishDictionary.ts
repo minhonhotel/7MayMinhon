@@ -1,9 +1,10 @@
 export const englishDictionary = new Set([
-  // Common words
+  // Articles and Basic Words
+  'the', 'a', 'an', 'name', 'your', 'my', 'his', 'her', 'their', 'our',
   'good', 'afternoon', 'morning', 'evening', 'hello', 'hi', 'welcome', 'thank', 'thanks', 'you',
   'please', 'help', 'can', 'could', 'would', 'will', 'shall', 'may', 'might', 'must',
   'have', 'has', 'had', 'am', 'is', 'are', 'was', 'were', 'been', 'being',
-  'do', 'does', 'did', 'done', 'doing',
+  'do', 'does', 'did', 'done', 'doing', 'assist', 'today',
   
   // Hotel-related
   'hotel', 'room', 'booking', 'reservation', 'check', 'in', 'out', 'service',
@@ -68,7 +69,7 @@ export const englishDictionary = new Set([
   'quynhon', 'phanthiet', 'camranh', 'condao', 'phuquoc',
   
   // Proper Names - Hotels & Landmarks
-  'minhonhotel', 'muibeach', 'redsand', 'whitesand', 'fairystream', 'fishingvillage',
+  'minhon', 'minhonhotel', 'muibeach', 'redsand', 'whitesand', 'fairystream', 'fishingvillage',
   'waterfountain', 'lighthouse', 'harbor', 'market', 'nightmarket',
   'tacu', 'mountain', 'beach', 'resort', 'spa', 'golf', 'club', 'center',
   'waterpark', 'amusementpark', 'museum', 'temple', 'pagoda', 'church',
