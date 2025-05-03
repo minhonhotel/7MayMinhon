@@ -28,8 +28,6 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
   const [groupedRequests, setGroupedRequests] = useState<Record<string, ServiceRequest[]>>({});
   // State for user-provided additional notes
   const [note, setNote] = useState('');
-  // State để kiểm soát lỗi Room Number
-  const [showRoomNumberError, setShowRoomNumberError] = useState(false);
   
   // Handle input changes
   const handleInputChange = (field: string, value: string) => {
@@ -260,19 +258,8 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
     }
   }, [isActive, callSummary, orderSummary, setOrderSummary]);
 
-  // Khi Room Number thay đổi, nếu có lỗi thì reset lỗi
-  useEffect(() => {
-    if (orderSummary?.roomNumber && showRoomNumberError) {
-      setShowRoomNumberError(false);
-    }
-  }, [orderSummary?.roomNumber, showRoomNumberError]);
-
   // Handle confirm order
   const handleConfirmOrder = async () => {
-    if (!orderSummary?.roomNumber || orderSummary.roomNumber.trim() === '') {
-      setShowRoomNumberError(true);
-      return;
-    }
     if (!orderSummary) return;
     
     // Generate a random order reference
@@ -488,13 +475,15 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
               <div className="flex flex-col items-start space-y-1">
                 <div className="flex items-center space-x-2">
                   <label className="text-sm text-gray-500">Room Number</label>
-                  <input type="text" className="w-32 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary" value={orderSummary.roomNumber} onChange={(e) => handleInputChange('roomNumber', e.target.value)} />
+                  <input
+                    type="text"
+                    className="w-32 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary"
+                    value={orderSummary.roomNumber}
+                    onChange={(e) => handleInputChange('roomNumber', e.target.value)}
+                    placeholder="Enter your room number"
+                  />
                 </div>
-                {showRoomNumberError && (
-                  <span className="text-xs text-red-500 mt-1">
-                    Please provide your room number into the Add Note Box in order to enable the "Send Your Request to Reception"
-                  </span>
-                )}
+                <span className="text-xs italic text-gray-400 mt-1">*Required in order to enable the Send To Reception</span>
               </div>
             </div>
             {/* Right column: control buttons at top-right */}
@@ -509,7 +498,6 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
                 <button
                   onClick={handleConfirmOrder}
                   className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition-colors"
-                  disabled={!orderSummary.roomNumber || orderSummary.roomNumber.trim() === ''}
                 >
                   <span className="material-icons">send</span>
                   <span>Press Here to Send Your Request To Receptionist</span>
