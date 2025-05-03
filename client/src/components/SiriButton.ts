@@ -90,18 +90,18 @@ export class SiriButton {
     const container = this.canvas.parentElement;
     if (!container) return;
 
-    // Set canvas size with device pixel ratio for sharp rendering
+    // Set canvas size to be a perfect square (use min of width/height)
     const dpr = window.devicePixelRatio || 1;
-    this.width = container.clientWidth;
-    this.height = container.clientHeight;
-    this.canvas.width = this.width * dpr;
-    this.canvas.height = this.height * dpr;
-    this.canvas.style.width = `${this.width}px`;
-    this.canvas.style.height = `${this.height}px`;
-    
+    const size = Math.min(container.clientWidth, container.clientHeight);
+    this.width = this.height = size;
+    this.canvas.width = this.canvas.height = size * dpr;
+    this.canvas.style.width = this.canvas.style.height = `${size}px`;
+    // Ensure canvas is perfectly round
+    this.canvas.style.borderRadius = '50%';
+    this.canvas.style.overflow = 'hidden';
     // Scale context
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
     this.ctx.scale(dpr, dpr);
-    
     // Update center coordinates
     this.centerX = this.width / 2;
     this.centerY = this.height / 2;
