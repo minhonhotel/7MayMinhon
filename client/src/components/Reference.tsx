@@ -1,16 +1,11 @@
 /// <reference types="react" />
 import React, { useState, useEffect } from 'react';
-import { ReferenceItem } from '@/services/ReferenceService';
-
-// Add ImportMeta interface to fix env property error
-declare global {
-  interface ImportMeta {
-    env: {
-      BASE_URL: string;
-      [key: string]: string;
-    };
-  }
-}
+import type { ReferenceItem } from '@/services/ReferenceService';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, A11y } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 interface ReferenceProps {
   references: ReferenceItem[];
@@ -20,43 +15,42 @@ interface DocContents {
   [key: string]: string;
 }
 
-// Add JSX.IntrinsicElements interface
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      div: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-      img: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
-      p: React.DetailedHTMLProps<React.HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>;
-      button: React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
-      span: React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
-      pre: React.DetailedHTMLProps<React.HTMLAttributes<HTMLPreElement>, HTMLPreElement>;
-      embed: React.DetailedHTMLProps<React.EmbedHTMLAttributes<HTMLEmbedElement>, HTMLEmbedElement>;
-      h3: React.DetailedHTMLProps<React.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-    }
-  }
-}
-
 const Reference = ({ references }: ReferenceProps): JSX.Element => {
-  // State to hold fetched text content for .txt documents
   const [docContents, setDocContents] = useState<DocContents>({});
+  const [loading, setLoading] = useState(true);
 
-  // Fetch text for any .txt documents to preview inline
   useEffect(() => {
+    setLoading(true);
+    let fetchCount = 0;
+    if (references.length === 0) {
+      setLoading(false);
+      return;
+    }
     references.forEach((ref: ReferenceItem) => {
-      if (ref.type === 'document' && ref.url.endsWith('.txt') && !docContents[ref.url]) {
+      if ((ref as any).type === 'document' && ref.url.endsWith('.txt') && !docContents[ref.url]) {
         fetch(ref.url)
           .then(res => res.text())
-          .then(text => setDocContents((prev: DocContents) => ({ ...prev, [ref.url]: text })))
-          .catch(err => console.error('Error fetching document text:', err));
+          .then(text => {
+            setDocContents((prev: DocContents) => ({ ...prev, [ref.url]: text }));
+            fetchCount++;
+            if (fetchCount === references.length) setLoading(false);
+          })
+          .catch(() => {
+            fetchCount++;
+            if (fetchCount === references.length) setLoading(false);
+          });
+      } else {
+        fetchCount++;
+        if (fetchCount === references.length) setLoading(false);
       }
     });
-  }, [references, docContents]);
+    if (references.every(ref => (ref as any).type !== 'document' || !ref.url.endsWith('.txt'))) {
+      setLoading(false);
+    }
+  }, [references]);
 
-  // Helper to normalize asset URLs
   const getAssetUrl = (url: string) => {
-    // External links unchanged
     if (/^https?:\/\//.test(url)) return url;
-    // Ensure URL does not start with slash
     const path = url.replace(/^\//, '');
     return `${import.meta.env.BASE_URL}${path}`;
   };
@@ -82,99 +76,104 @@ const Reference = ({ references }: ReferenceProps): JSX.Element => {
     window.open(getAssetUrl(url), '_blank');
   };
 
-  const renderReference = (reference: ReferenceItem) => {
-    switch (reference.type) {
-      case 'image':
-        return (
-          <div className="relative group">
-            <div 
-              role="button"
-              onClick={() => handleOpenLink(reference.url)}
-              className="cursor-pointer"
-            >
-              <img
-                src={getAssetUrl(reference.url)}
-                alt={reference.title}
-                className="w-full h-48 object-cover rounded-lg"
-              />
-              <div className="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                <p className="text-sm font-medium">{reference.title}</p>
-                {reference.description && (
-                  <p className="text-xs">{reference.description}</p>
-                )}
-              </div>
-            </div>
-          </div>
-        );
+  // Skeleton loading card
+  const SkeletonCard = () => (
+    <div className="animate-pulse bg-white/80 rounded-xl shadow-md h-[180px] flex flex-col p-4 gap-2">
+      <div className="bg-gray-200 rounded w-full h-2/3 mb-2"></div>
+      <div className="bg-gray-200 rounded w-2/3 h-4 mb-1"></div>
+      <div className="bg-gray-100 rounded w-1/2 h-3"></div>
+    </div>
+  );
 
-      case 'document':
-        return (
-          <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <span className="material-icons text-gray-500 mr-3">description</span>
-                <div>
-                  <p className="font-medium">{reference.title}</p>
-                  {reference.description && (
-                    <p className="text-sm text-gray-500">{reference.description}</p>
-                  )}
-                </div>
-              </div>
+  // Card rendering
+  const renderReferenceCard = (reference: ReferenceItem) => {
+    return (
+      <div
+        className="group bg-white/90 rounded-xl shadow-md h-[180px] flex flex-col justify-between cursor-pointer transition-transform duration-200 hover:scale-[1.03] active:scale-95 border border-white/40 backdrop-blur-md"
+        style={{ minWidth: 220, maxWidth: 260 }}
+        onClick={() => (reference as any).type === 'link' ? handleOpenLink(reference.url) : undefined}
+      >
+        {/* Thumbnail */}
+        <div className="flex-1 flex items-center justify-center overflow-hidden rounded-t-xl" style={{ height: '60%' }}>
+          {(reference as any).type === 'image' && (
+            <img src={getAssetUrl(reference.url)} alt={reference.title} className="object-cover w-full h-full rounded-t-xl" />
+          )}
+          {(reference as any).type === 'document' && reference.url.endsWith('.pdf') && (
+            <span className="material-icons text-5xl text-blue-700/80">picture_as_pdf</span>
+          )}
+          {(reference as any).type === 'document' && reference.url.endsWith('.txt') && (
+            <span className="material-icons text-5xl text-green-700/80">description</span>
+          )}
+          {(reference as any).type === 'link' && (
+            <span className="material-icons text-5xl text-yellow-700/80">link</span>
+          )}
+        </div>
+        {/* Text content */}
+        <div className="flex flex-col gap-1 px-3 py-2">
+          <div className="flex items-center gap-2">
+            <span className="text-base font-medium text-gray-900 truncate">{reference.title}</span>
+            {(reference as any).type === 'document' && (
               <button
-                onClick={() => handleDownload(reference.url, reference.title)}
-                className="p-2 text-primary hover:bg-primary hover:text-white rounded-full transition-colors"
+                onClick={e => { e.stopPropagation(); handleDownload(reference.url, reference.title); }}
+                className="ml-auto p-1 rounded-full hover:bg-yellow-100 text-yellow-700 transition-colors"
               >
-                <span className="material-icons">download</span>
+                <span className="material-icons text-base">download</span>
               </button>
-            </div>
-            {/* Inline preview for text and PDF documents */}
-            {reference.url.endsWith('.txt') && docContents[reference.url] && (
-              <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap text-sm text-gray-700">
-                {docContents[reference.url]}
-              </pre>
             )}
-            {reference.url.endsWith('.pdf') && (
-              <embed
-                src={getAssetUrl(reference.url)}
-                type="application/pdf"
-                className="w-full h-64 mt-2 rounded"
-              />
+            {(reference as any).type === 'link' && (
+              <span className="material-icons text-xs text-gray-400 ml-1">open_in_new</span>
             )}
           </div>
-        );
-
-      case 'link':
-        return (
-          <div 
-            role="button"
-            onClick={() => handleOpenLink(reference.url)}
-            className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
-          >
-            <span className="material-icons text-gray-500 mr-3">link</span>
-            <div className="flex-grow">
-              <p className="font-medium">{reference.title}</p>
-              {reference.description && (
-                <p className="text-sm text-gray-500">{reference.description}</p>
-              )}
-            </div>
-            <div className="ml-3 p-2 text-primary hover:bg-primary hover:text-white rounded-full transition-colors">
-              <span className="material-icons">open_in_new</span>
-            </div>
-          </div>
-        );
-    }
+          {reference.description && (
+            <span className="text-xs text-gray-500 truncate">{reference.description}</span>
+          )}
+          {/* Inline preview for .txt */}
+          {reference.url.endsWith('.txt') && docContents[reference.url] && (
+            <pre className="mt-1 max-h-12 overflow-auto whitespace-pre-wrap text-xs text-gray-700 bg-gray-50 rounded p-1">{docContents[reference.url].slice(0, 120)}...</pre>
+          )}
+        </div>
+      </div>
+    );
   };
 
+  // Responsive breakpoints
+  const getSlidesPerView = () => {
+    if (window.innerWidth < 640) return 1;
+    if (window.innerWidth < 1024) return 2;
+    if (window.innerWidth < 1280) return 3;
+    return 4;
+  };
+
+  // Main render
   return (
-    <div className="w-4/5 mx-auto rounded-lg border border-gray-200 p-5">
-      <h3 className="font-semibold text-xl text-white mb-4">References</h3>
-      <div className="grid grid-cols-3 gap-4">
-        {references.map((reference: ReferenceItem, index: number) => (
-          <div key={`${reference.url}-${index}`} className="border rounded-lg p-2">
-            {renderReference(reference)}
-          </div>
-        ))}
+    <div className="w-full max-w-5xl mx-auto mt-2 mb-2 px-2 py-3 rounded-2xl" style={{ background: 'rgba(26,35,126,0.85)', minHeight: 220 }}>
+      <div className="flex items-center mb-3 px-2">
+        <h3 className="font-poppins font-semibold text-[20px] text-white tracking-wide">References</h3>
       </div>
+      {/* Loading state */}
+      {loading ? (
+        <div className="flex gap-4 overflow-x-auto pb-2">
+          {[...Array(3)].map((_, i) => <SkeletonCard key={i} />)}
+        </div>
+      ) : references.length === 0 ? (
+        <div className="flex items-center justify-center h-[120px] text-white/80 text-base font-medium">No references available</div>
+      ) : (
+        <Swiper
+          modules={[Navigation, Pagination, A11y]}
+          spaceBetween={16}
+          slidesPerView={getSlidesPerView()}
+          navigation={references.length > 3}
+          pagination={{ clickable: true, dynamicBullets: true }}
+          className="w-full"
+          style={{ paddingBottom: 32 }}
+        >
+          {references.map((reference, idx) => (
+            <SwiperSlide key={reference.url + idx} className="flex justify-center">
+              {renderReferenceCard(reference)}
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
     </div>
   );
 };
