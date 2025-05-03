@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAssistant } from '@/context/AssistantContext';
 import hotelImage from '../assets/hotel-exterior.jpeg';
-import minhonLogo from '../public/assets/references/images/minhon-logo.png';
+import minhonLogo from '../public/assets/references/images/minhon-logo.jpg';
 
 interface Interface1Props {
   isActive: boolean;
