@@ -253,7 +253,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           <div
             id="realTimeConversation"
             ref={conversationRef}
-            className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto mt-32"
+            className="relative p-2 w-full min-h-[60px] max-h-[84px] overflow-y-auto mt-32"
           >
             {/* Display conversation turns */}
             {conversationTurns.map((turn) => (
@@ -262,12 +262,12 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                   <div className="flex-grow">
                     {turn.role === 'user' ? (
                       // User message - display as is
-                      <p className="text-xl font-semibold text-white">
+                      <p className="text-xl font-semibold text-white font-poppins">
                         {turn.messages[0].content}
                       </p>
                     ) : (
                       // Assistant messages - display inline with proper spacing and paint-on effect
-                      <p className="text-xl font-semibold text-yellow-200">
+                      <p className="text-xl font-semibold text-yellow-200 font-poppins">
                         <span className="inline-flex flex-wrap">
                           {turn.messages.map((msg, idx) => {
                             // Không trim, giữ nguyên khoảng trắng gốc
