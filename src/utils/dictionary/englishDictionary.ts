@@ -1,10 +1,9 @@
 export const englishDictionary = new Set([
-  // Articles and Basic Words
-  'the', 'a', 'an', 'name', 'your', 'my', 'his', 'her', 'their', 'our',
+  // Common words
   'good', 'afternoon', 'morning', 'evening', 'hello', 'hi', 'welcome', 'thank', 'thanks', 'you',
   'please', 'help', 'can', 'could', 'would', 'will', 'shall', 'may', 'might', 'must',
   'have', 'has', 'had', 'am', 'is', 'are', 'was', 'were', 'been', 'being',
-  'do', 'does', 'did', 'done', 'doing', 'assist', 'today',
+  'do', 'does', 'did', 'done', 'doing',
   
   // Hotel-related
   'hotel', 'room', 'booking', 'reservation', 'check', 'in', 'out', 'service',
@@ -21,74 +20,53 @@ export const englishDictionary = new Set([
   'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
   'january', 'february', 'march', 'april', 'may', 'june', 'july', 'august',
   'september', 'october', 'november', 'december',
-  'hour', 'minute', 'second', 'early', 'late', 'schedule', 'appointment',
   
-  // Numbers and quantities
+  // Numbers and units
   'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
-  'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth',
-  'many', 'much', 'few', 'little', 'some', 'any', 'all', 'none',
-  'hundred', 'thousand', 'million',
+  'first', 'second', 'third', 'fourth', 'fifth',
+  'minute', 'hour', 'day', 'week', 'month', 'year',
   
   // Question words
-  'what', 'when', 'where', 'who', 'why', 'how', 'which', 'whose', 'whom',
+  'what', 'when', 'where', 'who', 'why', 'how', 'which',
   
   // Prepositions
   'in', 'on', 'at', 'to', 'from', 'with', 'without', 'by', 'for', 'of',
-  'about', 'above', 'across', 'after', 'against', 'along', 'among', 'around',
-  'before', 'behind', 'below', 'beneath', 'beside', 'between', 'beyond',
-  'through', 'during', 'until', 'within', 'throughout',
+  'under', 'over', 'between', 'among', 'through', 'into', 'onto', 'upon',
   
   // Conjunctions
-  'and', 'or', 'but', 'nor', 'for', 'yet', 'so', 'because', 'although', 'unless',
-  'since', 'while', 'where', 'if', 'then', 'than', 'that',
-  'therefore', 'however', 'moreover', 'furthermore',
+  'and', 'or', 'but', 'nor', 'for', 'yet', 'so',
+  'because', 'although', 'unless', 'since', 'while',
   
-  // Common adjectives
-  'good', 'bad', 'big', 'small', 'hot', 'cold', 'new', 'old', 'high', 'low',
-  'happy', 'sad', 'clean', 'dirty', 'easy', 'hard', 'early', 'late', 'fast', 'slow',
-  'right', 'wrong', 'true', 'false', 'same', 'different', 'next', 'last',
-  'beautiful', 'comfortable', 'convenient', 'excellent', 'perfect', 'great',
-  'available', 'busy', 'free', 'full', 'empty', 'ready', 'special',
+  // Adjectives
+  'good', 'bad', 'big', 'small', 'hot', 'cold', 'clean', 'dirty',
+  'new', 'old', 'high', 'low', 'happy', 'sad', 'busy', 'free',
+  'early', 'late', 'fast', 'slow', 'hard', 'soft', 'light', 'dark',
   
-  // Common adverbs
-  'very', 'really', 'quite', 'rather', 'too', 'also', 'just', 'only', 'even',
-  'still', 'already', 'again', 'often', 'always', 'never', 'sometimes', 'usually',
-  'immediately', 'quickly', 'slowly', 'carefully', 'well', 'badly',
+  // Adverbs
+  'very', 'really', 'quite', 'too', 'also', 'just', 'only', 'even',
+  'well', 'quickly', 'slowly', 'carefully', 'easily', 'hardly',
   
   // Pronouns
-  'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them',
-  'my', 'your', 'his', 'its', 'our', 'their', 'mine', 'yours', 'hers', 'ours', 'theirs',
-  'this', 'that', 'these', 'those', 'myself', 'yourself', 'himself', 'herself', 'itself',
-  'ourselves', 'themselves',
-
-  // Proper Names - Places
-  'vietnam', 'muine', 'phanrang', 'nhatrang', 'hochiminh', 'hanoi', 'danang', 'saigon',
+  'i', 'you', 'he', 'she', 'it', 'we', 'they',
+  'me', 'him', 'her', 'us', 'them',
+  'my', 'your', 'his', 'her', 'its', 'our', 'their',
+  'mine', 'yours', 'his', 'hers', 'ours', 'theirs',
+  'this', 'that', 'these', 'those',
+  'myself', 'yourself', 'himself', 'herself', 'itself', 'ourselves', 'themselves',
+  
+  // Common verbs
+  'book', 'reserve', 'check', 'stay', 'sleep', 'eat', 'drink', 'order',
+  'need', 'want', 'like', 'love', 'hate', 'prefer', 'choose', 'select',
+  'pay', 'cost', 'charge', 'spend', 'save', 'buy', 'sell', 'give',
+  'take', 'bring', 'send', 'receive', 'get', 'put', 'set', 'make',
+  'call', 'phone', 'email', 'message', 'contact', 'reach', 'connect',
+  
+  // Proper names and places
+  'minhnon', 'hotel', 'vietnam', 'hanoi', 'saigon', 'hochiminh',
   'asia', 'europe', 'america', 'australia', 'africa',
-  'minhon', 'nguyen', 'dinh', 'chieu', 'le', 'tran', 'pham', 'hoang',
-  'binhthuan', 'vungtau', 'dalat', 'halong', 'hue', 'hoian', 'cantho', 'haiphong',
-  'quynhon', 'phanthiet', 'camranh', 'condao', 'phuquoc',
   
-  // Proper Names - Hotels & Landmarks
-  'minhon', 'minhonhotel', 'muibeach', 'redsand', 'whitesand', 'fairystream', 'fishingvillage',
-  'waterfountain', 'lighthouse', 'harbor', 'market', 'nightmarket',
-  'tacu', 'mountain', 'beach', 'resort', 'spa', 'golf', 'club', 'center',
-  'waterpark', 'amusementpark', 'museum', 'temple', 'pagoda', 'church',
-  
-  // Common Vietnamese Words (in English letters)
-  'xin', 'chao', 'cam', 'on', 'tam', 'biet', 'khach', 'san',
-  'nha', 'hang', 'bien', 'duong', 'pho', 'cho', 'cua', 'nuoc',
-  'banh', 'mi', 'pho', 'com', 'chao', 'cafe', 'tra', 'sua',
-  'dao', 'bien', 'nui', 'song', 'ho', 'cau', 'cang', 'ben',
-  
-  // Vietnamese Food & Drinks
-  'pho', 'banhmi', 'banhxeo', 'springroll', 'ricepaper', 'fishsauce',
-  'nuocmam', 'coffee', 'tea', 'juice', 'water', 'beer', 'wine',
-  'breakfast', 'lunch', 'dinner', 'snack', 'dessert', 'fruit',
-  
-  // Services & Amenities
-  'wifi', 'internet', 'television', 'tv', 'phone', 'minibar', 'safe',
-  'aircon', 'fan', 'heater', 'lamp', 'light', 'power', 'socket',
-  'massage', 'spa', 'gym', 'fitness', 'swimming', 'tennis', 'golf',
-  'tour', 'guide', 'ticket', 'booking', 'reservation', 'payment',
-  'cash', 'card', 'credit', 'debit', 'visa', 'mastercard', 'receipt'
+  // Pleasantries and common phrases
+  'please', 'thank', 'thanks', 'welcome', 'goodbye', 'bye',
+  'excuse', 'sorry', 'pardon', 'help', 'assist', 'support',
+  'yes', 'no', 'okay', 'ok', 'alright', 'fine', 'great'
 ]); 

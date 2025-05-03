@@ -1,136 +1,93 @@
 import { englishDictionary } from './dictionary/englishDictionary';
 import { findInDictionary } from './dictionary';
 
-// Interface cho kết quả phân tích
-interface TokenizeResult {
+interface ProcessTextResult {
   words: string[];
-  originalPositions: number[];
+  positions: number[];
 }
 
-/**
- * Tìm từ dài nhất có thể từ vị trí start
- * @param text Chuỗi cần xử lý
- * @param start Vị trí bắt đầu
- * @returns Từ dài nhất tìm được và độ dài của nó
- */
-function findLongestWord(text: string, start: number): { word: string; length: number } {
-  let maxLength = 0;
+// Tìm từ dài nhất có thể từ vị trí start
+export function findLongestWord(text: string, start: number): { word: string; end: number } | null {
+  let end = start;
   let longestWord = '';
-  
-  // Xử lý dấu câu đặc biệt
-  const punctMatch = text.slice(start).match(/^[.,!?;:'"-{}[\]()]/);
-  if (punctMatch) {
-    return { word: punctMatch[0], length: 1 };
-  }
-  
-  // Xử lý số và thời gian
-  const numberMatch = text.slice(start).match(/^\d+(:?\d+)?/);
-  if (numberMatch) {
-    return { word: numberMatch[0], length: numberMatch[0].length };
-  }
-  
-  // Thử các độ dài khác nhau từ vị trí start
-  for (let length = Math.min(20, text.length - start); length >= 1; length--) {
-    const word = text.slice(start, start + length).toLowerCase();
+  let longestEnd = start;
+
+  // Thử tất cả các độ dài có thể từ vị trí start
+  while (end < text.length) {
+    const currentWord = text.slice(start, end + 1);
     
-    // Kiểm tra trong từ điển tiếng Anh
-    if (englishDictionary.has(word)) {
-      if (length > maxLength) {
-        maxLength = length;
-        longestWord = word;
-      }
+    // Kiểm tra trong cả từ điển tiếng Anh và từ điển tùy chỉnh
+    if (englishDictionary.has(currentWord.toLowerCase()) || findInDictionary(currentWord)) {
+      longestWord = currentWord;
+      longestEnd = end;
     }
-    
-    // Kiểm tra trong dictionary tùy chỉnh
-    const dictMatch = findInDictionary([word]);
-    if (dictMatch) {
-      if (dictMatch.keyword.length > maxLength) {
-        maxLength = dictMatch.keyword.length;
-        longestWord = dictMatch.keyword;
-      }
-    }
+    end++;
   }
-  
-  return { word: longestWord, length: maxLength };
+
+  return longestWord ? { word: longestWord, end: longestEnd } : null;
 }
 
-/**
- * Xử lý text bằng thuật toán maximum matching
- * @param text Chuỗi cần xử lý
- * @returns Mảng các từ đã được tách và vị trí gốc của chúng
- */
-export function processText(text: string): TokenizeResult {
+// Xử lý text bằng thuật toán maximum matching
+export function processText(text: string): ProcessTextResult {
   const words: string[] = [];
-  const originalPositions: number[] = [];
-  let position = 0;
-  
-  while (position < text.length) {
+  const positions: number[] = [];
+  let currentPos = 0;
+
+  while (currentPos < text.length) {
     // Bỏ qua khoảng trắng
-    if (text[position].trim() === '') {
-      position++;
+    if (/\s/.test(text[currentPos])) {
+      currentPos++;
       continue;
     }
-    
-    // Tìm từ dài nhất có thể từ vị trí hiện tại
-    const { word, length } = findLongestWord(text, position);
-    
-    if (length > 0) {
-      // Tìm thấy từ trong từ điển
-      const originalWord = text.slice(position, position + length);
-      
-      // Xử lý chữ hoa/thường
-      let finalWord = word;
-      if (position === 0 || text[position - 1] === '.' || text[position - 1] === '!') {
-        // Viết hoa chữ cái đầu câu
-        finalWord = word.charAt(0).toUpperCase() + word.slice(1);
-      } else if (!englishDictionary.has(word.toLowerCase())) {
-        // Giữ nguyên chữ hoa/thường cho tên riêng
-        finalWord = originalWord;
-      }
-      
-      words.push(finalWord);
-      originalPositions.push(position);
-      position += length;
+
+    // Xử lý dấu câu và số
+    if (/[.,!?;:0-9]/.test(text[currentPos])) {
+      words.push(text[currentPos]);
+      positions.push(currentPos);
+      currentPos++;
+      continue;
+    }
+
+    // Tìm từ dài nhất có thể
+    const result = findLongestWord(text, currentPos);
+    if (result) {
+      words.push(result.word);
+      positions.push(currentPos);
+      currentPos = result.end + 1;
     } else {
-      // Không tìm thấy từ nào, giữ nguyên ký tự
-      words.push(text[position]);
-      originalPositions.push(position);
-      position++;
+      // Nếu không tìm thấy từ nào, lấy một ký tự
+      words.push(text[currentPos]);
+      positions.push(currentPos);
+      currentPos++;
     }
   }
-  
-  return { words, originalPositions };
+
+  return { words, positions };
 }
 
-/**
- * Áp dụng khoảng trắng thông minh giữa các từ
- * @param words Mảng các từ cần xử lý
- * @returns Chuỗi đã được thêm khoảng trắng
- */
+// Thêm khoảng trắng thông minh giữa các từ
 export function applySmartSpacing(words: string[]): string {
+  if (words.length === 0) return '';
+
   return words.reduce((result, word, index) => {
     if (index === 0) return word;
-    
-    const prevWord = words[index - 1];
-    
-    // Quy tắc đặc biệt cho số và đơn vị
-    const isNumber = /^\d/.test(word);
-    const isPrevNumber = /\d$/.test(prevWord);
-    const isTimeUnit = /^(am|pm)$/i.test(word);
-    const isSpecialChar = /^[.,!?;:'"-{}[\]()]/.test(word);
-    const isPrevSpecialChar = /[.,!?;:'"-{}[\]()]$/.test(prevWord);
-    const isOpenBracket = /^[{[(]/.test(word);
-    const isCloseBracket = /^[})\]]/.test(word);
-    
-    const needsSpace = !isSpecialChar && // Không space trước dấu câu
-                      !isPrevSpecialChar && // Không space sau dấu câu đặc biệt
-                      !(isNumber && isPrevNumber) && // Không space giữa các số
-                      !(isTimeUnit && isPrevNumber) && // Không space giữa số và AM/PM
-                      !isCloseBracket && // Không space trước dấu đóng ngoặc
-                      !isOpenBracket && // Không space sau dấu mở ngoặc
-                      !word.match(/^[-']/) && // Không space trước gạch nối/nháy đơn
-                      !prevWord.match(/[-']$/); // Không space sau gạch nối/nháy đơn
-    
-    return result + (needsSpace ? ' ' : '') + word;
-  }, '');
+
+    // Không thêm space trước dấu câu
+    if (/^[.,!?;:]/.test(word)) {
+      return result + word;
+    }
+
+    // Không thêm space sau dấu mở ngoặc
+    if (/[\[({]$/.test(result)) {
+      return result + word;
+    }
+
+    // Không thêm space trước dấu đóng ngoặc
+    if (/^[\])}]/.test(word)) {
+      return result + word;
+    }
+
+    // Thêm space trong các trường hợp còn lại
+    return result + ' ' + word;
+  });
 } 

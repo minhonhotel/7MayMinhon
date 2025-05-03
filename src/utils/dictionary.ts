@@ -1,4 +1,28 @@
-import dictionaryData from './dictionary/dictionary.json';
+import dictionary from './dictionary/dictionary.json';
+
+interface DictionaryMatch {
+  keyword: string;
+  translation: string;
+}
+
+export function findInDictionary(text: string): DictionaryMatch | null {
+  // Chuyển text về lowercase để tìm kiếm không phân biệt hoa thường
+  const searchText = text.toLowerCase();
+  
+  // Tìm trong dictionary.json
+  const entry = Object.entries(dictionary).find(([key]) => 
+    key.toLowerCase() === searchText
+  );
+  
+  if (entry) {
+    return {
+      keyword: entry[0],
+      translation: entry[1] as string
+    };
+  }
+  
+  return null;
+}
 
 export interface DictionaryEntry {
   keyword: string;
