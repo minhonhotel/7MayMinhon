@@ -29,17 +29,6 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
       }}
     >
       <div className="container mx-auto h-full flex flex-col items-center justify-start text-white p-5 pt-10 lg:pt-16 overflow-y-auto">
-        <div className="w-full flex items-center justify-between mb-8">
-          <div className="flex items-center gap-2">
-            <img src="/assets/references/images/minhon-logo.jpg" alt="Mi Nhon Hotel Logo" className="w-24 h-auto drop-shadow-lg" />
-            <span className="material-icons text-accent text-3xl ml-2">apartment</span>
-          </div>
-          <div className="flex items-center gap-2 text-dark font-semibold">
-            <button className="hover:underline">EN</button>
-            <span>|</span>
-            <button className="hover:underline">VI</button>
-          </div>
-        </div>
         {/* Active orders status panels (up to 60 min countdown) */}
         {activeOrders.map((o) => {
           const deadline = new Date(o.requestedAt.getTime() + 60 * 60 * 1000);
@@ -60,26 +49,27 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
         <p className="text-lg lg:text-xl text-center max-w-lg mb-8">AI-powered Voice Assistant - Supporting All Your Needs</p>
         
         {/* Main Call Button */}
-        <div className="relative mb-12">
-          {/* Ripple Animation */}
-          <div className="absolute inset-0 rounded-full border-4 border-amber-400 animate-[ripple_1.5s_linear_infinite]"></div>
-          <div className="absolute inset-0 rounded-full border-4 border-amber-400/70 animate-[ripple_2s_linear_infinite]"></div>
-          
+        <div className="relative mb-12 flex items-center justify-center">
+          {/* Ripple Animation (luôn hiển thị, mạnh hơn khi hover) */}
+          <div className="absolute inset-0 rounded-full border-4 border-amber-400 animate-[ripple_1.5s_linear_infinite] pointer-events-none transition-opacity duration-300 group-hover:opacity-80 opacity-60"></div>
+          <div className="absolute inset-0 rounded-full border-4 border-amber-400/70 animate-[ripple_2s_linear_infinite] pointer-events-none transition-opacity duration-300 group-hover:opacity-60 opacity-40"></div>
           {/* Main Button */}
           <button 
             id="vapiButton" 
-            className="relative w-28 h-28 lg:w-36 lg:h-36 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-primary-dark font-poppins font-bold flex flex-col items-center justify-center shadow-lg transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-amber-300" 
+            className="group relative w-40 h-40 lg:w-56 lg:h-56 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-primary-dark font-poppins font-bold flex flex-col items-center justify-center shadow-2xl transition-transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-amber-300 overflow-hidden"
             onClick={startCall}
           >
-            <span className="material-icons text-4xl lg:text-5xl mb-1">mic</span>
-            <span className="text-sm lg:text-base font-medium">Press to Call</span>
+            <span className="material-icons text-6xl lg:text-7xl mb-2 animate-mic-pulse group-hover:animate-mic-bounce text-shadow-lg">mic</span>
+            <span className="text-lg lg:text-xl font-medium">Press to Call</span>
+            {/* Sóng âm khi hover */}
+            <span className="absolute w-full h-full rounded-full pointer-events-none group-hover:animate-wave-pulse"></span>
           </button>
         </div>
         {/* Services Section */}
         <div className="text-center w-full max-w-5xl">
           <div className="flex flex-row flex-wrap justify-center gap-3 text-left mx-auto">
             {/* Room & Stay */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 transition-transform duration-200 hover:scale-105 hover:shadow-xl cursor-pointer">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Room & Stay</h4>
               <ul className="space-y-1 text-sm">
                 <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Check-in/check-out</span></li>
@@ -90,7 +80,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
               </ul>
             </div>
             {/* Room Services */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 transition-transform duration-200 hover:scale-105 hover:shadow-xl cursor-pointer">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Room Services</h4>
               <ul className="space-y-1 text-sm">
                 <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Food & beverages</span></li>
@@ -103,7 +93,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
               </ul>
             </div>
             {/* Bookings & Facilities */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 transition-transform duration-200 hover:scale-105 hover:shadow-xl cursor-pointer">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Bookings & Facilities</h4>
               <ul className="space-y-1 text-sm">
                 <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Restaurant reservations</span></li>
@@ -116,7 +106,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
               </ul>
             </div>
             {/* Tourism & Exploration */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 transition-transform duration-200 hover:scale-105 hover:shadow-xl cursor-pointer">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Tourism & Exploration</h4>
               <ul className="space-y-1 text-sm">
                 <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Nearby attractions</span></li>
@@ -129,7 +119,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
               </ul>
             </div>
             {/* Support */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 transition-transform duration-200 hover:scale-105 hover:shadow-xl cursor-pointer">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Support</h4>
               <ul className="space-y-1 text-sm">
                 <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Language assistance</span></li>
