@@ -5,14 +5,12 @@ interface SiriCallButtonProps {
   isListening: boolean;
   volumeLevel: number;
   containerId: string;
-  sizeMultiplier?: number;
 }
 
 const SiriCallButton: React.FC<SiriCallButtonProps> = ({ 
   isListening, 
   volumeLevel,
-  containerId,
-  sizeMultiplier = 1
+  containerId 
 }) => {
   const buttonRef = useRef<SiriButton | null>(null);
 
@@ -46,8 +44,8 @@ const SiriCallButton: React.FC<SiriCallButtonProps> = ({
   return (
     <div 
       id={containerId}
-      className="relative"
-      style={{ cursor: 'pointer', width: `${8 * sizeMultiplier}rem`, height: `${8 * sizeMultiplier}rem` }}
+      className="w-64 h-64 relative"
+      style={{ cursor: 'pointer' }}
     />
   );
 };
