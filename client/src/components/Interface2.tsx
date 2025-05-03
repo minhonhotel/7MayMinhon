@@ -245,7 +245,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               volumeLevel={micLevel}
               sizeMultiplier={1.5}
             />
-            <div className="absolute" style={{ bottom: '10px' }}>
+            <div className="absolute text-yellow-300 text-sm" style={{ bottom: '15px' }}>
               {formatDuration(localDuration)}
             </div>
           </div>
@@ -300,7 +300,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           <button id="cancelButton" onClick={handleCancel} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs">
             <span className="material-icons mr-1 text-base">cancel</span>Cancel
           </button>
-          <button id="endCallButton" onClick={handleNext} className="w-auto min-w-fit flex items-center justify-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs">
+          <button id="endCallButton" onClick={handleNext} className="w-auto min-w-fit flex items-center justify-center px-4 py-2" style={{ backgroundColor: '#d4af37', color: '#333', borderRadius: '0.5rem' }}>
             <span className="material-icons mr-1 text-base">navigate_next</span>Confirm Your Request
           </button>
         </div>
