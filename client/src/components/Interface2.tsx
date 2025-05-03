@@ -270,16 +270,11 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                       <p className="text-xl font-semibold text-yellow-200">
                         <span className="inline-flex flex-wrap">
                           {turn.messages.map((msg, idx) => {
-                            // Remove leading/trailing spaces
-                            const content = msg.content.trim();
-                            // Add appropriate spacing
-                            const needsSpaceBefore = idx > 0 && !content.startsWith(',') && !content.startsWith('.') && !content.startsWith('?') && !content.startsWith('!');
-                            // Get visible characters for this message
-                            const visibleContent = content.slice(0, visibleChars[msg.id] || 0);
+                            // Không trim, giữ nguyên khoảng trắng gốc
+                            const content = msg.content.slice(0, visibleChars[msg.id] || 0);
                             return (
-                              <span key={msg.id}>
-                                {needsSpaceBefore ? ' ' : ''}
-                                {visibleContent}
+                              <span key={msg.id} style={{ whiteSpace: 'pre' }}>
+                                {content}
                               </span>
                             );
                           })}
