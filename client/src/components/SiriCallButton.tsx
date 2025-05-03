@@ -44,7 +44,7 @@ const SiriCallButton: React.FC<SiriCallButtonProps> = ({
   return (
     <div 
       id={containerId}
-      className="w-32 h-32 relative"
+      className={`${isListening ? 'w-64 h-64' : 'w-32 h-32'} relative`}
       style={{ cursor: 'pointer' }}
     />
   );
