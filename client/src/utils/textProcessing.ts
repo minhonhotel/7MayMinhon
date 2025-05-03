@@ -59,14 +59,15 @@ function segmentByDictionary(text: string): string[] {
   return result;
 }
 
-// Hàm processText: chỉ dùng maximum matching
+// Hàm processText mới
 export function processText(text: string): ProcessTextResult {
   const words = segmentByDictionary(text);
+  // Tính vị trí bắt đầu của từng từ (tương đối)
   let positions: number[] = [];
   let pos = 0;
   for (const word of words) {
     positions.push(pos);
-    pos += word.length + 1;
+    pos += word.length + 1; // +1 cho dấu cách
   }
   return { words, positions };
 }

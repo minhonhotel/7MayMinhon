@@ -3,6 +3,7 @@ import { useAssistant } from '@/context/AssistantContext';
 import Reference from './Reference';
 import SiriCallButton from './SiriCallButton';
 import { referenceService, ReferenceItem } from '@/services/ReferenceService';
+import { FaCheckCircle } from 'react-icons/fa';
 
 interface Interface2Props {
   isActive: boolean;
@@ -237,15 +238,22 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
       <div className="container mx-auto flex flex-row p-2 h-full gap-2">
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
         <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4">
-          {/* Replace old orb with new SiriCallButton */}
-          <div className="relative flex items-center justify-center">
+          {/* Call Duration & Volume Indicator */}
+          <div className="relative flex flex-col items-center justify-center mb-2">
             <SiriCallButton
               containerId="siri-button"
               isListening={!isMuted}
               volumeLevel={micLevel}
             />
-            <div className="absolute bottom-[-30px] text-white text-sm">
+            <div className="absolute bottom-[-36px] left-1/2 -translate-x-1/2 text-3xl font-bold text-accent drop-shadow-lg tracking-widest select-none">
               {formatDuration(localDuration)}
+            </div>
+            {/* Volume bar visual indicator */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 mt-2 flex items-center gap-1">
+              <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-2 rounded-full transition-all duration-200" style={{ width: `${Math.max(8, micLevel * 100)}%`, background: micLevel > 0.7 ? '#d4af37' : '#34558b' }}></div>
+              </div>
+              <span className="ml-2 text-xs text-dark/70">Mic</span>
             </div>
           </div>
           
@@ -292,15 +300,19 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           </div>
         </div>
         {/* Right: Control buttons */}
-        <div className="w-1/4 lg:w-1/3 flex flex-col items-center lg:items-end p-2 space-y-2 overflow-auto" style={{ maxHeight: '100%' }}>
-          <button id="backButton" onClick={() => setCurrentInterface('interface1')} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs">
-            <span className="material-icons mr-1 text-base">arrow_back</span>Back
-          </button>
-          <button id="cancelButton" onClick={handleCancel} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs">
-            <span className="material-icons mr-1 text-base">cancel</span>Cancel
-          </button>
-          <button id="endCallButton" onClick={handleNext} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs">
-            <span className="material-icons mr-1 text-base">navigate_next</span>Confirm Your Request
+        <div className="w-1/4 lg:w-1/3 flex flex-col items-end p-2 space-y-2 overflow-auto" style={{ maxHeight: '100%' }}>
+          {/* Top-right buttons */}
+          <div className="flex flex-row gap-2 w-full justify-end mb-4">
+            <button id="backButton" onClick={() => setCurrentInterface('interface1')} className="flex items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full text-xs font-semibold shadow-sm border border-gray-300">
+              <span className="material-icons mr-1 text-base">arrow_back</span>Back
+            </button>
+            <button id="cancelButton" onClick={handleCancel} className="flex items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-full text-xs font-semibold shadow-sm border border-gray-300">
+              <span className="material-icons mr-1 text-base">cancel</span>Cancel
+            </button>
+          </div>
+          {/* Confirm button prominent */}
+          <button id="endCallButton" onClick={handleNext} className="w-full flex items-center justify-center px-4 py-2 bg-accent hover:bg-accent/80 text-dark rounded-full text-base font-bold shadow-lg transition-all duration-150 border-2 border-accent/60">
+            <FaCheckCircle className="mr-2 text-xl" />Confirm Your Request
           </button>
         </div>
       </div>

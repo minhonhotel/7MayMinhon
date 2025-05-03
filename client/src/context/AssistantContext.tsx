@@ -322,109 +322,109 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
   // End call function
   const endCall = useCallback(() => {
     try {
-      const vapi = getVapiInstance();
-      if (vapi) {
-        vapi.stop();
-      }
-      
+    const vapi = getVapiInstance();
+    if (vapi) {
+      vapi.stop();
+    }
+    
       // Batch state updates
       const updates = () => {
-        // Stop the timer
-        if (callTimer) {
-          clearInterval(callTimer);
-          setCallTimer(null);
-        }
-        
-        // Initialize with default values
-        setOrderSummary(initialOrderSummary);
-        
-        // Format call duration for API
-        const formattedDuration = callDuration ? 
-          `${Math.floor(callDuration / 60)}:${(callDuration % 60).toString().padStart(2, '0')}` : 
-          '0:00';
-          
-        // Prepare transcripts for the API
+    // Stop the timer
+    if (callTimer) {
+      clearInterval(callTimer);
+      setCallTimer(null);
+    }
+    
+    // Initialize with default values
+    setOrderSummary(initialOrderSummary);
+    
+    // Format call duration for API
+    const formattedDuration = callDuration ? 
+      `${Math.floor(callDuration / 60)}:${(callDuration % 60).toString().padStart(2, '0')}` : 
+      '0:00';
+    
+    // Prepare transcripts for the API
         const transcriptData = transcripts.map((message: Transcript) => ({
-          role: message.role,
-          content: message.content
-        }));
+      role: message.role,
+      content: message.content
+    }));
+    
+    // Check if we have enough transcript data
+    if (transcriptData.length < 2) {
+      const noTranscriptSummary: CallSummary = {
+        id: Date.now() as unknown as number,
+        callId: callDetails?.id || `call-${Date.now()}`,
+        content: "Call was too short to generate a summary. Please try a more detailed conversation.",
+        timestamp: new Date()
+      };
+      setCallSummary(noTranscriptSummary);
+      setCurrentInterface('interface3');
+      return;
+    }
+    
+    // Show loading state for summary
+    const loadingSummary: CallSummary = {
+      id: Date.now() as unknown as number,
+      callId: callDetails?.id || `call-${Date.now()}`,
+      content: "Generating AI summary of your conversation...",
+      timestamp: new Date()
+    };
+    setCallSummary(loadingSummary);
+    
+    // Send transcript data to server for OpenAI processing
+    fetch('/api/store-summary', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        summary: '', 
+        transcripts: transcriptData,
+        timestamp: new Date().toISOString(),
+        callId: callDetails?.id || `call-${Date.now()}`,
+        callDuration: formattedDuration,
+        forceBasicSummary: FORCE_BASIC_SUMMARY
+      }),
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.success && data.summary && data.summary.content) {
+        const summaryContent = data.summary.content;
         
-        // Check if we have enough transcript data
-        if (transcriptData.length < 2) {
-          const noTranscriptSummary: CallSummary = {
-            id: Date.now() as unknown as number,
-            callId: callDetails?.id || `call-${Date.now()}`,
-            content: "Call was too short to generate a summary. Please try a more detailed conversation.",
-            timestamp: new Date()
-          };
-          setCallSummary(noTranscriptSummary);
-          setCurrentInterface('interface3');
-          return;
-        }
-        
-        // Show loading state for summary
-        const loadingSummary: CallSummary = {
-          id: Date.now() as unknown as number,
-          callId: callDetails?.id || `call-${Date.now()}`,
-          content: "Generating AI summary of your conversation...",
-          timestamp: new Date()
-        };
-        setCallSummary(loadingSummary);
-        
-        // Send transcript data to server for OpenAI processing
-        fetch('/api/store-summary', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            summary: '', 
-            transcripts: transcriptData,
-            timestamp: new Date().toISOString(),
-            callId: callDetails?.id || `call-${Date.now()}`,
-            callDuration: formattedDuration,
-            forceBasicSummary: FORCE_BASIC_SUMMARY
-          }),
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (data.success && data.summary && data.summary.content) {
-            const summaryContent = data.summary.content;
-            
             // Batch state updates for summary
             ReactDOM.unstable_batchedUpdates(() => {
-              const aiSummary: CallSummary = {
-                id: Date.now() as unknown as number,
-                callId: callDetails?.id || `call-${Date.now()}`,
-                content: summaryContent,
-                timestamp: new Date(data.summary.timestamp || Date.now())
-              };
-              setCallSummary(aiSummary);
-              
-              if (data.serviceRequests && Array.isArray(data.serviceRequests) && data.serviceRequests.length > 0) {
-                setServiceRequests(data.serviceRequests);
-              }
-              
+        const aiSummary: CallSummary = {
+          id: Date.now() as unknown as number,
+          callId: callDetails?.id || `call-${Date.now()}`,
+          content: summaryContent,
+          timestamp: new Date(data.summary.timestamp || Date.now())
+        };
+        setCallSummary(aiSummary);
+        
+        if (data.serviceRequests && Array.isArray(data.serviceRequests) && data.serviceRequests.length > 0) {
+          setServiceRequests(data.serviceRequests);
+        }
+        
               setCurrentInterface('interface3');
             });
-          }
-        })
-        .catch(error => {
+      }
+    })
+    .catch(error => {
           console.error('Error processing summary:', error);
           // Show error state
           const errorSummary: CallSummary = {
-            id: Date.now() as unknown as number,
-            callId: callDetails?.id || `call-${Date.now()}`,
+        id: Date.now() as unknown as number,
+        callId: callDetails?.id || `call-${Date.now()}`,
             content: "An error occurred while generating the call summary.",
-            timestamp: new Date()
-          };
+        timestamp: new Date()
+      };
           setCallSummary(errorSummary);
-          setCurrentInterface('interface3');
+    setCurrentInterface('interface3');
         });
       };
       

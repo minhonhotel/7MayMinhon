@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAssistant } from '../context/AssistantContext';
 import { ServiceRequest } from '../types';
+import { FaRegStickyNote } from 'react-icons/fa';
 
 interface Interface3ViProps {
   isActive: boolean;
@@ -24,6 +25,7 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
   } = useAssistant();
   
   const [isTranslating, setIsTranslating] = useState<boolean>(false);
+  const [note, setNote] = useState('');
 
   // Handle input changes
   const handleInputChange = (field: string, value: string | number) => {
@@ -282,6 +284,14 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
     setCurrentInterface('interface4');
   };
   
+  // Function to add note to the displayed summary
+  const handleAddNote = () => {
+    if (!note.trim() || !callSummary) return;
+    setVietnameseSummary(
+      (vietnameseSummary || callSummary.content) + `\n\nGhi chú bổ sung:\n${note}`
+    );
+  };
+
   if (!orderSummary) return null;
   
   return (
@@ -297,14 +307,14 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
           {/* AI-generated Call Summary Container */}
           <div id="summary-container" className="mb-4">
             {callSummary ? (
-              <div className="p-4 bg-blue-50 rounded-lg shadow-sm mb-4 relative">
+              <div className="p-5 bg-white border border-gray-200 rounded-lg shadow-sm mb-4 relative">
                 <div className="absolute top-2 right-2 bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
                   </svg>
                   <span>AI Tự động</span>
                 </div>
-                <h3 className="font-medium text-lg mb-2 text-blue-800">Tóm tắt cuộc trò chuyện</h3>
+                <h3 className="font-semibold text-base mb-3 text-dark">Tóm tắt cuộc trò chuyện</h3>
                 {isTranslating ? (
                   <div className="animate-pulse space-y-2">
                     <div className="h-2 bg-blue-100 rounded w-3/4"></div>
@@ -314,13 +324,12 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
                     <p className="text-blue-400 text-sm italic">Đang dịch sang tiếng Việt...</p>
                   </div>
                 ) : (
-                  <p className="text-gray-700 whitespace-pre-line">
+                  <p className="text-base leading-relaxed text-gray-700 whitespace-pre-line mb-2">
                     {vietnameseSummary || callSummary.content}
                   </p>
                 )}
-                
                 <div className="mt-3 flex justify-end">
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-400">
                     Tạo lúc {new Date(callSummary.timestamp).toLocaleTimeString()}
                   </div>
                 </div>
@@ -340,83 +349,70 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
                 <p className="text-gray-400 italic mt-3">AI của chúng tôi đang phân tích cuộc trò chuyện và chuẩn bị bản tóm tắt...</p>
               </div>
             )}
+            {/* Add Note Button and Textarea */}
+            <div className="flex items-center justify-between h-10 mb-2">
+              <button className="h-full px-4 bg-accent text-dark rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm border border-accent/40 hover:bg-accent/90 transition-colors" onClick={handleAddNote} disabled={!note.trim()}>
+                <FaRegStickyNote className="text-lg" /> Thêm ghi chú
+              </button>
+            </div>
+            <textarea placeholder="Nhập ghi chú bổ sung hoặc chỉnh sửa, sau đó nhấn Thêm ghi chú để cập nhật vào tóm tắt cuộc trò chuyện" className="w-full p-3 border border-gray-300 rounded-lg mb-4 text-base" value={note} onChange={(e) => setNote(e.target.value)} rows={3} />
           </div>
           
-          {/* Service Requests Container */}
-          <div id="summaryContainer" className="mb-6">
-            {/* Service requests processed - hidden but functional */}
-            
-            {/* Room Information Section */}
-            <div className="mb-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div className="col-span-1">
-                  <p className="text-sm text-gray-500 mb-1">Số phòng</p>
-                  <input 
-                    type="text" 
-                    className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary"
-                    value={orderSummary.roomNumber}
-                    onChange={(e) => handleInputChange('roomNumber', e.target.value)}
-                  />
-                </div>
-                <div className="col-span-1">
-                  <p className="text-sm text-gray-500 mb-1">Thời gian yêu cầu dịch vụ</p>
-                  <select 
-                    className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary"
-                    value={orderSummary.deliveryTime}
-                    onChange={(e) => handleInputChange('deliveryTime', e.target.value as any)}
-                  >
-                    <option value="asap">Càng sớm càng tốt</option>
-                    <option value="30min">Trong vòng 30 phút</option>
-                    <option value="1hour">Trong vòng 1 giờ</option>
-                    <option value="specific">Đặt lịch sau</option>
-                    <option value="info">Chỉ thông tin - không yêu cầu thời gian</option>
-                  </select>
-                </div>
+          {/* Room Information Section */}
+          <div className="mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="col-span-1">
+                <label className="text-base text-dark font-semibold mb-1" htmlFor="roomNumberInput">Số phòng</label>
+                <input 
+                  id="roomNumberInput"
+                  type="text" 
+                  className="w-full p-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-primary focus:border-primary placeholder-gray-400"
+                  value={orderSummary.roomNumber}
+                  onChange={(e) => handleInputChange('roomNumber', e.target.value)}
+                  placeholder="VD: 101, 202, Villa 3..."
+                />
               </div>
-              
-
-            </div>
-            
-            {/* Request placeholder - hidden but data still processed */}
-            <div className="hidden">
-              {orderSummary.items.length > 0 && (
-                <div>
-                  {orderSummary.items.map((item, index) => (
-                    <div key={item.id}>
-                      {/* Hidden but functional item data */}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            
-            {/* Hidden special instructions - data is preserved but not displayed */}
-            <div className="hidden">
-              {orderSummary.specialInstructions}
-            </div>
-            
-            {/* Hidden total amount calculation - not displayed */}
-            <div className="hidden">
-              {orderSummary.totalAmount.toFixed(2)}
+              <div className="col-span-1">
+                <label className="text-base text-dark font-semibold mb-1" htmlFor="deliveryTimeInput">Thời gian yêu cầu dịch vụ</label>
+                <select 
+                  id="deliveryTimeInput"
+                  className="w-full p-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-primary focus:border-primary"
+                  value={orderSummary.deliveryTime}
+                  onChange={(e) => handleInputChange('deliveryTime', e.target.value as any)}
+                >
+                  <option value="asap">Càng sớm càng tốt</option>
+                  <option value="30min">Trong vòng 30 phút</option>
+                  <option value="1hour">Trong vòng 1 giờ</option>
+                  <option value="specific">Đặt lịch sau</option>
+                  <option value="info">Chỉ thông tin - không yêu cầu thời gian</option>
+                </select>
+              </div>
             </div>
           </div>
           
           {/* Action Buttons - Responsive design for mobile */}
-          <div className="flex flex-wrap justify-center gap-2 mt-6">
+          <div className="flex flex-wrap justify-center gap-3 mt-6">
             <button 
-              className="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium flex items-center"
+              className="px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm font-semibold flex items-center border border-red-200 shadow-sm hover:bg-red-200 transition-colors"
+              onClick={() => setCurrentInterface('interface1')}
+            >
+              <span className="material-icons text-base align-middle mr-1">cancel</span>
+              Hủy
+            </button>
+            <button 
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm font-semibold flex items-center border border-gray-300 shadow-sm hover:bg-gray-300 transition-colors"
               onClick={() => setCurrentInterface('interface3')}
             >
-              <span className="material-icons text-sm align-middle mr-1">translate</span>
-              Tiếng Anh
+              <span className="material-icons text-base align-middle mr-1">arrow_back</span>
+              Quay lại
             </button>
             <button 
               id="confirmOrderButton" 
-              className="px-3 py-2 bg-green-500 text-white rounded-lg text-sm font-medium flex items-center"
+              className="px-5 py-2 bg-accent text-dark rounded-full text-base font-bold flex items-center border-2 border-accent/60 shadow-xl hover:bg-accent/90 transition-all duration-150"
               onClick={handleConfirmOrder}
             >
-              <span className="material-icons text-sm align-middle mr-1">check_circle</span>
-              Xác nhận
+              <span className="material-icons text-xl align-middle mr-2">check_circle</span>
+              Xác nhận & Gửi lễ tân
             </button>
           </div>
         </div>
