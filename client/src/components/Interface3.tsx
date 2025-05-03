@@ -472,18 +472,9 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
               </div>
               <textarea placeholder="Enter any corrections or additional Information & Press Add Note to update into the Conversation Summary" className="w-full p-2 border rounded-lg mb-4 text-sm md:text-base" value={note} onChange={(e) => setNote(e.target.value)} rows={3} />
               {/* Room Number input */}
-              <div className="flex flex-col items-start space-y-1">
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm text-gray-500">Room Number</label>
-                  <input
-                    type="text"
-                    className="w-32 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary"
-                    value={orderSummary.roomNumber}
-                    onChange={(e) => handleInputChange('roomNumber', e.target.value)}
-                    placeholder="Enter your room number"
-                  />
-                </div>
-                <span className="text-xs italic text-gray-400 mt-1">*Required in order to enable the Send To Reception</span>
+              <div className="flex items-center space-x-2">
+                <label className="text-sm text-gray-500">Room Number</label>
+                <input type="text" className="w-32 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary" value={orderSummary.roomNumber} onChange={(e) => handleInputChange('roomNumber', e.target.value)} />
               </div>
             </div>
             {/* Right column: control buttons at top-right */}

@@ -34,7 +34,7 @@ export class SiriButton {
     this.height = 200;
     this.centerX = this.width / 2;
     this.centerY = this.height / 2;
-    this.radius = 80;
+    this.radius = 40;
     this.ripples = [];
     this.isListening = false;
     this.pulsePhase = 0;
@@ -66,13 +66,11 @@ export class SiriButton {
     this.canvas.style.height = `${this.height}px`;
     
     // Scale context
-    this.ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset any previous transforms
     this.ctx.scale(dpr, dpr);
     
     // Update center coordinates
     this.centerX = this.width / 2;
     this.centerY = this.height / 2;
-    this.radius = Math.min(this.width, this.height) / 2.4; // Đảm bảo các hiệu ứng ngoài rìa có không gian
   }
 
   private drawBaseCircle() {

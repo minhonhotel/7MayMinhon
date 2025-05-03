@@ -21,7 +21,7 @@ const VoiceAssistant: React.FC = () => {
       <header className="w-full bg-primary text-white p-4 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center">
-            <img src="/assets/references/images/minhon-logo.jpg" alt="Mi Nhon Hotel Logo" className="h-10 w-auto mr-2" />
+            {/* Logo and hotel name removed as requested */}
           </div>
           <div className="hidden md:flex items-center space-x-4">
             <Link href="/call-history">
@@ -30,10 +30,6 @@ const VoiceAssistant: React.FC = () => {
                 Call History
               </a>
             </Link>
-            <button className="px-3 py-1 rounded bg-amber-400 text-neutral-dark text-sm">
-              <span className="material-icons text-sm align-middle mr-1">help_outline</span>
-              Help
-            </button>
           </div>
         </div>
       </header>

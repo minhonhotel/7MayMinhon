@@ -81,7 +81,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     });
     setReferences(matches);
   }, [transcripts]);
-
+  
   // Process transcripts into conversation turns
   useEffect(() => {
     const sortedTranscripts = [...transcripts].sort((a, b) => 
@@ -243,9 +243,8 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               containerId="siri-button"
               isListening={!isMuted}
               volumeLevel={micLevel}
-              sizeMultiplier={4}
             />
-            <div className="absolute text-yellow-300 text-sm" style={{ bottom: '15px' }}>
+            <div className="absolute bottom-[-30px] text-white text-sm">
               {formatDuration(localDuration)}
             </div>
           </div>
@@ -259,7 +258,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             {/* Display conversation turns */}
             {conversationTurns.map((turn) => (
               <div key={turn.id} className="mb-2">
-                <div className="flex items-start mb-1">
+                  <div className="flex items-start mb-1">
                   <div className="flex-grow">
                     {turn.role === 'user' ? (
                       // User message - display as is
@@ -279,13 +278,13 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                               </span>
                             );
                           })}
-                        </span>
+                      </span>
                       </p>
                     )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
           {/* Reference container below (full width, auto height) */}
           <div className="w-full">
@@ -300,7 +299,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           <button id="cancelButton" onClick={handleCancel} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs">
             <span className="material-icons mr-1 text-base">cancel</span>Cancel
           </button>
-          <button id="endCallButton" onClick={handleNext} className="w-auto min-w-fit flex items-center justify-center px-4 py-2" style={{ backgroundColor: '#d4af37', color: '#333', borderRadius: '0.5rem' }}>
+          <button id="endCallButton" onClick={handleNext} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs">
             <span className="material-icons mr-1 text-base">navigate_next</span>Confirm Your Request
           </button>
         </div>

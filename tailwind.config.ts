@@ -6,28 +6,24 @@ export default {
   theme: {
     extend: {
       borderRadius: {
-        lg: '8px',
-        md: '6px',
-        sm: '4px',
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        primary: {
-          DEFAULT: '#34558b',
-          foreground: '#f5f0e6',
-        },
-        background: '#f5f0e6',
-        accent: {
-          DEFAULT: '#d4af37',
-          foreground: '#333333',
-        },
-        dark: '#333333',
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         card: {
-          DEFAULT: '#fff',
-          foreground: '#333333',
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
+        },
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -36,6 +32,10 @@ export default {
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
