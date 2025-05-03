@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAssistant } from '@/context/AssistantContext';
 import hotelImage from '../assets/hotel-exterior.jpeg';
-import minhonLogo from '../public/assets/references/images/minhon-logo.png';
 import { FaRegClock, FaCheckCircle, FaHourglassHalf, FaHotel } from 'react-icons/fa';
 
 interface Interface1Props {
@@ -34,7 +33,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
         {/* Header */}
         <div className="flex flex-col items-center justify-center mb-4">
           <div className="flex items-center gap-2">
-            <img src={minhonLogo} alt="Mi Nhon Hotel Logo" className="w-40 h-auto mb-1 drop-shadow-lg" />
+            <img src="/assets/references/images/minhon-logo.png" alt="Mi Nhon Hotel Logo" className="w-40 h-auto mb-1 drop-shadow-lg" />
             <FaHotel className="text-accent text-2xl mb-1" title="Boutique Hotel" />
           </div>
           <h2 className="font-poppins font-bold text-2xl lg:text-3xl text-primary mb-1 text-center tracking-wide">Mi Nhon Hotel Mui Ne</h2>
