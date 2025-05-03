@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAssistant } from '@/context/AssistantContext';
 import { ServiceRequest } from '@/types';
 import hotelImage from '../assets/hotel-exterior.jpeg';
+import { FaRegStickyNote } from 'react-icons/fa';
 
 interface Interface3Props {
   isActive: boolean;
@@ -439,12 +440,11 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
               {/* AI-generated Call Summary Container */}
               <div id="summary-container" className="mb-4">
                 {callSummary ? (
-                  <div className="p-4 bg-blue-50 rounded-lg shadow-sm mb-4 relative">
-                    <h3 className="font-medium text-base mb-2 text-blue-800">Conversation Summary</h3>
-                    <p className="text-sm leading-snug text-gray-700 whitespace-pre-line">{callSummary.content}</p>
-                    
+                  <div className="p-5 bg-white border border-gray-200 rounded-lg shadow-sm mb-4 relative">
+                    <h3 className="font-semibold text-base mb-3 text-dark">Conversation Summary</h3>
+                    <p className="text-base leading-relaxed text-gray-700 whitespace-pre-line mb-2">{callSummary.content}</p>
                     <div className="mt-3 flex justify-end">
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-400">
                         Generated at {new Date(callSummary.timestamp).toLocaleTimeString()}
                       </div>
                     </div>
@@ -466,41 +466,42 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
                 )}
               </div>
               {/* Additional Notes and Actions */}
-              <div className="flex items-center justify-between h-10">
-                <button className="h-full px-3 bg-blue-500 text-white rounded-lg text-sm font-medium" onClick={handleAddNote} disabled={!note.trim()}>Add Note</button>
+              <div className="flex items-center justify-between h-10 mb-2">
+                <button className="h-full px-4 bg-accent text-dark rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm border border-accent/40 hover:bg-accent/90 transition-colors" onClick={handleAddNote} disabled={!note.trim()}>
+                  <FaRegStickyNote className="text-lg" /> Add Note
+                </button>
                 <button className="h-full px-3 bg-blue-50 text-primary rounded-lg text-sm font-medium" onClick={() => setCurrentInterface('interface3vi')}>Vietnamese</button>
               </div>
-              <textarea placeholder="Enter any corrections or additional Information & Press Add Note to update into the Conversation Summary" className="w-full p-2 border rounded-lg mb-4 text-sm md:text-base" value={note} onChange={(e) => setNote(e.target.value)} rows={3} />
+              <textarea placeholder="Enter any corrections or additional Information & Press Add Note to update into the Conversation Summary" className="w-full p-3 border border-gray-300 rounded-lg mb-4 text-base" value={note} onChange={(e) => setNote(e.target.value)} rows={3} />
               {/* Room Number input */}
               <div className="flex flex-col items-start space-y-1">
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm text-gray-500">Room Number</label>
-                  <input
-                    type="text"
-                    className="w-32 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary"
-                    value={orderSummary.roomNumber}
-                    onChange={(e) => handleInputChange('roomNumber', e.target.value)}
-                    placeholder="Enter your room number"
-                  />
-                </div>
+                <label className="text-base text-dark font-semibold mb-1" htmlFor="roomNumberInput">Room Number</label>
+                <input
+                  id="roomNumberInput"
+                  type="text"
+                  className="w-48 p-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-primary focus:border-primary placeholder-gray-400"
+                  value={orderSummary.roomNumber}
+                  onChange={(e) => handleInputChange('roomNumber', e.target.value)}
+                  placeholder="E.g. 101, 202, Villa 3..."
+                />
                 <span className="text-xs italic text-gray-400 mt-1">*Required in order to enable the Send To Reception</span>
               </div>
             </div>
             {/* Right column: control buttons at top-right */}
             <div className="w-1/4 flex justify-end">
               <div className="flex flex-col items-end space-y-2">
-                <button className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs" onClick={() => setCurrentInterface('interface2')}>
+                <button className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs font-semibold shadow-sm border border-gray-300 transition-colors" onClick={() => setCurrentInterface('interface2')}>
                   <span className="material-icons text-sm mr-1">arrow_back</span>Back
                 </button>
-                <button className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs" onClick={() => setCurrentInterface('interface1')}>
+                <button className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs font-semibold shadow-sm border border-gray-300 transition-colors" onClick={() => setCurrentInterface('interface1')}>
                   <span className="material-icons text-sm mr-1">cancel</span>Cancel
                 </button>
                 <button
                   onClick={handleConfirmOrder}
-                  className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition-colors"
+                  className="w-full bg-accent hover:bg-accent/90 text-dark font-bold py-3 px-6 rounded-full shadow-xl flex items-center justify-center space-x-2 text-lg border-2 border-accent/60 transition-all duration-150 mt-2"
                 >
-                  <span className="material-icons">send</span>
-                  <span>Press Here to Send Your Request To Receptionist</span>
+                  <span className="material-icons text-2xl">send</span>
+                  <span>Send To Reception</span>
                 </button>
               </div>
             </div>
