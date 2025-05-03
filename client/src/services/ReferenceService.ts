@@ -15,8 +15,9 @@ class ReferenceService {
 
   async initialize() {
     try {
-      const response = await fetch('/api/reference-map');
+      const response = await fetch('/assets/references/reference-map.json');
       this.referenceMap = await response.json();
+      console.log('Loaded referenceMap:', this.referenceMap);
     } catch (error) {
       console.error('Error loading reference map:', error);
     }

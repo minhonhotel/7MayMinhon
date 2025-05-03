@@ -67,6 +67,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
       await referenceService.initialize();
       // Lấy toàn bộ referenceMap
       const allRefs = Object.values((referenceService as any).referenceMap || {}) as ReferenceItem[];
+      console.log('All references loaded:', allRefs);
       setReferences(allRefs);
     }
     loadAllReferences();
