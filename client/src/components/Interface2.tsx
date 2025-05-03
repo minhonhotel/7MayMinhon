@@ -3,7 +3,6 @@ import { useAssistant } from '@/context/AssistantContext';
 import Reference from './Reference';
 import SiriCallButton from './SiriCallButton';
 import { referenceService, ReferenceItem } from '@/services/ReferenceService';
-import { processText, applySmartSpacing } from '../utils/textProcessing';
 
 interface Interface2Props {
   isActive: boolean;
@@ -271,16 +270,12 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                       <p className="text-xl font-semibold text-yellow-200">
                         <span className="inline-flex flex-wrap">
                           {turn.messages.map((msg, idx) => {
-                            // Đảm bảo content là string
-                            const content = typeof msg.content === 'string' ? msg.content : '';
-                            // Tách từ và ghép lại
-                            const { words } = processText(content);
-                            const processedContent = applySmartSpacing(words);
-                            // Log kiểm tra
-                            console.log('DEBUG segmented:', processedContent);
-                            // Hiệu ứng typewriter
-                            const needsSpaceBefore = idx > 0 && !processedContent.startsWith(',') && !processedContent.startsWith('.') && !processedContent.startsWith('?') && !processedContent.startsWith('!');
-                            const visibleContent = processedContent.slice(0, visibleChars[msg.id] || 0);
+                            // Remove leading/trailing spaces
+                            const content = msg.content.trim();
+                            // Add appropriate spacing
+                            const needsSpaceBefore = idx > 0 && !content.startsWith(',') && !content.startsWith('.') && !content.startsWith('?') && !content.startsWith('!');
+                            // Get visible characters for this message
+                            const visibleContent = content.slice(0, visibleChars[msg.id] || 0);
                             return (
                               <span key={msg.id}>
                                 {needsSpaceBefore ? ' ' : ''}
@@ -310,7 +305,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             <span className="material-icons mr-1 text-base">cancel</span>Cancel
           </button>
           <button id="endCallButton" onClick={handleNext} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs">
-            <span className="material-icons mr-1 text-base">check_circle</span>Confirm Your Request
+            <span className="material-icons mr-1 text-base">navigate_next</span>Confirm Your Request
           </button>
         </div>
       </div>
