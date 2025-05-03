@@ -1,5 +1,6 @@
 import { englishDictionary } from './dictionary/englishDictionary';
 import dictionaryData from './dictionary/dictionary.json';
+import { wordBreaker } from 'word-breaker';
 
 interface ProcessTextResult {
   words: string[];
@@ -59,15 +60,34 @@ function segmentByDictionary(text: string): string[] {
   return result;
 }
 
-// Hàm processText mới
+// Hàm processText mới: ưu tiên word-breaker, fallback về maximum matching nếu cần
 export function processText(text: string): ProcessTextResult {
-  const words = segmentByDictionary(text);
-  // Tính vị trí bắt đầu của từng từ (tương đối)
+  // Sử dụng word-breaker cho tiếng Anh
+  let words: string[] = [];
+  try {
+    // wordBreaker trả về mảng các từ đã tách
+    words = wordBreaker(text);
+    // Nếu word-breaker tách được nhiều hơn 1 từ, ưu tiên dùng
+    if (words.length > 1) {
+      // Tính vị trí bắt đầu của từng từ
+      let positions: number[] = [];
+      let pos = 0;
+      for (const word of words) {
+        positions.push(pos);
+        pos += word.length + 1;
+      }
+      return { words, positions };
+    }
+  } catch (e) {
+    // Nếu word-breaker lỗi, fallback về maximum matching
+  }
+  // Fallback: maximum matching
+  words = segmentByDictionary(text);
   let positions: number[] = [];
   let pos = 0;
   for (const word of words) {
     positions.push(pos);
-    pos += word.length + 1; // +1 cho dấu cách
+    pos += word.length + 1;
   }
   return { words, positions };
 }
