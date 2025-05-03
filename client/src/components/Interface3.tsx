@@ -488,10 +488,10 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
                 </button>
                 <button
                   onClick={handleConfirmOrder}
-                  className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition-colors"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center space-x-2"
                 >
                   <span className="material-icons">send</span>
-                  <span>Press Here to Send Your Request To Receptionist</span>
+                  <span>Send Request to the Reception</span>
                 </button>
               </div>
             </div>
