@@ -61,28 +61,16 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     animationFrames.current = {};
   };
   
-  // Initialize reference service
+  // Load all references on mount
   useEffect(() => {
-    referenceService.initialize();
+    async function loadAllReferences() {
+      await referenceService.initialize();
+      // Lấy toàn bộ referenceMap
+      const allRefs = Object.values((referenceService as any).referenceMap || {}) as ReferenceItem[];
+      setReferences(allRefs);
+    }
+    loadAllReferences();
   }, []);
-  
-  // Update references when new transcripts arrive
-  useEffect(() => {
-    // Only look at user messages for reference requests
-    const userMessages = transcripts.filter(t => t.role === 'user');
-    const matches: ReferenceItem[] = [];
-    userMessages.forEach(msg => {
-      const found = referenceService.findReferences(msg.content);
-      console.log('User message:', msg.content, '-> Found references:', found);
-      found.forEach(ref => {
-        if (!matches.find(m => m.url === ref.url)) {
-          matches.push(ref);
-        }
-      });
-    });
-    console.log('All matches to setReferences:', matches);
-    setReferences(matches);
-  }, [transcripts]);
   
   // Process transcripts into conversation turns
   useEffect(() => {
