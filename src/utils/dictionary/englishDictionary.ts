@@ -68,5 +68,34 @@ export const englishDictionary = new Set([
   // Pleasantries and common phrases
   'please', 'thank', 'thanks', 'welcome', 'goodbye', 'bye',
   'excuse', 'sorry', 'pardon', 'help', 'assist', 'support',
-  'yes', 'no', 'okay', 'ok', 'alright', 'fine', 'great'
+  'yes', 'no', 'okay', 'ok', 'alright', 'fine', 'great',
+  
+  // Các cụm từ mẫu từ assistant
+  'goodafternoon',
+  'thisis',
+  'voice',
+  'assistant',
+  'im',
+  'very',
+  'happy',
+  'to',
+  'help',
+  'you',
+  'today',
+  'how',
+  'may',
+  'i',
+  'assist',
+  'your',
+  'during',
+  'your',
+  'stay',
+  'at',
+  'minhnonhotel',
+  'good',
+  'afternoon',
+  'this',
+  'is',
+  'minhon',
+  'hotel'
 ]); 
