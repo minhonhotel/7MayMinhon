@@ -129,6 +129,91 @@
       "keyword": "reservation",
       "fragments": ["re", "ser", "va", "tion"],
       "type": "word"
+    },
+    {
+      "keyword": "Mũi Né",
+      "fragments": ["Mũi", "Né"],
+      "type": "place"
+    },
+    {
+      "keyword": "Phan Thiết",
+      "fragments": ["Phan", "Thiết"],
+      "type": "place"
+    },
+    {
+      "keyword": "Bình Thuận",
+      "fragments": ["Bình", "Thuận"],
+      "type": "place"
+    },
+    {
+      "keyword": "Suối Tiên",
+      "fragments": ["Suối", "Tiên"],
+      "type": "place"
+    },
+    {
+      "keyword": "Đồi Cát Bay",
+      "fragments": ["Đồi", "Cát", "Bay"],
+      "type": "place"
+    },
+    {
+      "keyword": "Làng Chài",
+      "fragments": ["Làng", "Chài"],
+      "type": "place"
+    },
+    {
+      "keyword": "Hòn Rơm",
+      "fragments": ["Hòn", "Rơm"],
+      "type": "place"
+    },
+    {
+      "keyword": "Resort",
+      "fragments": ["Resort"],
+      "type": "word"
+    },
+    {
+      "keyword": "Sea Links",
+      "fragments": ["Sea", "Links"],
+      "type": "place"
+    },
+    {
+      "keyword": "Victoria Resort",
+      "fragments": ["Victoria", "Resort"],
+      "type": "place"
+    },
+    {
+      "keyword": "Anantara Resort",
+      "fragments": ["Anantara", "Resort"],
+      "type": "place"
+    },
+    {
+      "keyword": "Centara Mirage",
+      "fragments": ["Centara", "Mirage"],
+      "type": "place"
+    },
+    {
+      "keyword": "Fishermen Show",
+      "fragments": ["Fishermen", "Show"],
+      "type": "event"
+    },
+    {
+      "keyword": "Bãi biển",
+      "fragments": ["Bãi", "biển"],
+      "type": "place"
+    },
+    {
+      "keyword": "Chợ Phan Thiết",
+      "fragments": ["Chợ", "Phan", "Thiết"],
+      "type": "place"
+    },
+    {
+      "keyword": "Duc Thanh School",
+      "fragments": ["Duc", "Thanh", "School"],
+      "type": "place"
+    },
+    {
+      "keyword": "Po Sah Inu",
+      "fragments": ["Po", "Sah", "Inu"],
+      "type": "place"
     }
   ]
 } 
