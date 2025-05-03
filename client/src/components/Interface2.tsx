@@ -243,7 +243,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               containerId="siri-button"
               isListening={!isMuted}
               volumeLevel={micLevel}
-              sizeMultiplier={1.5}
+              sizeMultiplier={2}
             />
             <div className="absolute text-yellow-300 text-sm" style={{ bottom: '15px' }}>
               {formatDuration(localDuration)}

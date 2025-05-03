@@ -72,7 +72,7 @@ export class SiriButton {
     // Update center coordinates
     this.centerX = this.width / 2;
     this.centerY = this.height / 2;
-    this.radius = Math.min(this.width, this.height) / 2.5; // Đảm bảo luôn lớn hơn, tỷ lệ với container
+    this.radius = Math.min(this.width, this.height) / 2.1; // Đảm bảo luôn lớn hơn, chiếm nhiều diện tích hơn
   }
 
   private drawBaseCircle() {
