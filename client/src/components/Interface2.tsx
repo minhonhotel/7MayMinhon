@@ -3,6 +3,7 @@ import { useAssistant } from '@/context/AssistantContext';
 import Reference from './Reference';
 import SiriCallButton from './SiriCallButton';
 import { referenceService, ReferenceItem } from '@/services/ReferenceService';
+import { processText, applySmartSpacing } from '../utils/textProcessing';
 
 interface Interface2Props {
   isActive: boolean;
