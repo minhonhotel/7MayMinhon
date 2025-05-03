@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAssistant } from '@/context/AssistantContext';
 import hotelImage from '../assets/hotel-exterior.jpeg';
-import minhonLogo from '../public/assets/references/images/minhon-logo.jpg';
 
 interface Interface1Props {
   isActive: boolean;
@@ -32,7 +31,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
       <div className="container mx-auto h-full flex flex-col items-center justify-start text-white p-5 pt-10 lg:pt-16 overflow-y-auto">
         <div className="w-full flex items-center justify-between mb-8">
           <div className="flex items-center gap-2">
-            <img src={minhonLogo} alt="Mi Nhon Hotel Logo" className="w-24 h-auto drop-shadow-lg" />
+            <img src="/assets/references/images/minhon-logo.jpg" alt="Mi Nhon Hotel Logo" className="w-24 h-auto drop-shadow-lg" />
             <span className="material-icons text-accent text-3xl ml-2">apartment</span>
           </div>
           <div className="flex items-center gap-2 text-dark font-semibold">
