@@ -99,5 +99,237 @@
     "url": "https://minhonhotel.com",
     "description": "Truy cập website chính thức",
     "keywords": ["website", "minhon", "link"]
+  },
+  "wine-castle-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Wine Castle 1",
+    "url": "/assets/references/images/landmark/Wine_Castle1.jpg",
+    "description": "Wine Castle 1",
+    "keywords": ["wine castle", "landmark", "mui ne"]
+  },
+  "wine-castle-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Wine Castle 2",
+    "url": "/assets/references/images/landmark/Wine_Castle2.jpg",
+    "description": "Wine Castle 2",
+    "keywords": ["wine castle", "landmark", "mui ne"]
+  },
+  "white-sand-dunes-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "White Sand Dunes 1",
+    "url": "/assets/references/images/landmark/White_Sand_Dunes1.jpg",
+    "description": "White Sand Dunes 1",
+    "keywords": ["white sand dunes", "landmark", "mui ne"]
+  },
+  "white-sand-dunes-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "White Sand Dunes 2",
+    "url": "/assets/references/images/landmark/White_Sand_Dunes2.jpg",
+    "description": "White Sand Dunes 2",
+    "keywords": ["white sand dunes", "landmark", "mui ne"]
+  },
+  "tacu-mountain-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "TaCu Mountain 1",
+    "url": "/assets/references/images/landmark/TaCu_Mountain1.jpg",
+    "description": "TaCu Mountain 1",
+    "keywords": ["ta cu mountain", "landmark", "phan thiet"]
+  },
+  "tacu-mountain-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "TaCu Mountain 2",
+    "url": "/assets/references/images/landmark/TaCu_Mountain2.jpg",
+    "description": "TaCu Mountain 2",
+    "keywords": ["ta cu mountain", "landmark", "phan thiet"]
+  },
+  "red-sand-dunes-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Red Sand Dunes 1",
+    "url": "/assets/references/images/landmark/Red_Sand_Dunes1.jpg",
+    "description": "Red Sand Dunes 1",
+    "keywords": ["red sand dunes", "landmark", "mui ne"]
+  },
+  "red-sand-dunes-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Red Sand Dunes 2",
+    "url": "/assets/references/images/landmark/Red_Sand_Dunes2.jpg",
+    "description": "Red Sand Dunes 2",
+    "keywords": ["red sand dunes", "landmark", "mui ne"]
+  },
+  "posahinu-tower-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "PoSahInu Tower 1",
+    "url": "/assets/references/images/landmark/PoSahInu_Tower1.jpg",
+    "description": "PoSahInu Tower 1",
+    "keywords": ["po sah inu", "cham tower", "landmark"]
+  },
+  "posahinu-tower-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "PoSahInu Tower 2",
+    "url": "/assets/references/images/landmark/PoSahInu_Tower2.jpg",
+    "description": "PoSahInu Tower 2",
+    "keywords": ["po sah inu", "cham tower", "landmark"]
+  },
+  "muine-fishing-village-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Muine FishingVillage 1",
+    "url": "/assets/references/images/landmark/Muine_FishingVillage1.jpg",
+    "description": "Muine FishingVillage 1",
+    "keywords": ["mui ne", "fishing village", "landmark"]
+  },
+  "muine-fishing-village-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Muine FishingVillage 2",
+    "url": "/assets/references/images/landmark/Muine_FishingVillage2.jpg",
+    "description": "Muine FishingVillage 2",
+    "keywords": ["mui ne", "fishing village", "landmark"]
+  },
+  "muine-beach-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Muine Beach 1",
+    "url": "/assets/references/images/landmark/Muine_Beach1.jpg",
+    "description": "Muine Beach 1",
+    "keywords": ["mui ne", "beach", "landmark"]
+  },
+  "muine-beach-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Muine Beach 2",
+    "url": "/assets/references/images/landmark/Muine_Beach2.jpg",
+    "description": "Muine Beach 2",
+    "keywords": ["mui ne", "beach", "landmark"]
+  },
+  "kega-lighthouse-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "KeGa Lighthouse 1",
+    "url": "/assets/references/images/landmark/KeGa_Lighthouse1.jpg",
+    "description": "KeGa Lighthouse 1",
+    "keywords": ["ke ga", "lighthouse", "landmark"]
+  },
+  "kega-lighthouse-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "KeGa Lighthouse 2",
+    "url": "/assets/references/images/landmark/KeGa_Lighthouse2.jpg",
+    "description": "KeGa Lighthouse 2",
+    "keywords": ["ke ga", "lighthouse", "landmark"]
+  },
+  "hamtien-beach-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "HamTien Beach 1",
+    "url": "/assets/references/images/landmark/HamTien_Beach1.jpg",
+    "description": "HamTien Beach 1",
+    "keywords": ["ham tien", "beach", "landmark"]
+  },
+  "hamtien-beach-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "HamTien Beach 2",
+    "url": "/assets/references/images/landmark/HamTien_Beach2.jpg",
+    "description": "HamTien Beach 2",
+    "keywords": ["ham tien", "beach", "landmark"]
+  },
+  "fairy-stream-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Fairy Stream 1",
+    "url": "/assets/references/images/landmark/Fairy_Stream1.png",
+    "description": "Fairy Stream 1",
+    "keywords": ["fairy stream", "landmark", "mui ne"]
+  },
+  "fairy-stream-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Fairy Stream 2",
+    "url": "/assets/references/images/landmark/Fairy_Stream2.jpg",
+    "description": "Fairy Stream 2",
+    "keywords": ["fairy stream", "landmark", "mui ne"]
+  },
+  "banhxeo-phanthiet-1": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "BanhXeo PhanThiet 1",
+    "url": "/assets/references/images/local-cuisine/BanhXeo_PhanThiet1.jpg",
+    "description": "BanhXeo PhanThiet 1",
+    "keywords": ["banh xeo", "local cuisine", "phan thiet"]
+  },
+  "banhxeo-phanthiet-2": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "BanhXeo PhanThiet 2",
+    "url": "/assets/references/images/local-cuisine/BanhXeo_PhanThiet2.jpg",
+    "description": "BanhXeo PhanThiet 2",
+    "keywords": ["banh xeo", "local cuisine", "phan thiet"]
+  },
+  "banhcan-muine-1": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "BanhCan Muine 1",
+    "url": "/assets/references/images/local-cuisine/BanhCan_Muine1.jpg",
+    "description": "BanhCan Muine 1",
+    "keywords": ["banh can", "local cuisine", "mui ne"]
+  },
+  "banhcan-muine-2": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "BanhCan Muine 2",
+    "url": "/assets/references/images/local-cuisine/BanhCan_Muine2.jpg",
+    "description": "BanhCan Muine 2",
+    "keywords": ["banh can", "local cuisine", "mui ne"]
+  },
+  "pool-view-1": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Pool_View1",
+    "url": "/assets/references/images/hotel-amenities/Pool_View1.jpg",
+    "description": "Pool_View1",
+    "keywords": ["pool", "hotel amenities"]
+  },
+  "pool-view-2": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Pool_View2",
+    "url": "/assets/references/images/hotel-amenities/Pool_View2.jpg",
+    "description": "Pool_View2",
+    "keywords": ["pool", "hotel amenities"]
+  },
+  "area-map": {
+    "type": "image",
+    "category": "Area Map",
+    "title": "Area Map",
+    "url": "/assets/references/images/area-map/Area Map.jpg",
+    "description": "Area Map",
+    "keywords": ["area map", "phan thiet", "mui ne"]
+  },
+  "tourist-watersport-1": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Tourist_Watersport1",
+    "url": "/assets/references/images/activity-experience/Tourist_Watersport1.jpg",
+    "description": "Tourist_Watersport1",
+    "keywords": ["watersport", "activity", "mui ne"]
+  },
+  "tourist-watersport-2": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Tourist_Watersport2",
+    "url": "/assets/references/images/activity-experience/Tourist_Watersport2.jpg",
+    "description": "Tourist_Watersport2",
+    "keywords": ["watersport", "activity", "mui ne"]
   }
 } 
