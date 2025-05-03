@@ -1,48 +1,103 @@
 {
-  "room_service": {
-    "type": "document",
-    "title": "Menu Phục vụ Phòng",
-    "url": "/assets/references/documents/room-service-menu.txt",
-    "description": "Danh sách đầy đủ các món ăn và đồ uống phục vụ tại phòng",
-    "keywords": [
-      "food", "dining", "menu", "room service", 
-      "thức ăn", "đồ ăn", "menu", "phục vụ phòng",
-      "bữa sáng", "breakfast", "bữa trưa", "lunch",
-      "bữa tối", "dinner", "đồ uống", "beverages",
-      "gọi đồ ăn", "order food"
-    ]
-  },
-  "pool_guidelines": {
-    "type": "document",
-    "title": "Hướng dẫn sử dụng Hồ bơi",
-    "url": "/assets/references/documents/pool-guidelines.txt",
-    "description": "Quy định và hướng dẫn an toàn khi sử dụng hồ bơi",
-    "keywords": [
-      "pool", "swimming", "safety", "rules",
-      "hồ bơi", "bơi lội", "an toàn", "quy định",
-      "giờ bơi", "swimming hours", "cứu hộ", "lifeguard"
-    ]
-  },
-  "hotel_map": {
+  "mui-ne-beach": {
     "type": "image",
-    "title": "Sơ đồ Khách sạn",
-    "url": "/assets/references/images/hotel-map.jpg",
-    "description": "Bản đồ chi tiết các tiện ích trong khách sạn",
-    "keywords": [
-      "map", "layout", "facilities", "direction", "location",
-      "bản đồ", "sơ đồ", "tiện ích", "hướng dẫn", "vị trí",
-      "tầng", "floor", "phòng", "room", "nhà hàng", "restaurant"
-    ]
+    "category": "Landmark",
+    "title": "Mui Ne Beach",
+    "url": "/assets/references/images/mui-ne-beach.jpg",
+    "description": "Bãi biển nổi tiếng ở Mũi Né",
+    "keywords": ["mui ne", "beach", "landmark", "biển"]
   },
-  "spa_services": {
+  "po-shanu-tower": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Po Shanu Cham Towers",
+    "url": "/assets/references/images/po-shanu-tower.jpg",
+    "description": "Tháp Chăm cổ nổi tiếng tại Phan Thiết",
+    "keywords": ["po shanu", "cham tower", "landmark", "tháp chăm"]
+  },
+  "swimming-pool": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Swimming Pool",
+    "url": "/assets/references/images/swimming-pool.jpg",
+    "description": "Hồ bơi ngoài trời tại khách sạn",
+    "keywords": ["pool", "amenities", "hồ bơi"]
+  },
+  "spa-menu": {
+    "type": "document",
+    "category": "Hotel Amenities",
+    "title": "Spa Menu",
+    "url": "/assets/references/documents/spa-menu.pdf",
+    "description": "Danh sách dịch vụ spa và massage",
+    "keywords": ["spa", "massage", "amenities", "menu"]
+  },
+  "banh-xeo": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Bánh xèo Mũi Né",
+    "url": "/assets/references/images/banh-xeo.jpg",
+    "description": "Đặc sản bánh xèo nổi tiếng vùng biển",
+    "keywords": ["banh xeo", "local cuisine", "ẩm thực"]
+  },
+  "seafood-guide": {
+    "type": "document",
+    "category": "Local Cuisine",
+    "title": "Seafood Guide",
+    "url": "/assets/references/documents/seafood-guide.txt",
+    "description": "Hướng dẫn chọn hải sản tươi ngon",
+    "keywords": ["seafood", "local cuisine", "hải sản"]
+  },
+  "hotel-map": {
+    "type": "image",
+    "category": "Area Map",
+    "title": "Hotel Map",
+    "url": "/assets/references/images/hotel-map.jpg",
+    "description": "Bản đồ khách sạn Mi Nhon",
+    "keywords": ["map", "hotel", "bản đồ"]
+  },
+  "phan-thiet-map": {
+    "type": "image",
+    "category": "Area Map",
+    "title": "Phan Thiet Area Map",
+    "url": "/assets/references/images/phan-thiet-map.jpg",
+    "description": "Bản đồ khu vực Phan Thiết",
+    "keywords": ["area map", "phan thiet", "bản đồ"]
+  },
+  "surfing-guide": {
+    "type": "document",
+    "category": "Activity and Experiences",
+    "title": "Surfing Guide",
+    "url": "/assets/references/documents/surfing-guide.pdf",
+    "description": "Hướng dẫn lướt sóng tại Mũi Né",
+    "keywords": ["surfing", "activity", "lướt sóng"]
+  },
+  "local-tour": {
     "type": "link",
-    "title": "Dịch vụ Spa",
-    "url": "https://minhnon-hotel.com/spa-services",
-    "description": "Danh sách đầy đủ các dịch vụ spa và massage",
-    "keywords": [
-      "spa", "massage", "treatment", "wellness", "relaxation",
-      "mát xa", "spa", "thư giãn", "massage", "chăm sóc",
-      "đặt lịch spa", "book spa", "liệu trình", "treatment"
-    ]
+    "category": "Activity and Experiences",
+    "title": "Book Local Tour",
+    "url": "https://minhonhotel.com/tours",
+    "description": "Đặt tour trải nghiệm địa phương",
+    "keywords": ["tour", "activity", "trải nghiệm"]
+  },
+  "pool-guidelines": {
+    "type": "document",
+    "title": "Pool Guidelines",
+    "url": "/assets/references/documents/pool-guidelines.txt",
+    "description": "Quy định sử dụng hồ bơi",
+    "keywords": ["pool", "hồ bơi", "guideline"]
+  },
+  "phan-thiet-tour": {
+    "type": "document",
+    "title": "Phan Thiet Tour PDF",
+    "url": "/assets/references/documents/PHAN THIET TOUR .pdf",
+    "description": "Thông tin tour Phan Thiết",
+    "keywords": ["tour", "phan thiet", "pdf"]
+  },
+  "minhon-website": {
+    "type": "link",
+    "title": "Mi Nhon Hotel Website",
+    "url": "https://minhonhotel.com",
+    "description": "Truy cập website chính thức",
+    "keywords": ["website", "minhon", "link"]
   }
 } 

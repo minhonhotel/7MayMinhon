@@ -7,6 +7,14 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
+const CATEGORIES = [
+  'Landmark',
+  'Hotel Amenities',
+  'Local Cuisine',
+  'Area Map',
+  'Activity and Experiences'
+];
+
 interface ReferenceProps {
   references: ReferenceItem[];
 }
@@ -18,6 +26,7 @@ interface DocContents {
 const Reference = ({ references }: ReferenceProps): JSX.Element => {
   const [docContents, setDocContents] = useState<DocContents>({});
   const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState(CATEGORIES[0]);
 
   useEffect(() => {
     setLoading(true);
@@ -144,9 +153,25 @@ const Reference = ({ references }: ReferenceProps): JSX.Element => {
     return 4;
   };
 
+  // Lọc reference theo category
+  const filteredReferences = references.filter(ref => (ref as any).category === activeCategory);
+
   // Main render
   return (
-    <div className="w-full max-w-5xl mx-auto mt-2 mb-2 px-2 py-3 rounded-2xl" style={{ background: 'rgba(26,35,126,0.85)', minHeight: 220 }}>
+    <div className="w-full max-w-5xl mx-auto mt-2 mb-2 px-2 py-3 rounded-2xl" style={{ background: 'rgba(26,35,126,0.85)', minHeight: 260 }}>
+      {/* Tabs category */}
+      <div className="flex gap-2 mb-4 px-2 overflow-x-auto scrollbar-hide">
+        {CATEGORIES.map(cat => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className={`px-4 py-2 rounded-full font-poppins font-semibold text-sm transition-all duration-200 border-2 ${activeCategory === cat ? 'bg-[#d4af37] text-blue-900 border-[#d4af37] shadow-lg' : 'bg-white/10 text-white border-white/20 hover:bg-[#d4af37]/80 hover:text-blue-900'} min-w-max`}
+            style={{ boxShadow: activeCategory === cat ? '0 2px 12px 0 #d4af3760' : undefined }}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
       <div className="flex items-center mb-3 px-2">
         <h3 className="font-poppins font-semibold text-[20px] text-white tracking-wide">References</h3>
       </div>
@@ -155,19 +180,19 @@ const Reference = ({ references }: ReferenceProps): JSX.Element => {
         <div className="flex gap-4 overflow-x-auto pb-2">
           {[...Array(3)].map((_, i) => <SkeletonCard key={i} />)}
         </div>
-      ) : references.length === 0 ? (
+      ) : filteredReferences.length === 0 ? (
         <div className="flex items-center justify-center h-[120px] text-white/80 text-base font-medium">No references available</div>
       ) : (
         <Swiper
           modules={[Navigation, Pagination, A11y]}
           spaceBetween={16}
           slidesPerView={getSlidesPerView()}
-          navigation={references.length > 3}
+          navigation={filteredReferences.length > 3}
           pagination={{ clickable: true, dynamicBullets: true }}
           className="w-full"
           style={{ paddingBottom: 32 }}
         >
-          {references.map((reference, idx) => (
+          {filteredReferences.map((reference, idx) => (
             <SwiperSlide key={reference.url + idx} className="flex justify-center">
               {renderReferenceCard(reference)}
             </SwiperSlide>
