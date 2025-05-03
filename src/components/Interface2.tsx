@@ -65,6 +65,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     // Xử lý text bằng maximum matching
     const { words } = processText(content);
     const processedContent = applySmartSpacing(words);
+    console.log('DEBUG segmented:', processedContent); // Log kiểm tra kết quả tách từ
     
     // Lưu kết quả với trạng thái và timestamp
     setProcessedMessages(prev => ({
