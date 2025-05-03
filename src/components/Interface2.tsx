@@ -10,67 +10,129 @@ interface Interface2Props {
   isActive: boolean;
 }
 
+interface ProcessedMessage {
+  id: string;
+  content: string;
+  isComplete: boolean;
+  timestamp: number;
+}
+
 const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   const { conversationTurns } = useAssistant();
   const [visibleChars, setVisibleChars] = useState<{ [key: string]: number }>({});
   const [references, setReferences] = useState<ReferenceItem[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [processedMessages, setProcessedMessages] = useState<{ [key: string]: string }>({});
+  
+  // Cải thiện quản lý state cho processed messages
+  const [processedMessages, setProcessedMessages] = useState<{ [key: string]: ProcessedMessage }>({});
+  
+  // Cleanup processedMessages khi số lượng lớn
+  useEffect(() => {
+    const CACHE_LIMIT = 100; // Giới hạn số lượng tin nhắn được cache
+    const CACHE_LIFETIME = 30 * 60 * 1000; // 30 phút
+    
+    const cleanup = () => {
+      const now = Date.now();
+      setProcessedMessages(prev => {
+        const entries = Object.entries(prev);
+        if (entries.length <= CACHE_LIMIT) return prev;
+        
+        // Lọc bỏ các tin nhắn cũ
+        const filtered = entries.filter(([_, msg]) => {
+          const age = now - msg.timestamp;
+          return age < CACHE_LIFETIME;
+        });
+        
+        return Object.fromEntries(filtered);
+      });
+    };
+    
+    // Chạy cleanup mỗi 5 phút
+    const interval = setInterval(cleanup, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Process assistant message content with maximum matching
   const processMessageContent = useCallback((content: string, messageId: string): string => {
-    // Kiểm tra xem message đã được xử lý chưa
-    if (processedMessages[messageId]) {
-      return processedMessages[messageId];
+    const now = Date.now();
+    
+    // Kiểm tra cache
+    const cached = processedMessages[messageId];
+    if (cached?.isComplete) {
+      return cached.content;
     }
-
-    // Xử lý text
+    
+    // Xử lý text bằng maximum matching
     const { words } = processText(content);
     const processedContent = applySmartSpacing(words);
     
-    // Lưu kết quả đã xử lý
+    // Lưu kết quả với trạng thái và timestamp
     setProcessedMessages(prev => ({
       ...prev,
-      [messageId]: processedContent
+      [messageId]: {
+        id: messageId,
+        content: processedContent,
+        isComplete: true,
+        timestamp: now
+      }
     }));
     
     return processedContent;
   }, [processedMessages]);
 
-  // Paint-on effect for each message
+  // Paint-on effect for each message with improved stream handling
   useEffect(() => {
     conversationTurns.forEach(turn => {
       if (turn.role === 'assistant') {
         turn.messages.forEach(msg => {
           const content = msg.content.trim();
-          const totalChars = content.length;
+          const processedContent = processMessageContent(content, msg.id);
+          const totalChars = processedContent.length;
           
-          // Tạo paint-on effect
-          let currentChar = 0;
-          const interval = setInterval(() => {
-            if (currentChar <= totalChars) {
-              setVisibleChars(prev => ({
-                ...prev,
-                [msg.id]: currentChar
-              }));
-              currentChar++;
-            } else {
-              clearInterval(interval);
-            }
-          }, 20); // Tốc độ hiển thị
-
-          return () => clearInterval(interval);
+          // Kiểm tra nếu tin nhắn đã hoàn thành
+          const processed = processedMessages[msg.id];
+          if (processed?.isComplete && visibleChars[msg.id] === totalChars) {
+            return;
+          }
+          
+          // Tạo paint-on effect với độ trễ phù hợp
+          let currentChar = visibleChars[msg.id] || 0;
+          const startDelay = 100; // Đợi 100ms trước khi bắt đầu hiển thị
+          
+          setTimeout(() => {
+            const interval = setInterval(() => {
+              if (currentChar <= totalChars) {
+                setVisibleChars(prev => ({
+                  ...prev,
+                  [msg.id]: currentChar
+                }));
+                currentChar++;
+              } else {
+                clearInterval(interval);
+                // Đánh dấu tin nhắn đã hoàn thành
+                setProcessedMessages(prev => ({
+                  ...prev,
+                  [msg.id]: {
+                    ...prev[msg.id],
+                    isComplete: true
+                  }
+                }));
+              }
+            }, 20); // Tốc độ hiển thị
+            
+            return () => clearInterval(interval);
+          }, startDelay);
         });
       }
     });
-  }, [conversationTurns]);
+  }, [conversationTurns, processedMessages, processMessageContent]);
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
-    if (containerRef.current) {
+    if (containerRef.current && isActive) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
-  }, [conversationTurns, visibleChars]);
+  }, [conversationTurns, visibleChars, isActive]);
 
   return (
     <div 
