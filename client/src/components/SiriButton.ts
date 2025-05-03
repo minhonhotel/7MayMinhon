@@ -15,6 +15,14 @@ export class SiriButton {
   private pulsePhase: number;
   private volumeLevel: number;
   private animationFrameId: number;
+  private sparkles: Array<{
+    angle: number;
+    radius: number;
+    alpha: number;
+    speed: number;
+    size: number;
+  }> = [];
+  private highlightPhase: number = 0;
 
   constructor(containerId: string) {
     // Create canvas element
@@ -130,6 +138,66 @@ export class SiriButton {
     }
   }
 
+  private drawSparkles() {
+    if (!this.isListening) return;
+    // Add new sparkles randomly
+    if (this.sparkles.length < 12 && Math.random() < 0.2) {
+      this.sparkles.push({
+        angle: Math.random() * Math.PI * 2,
+        radius: this.radius + 18 + Math.random() * 6,
+        alpha: 0.7 + Math.random() * 0.3,
+        speed: 0.005 + Math.random() * 0.01,
+        size: 2 + Math.random() * 2
+      });
+    }
+    // Animate and draw sparkles
+    for (let i = this.sparkles.length - 1; i >= 0; i--) {
+      const s = this.sparkles[i];
+      s.angle += s.speed;
+      s.alpha -= 0.002;
+      if (s.alpha <= 0) {
+        this.sparkles.splice(i, 1);
+        continue;
+      }
+      const x = this.centerX + s.radius * Math.cos(s.angle);
+      const y = this.centerY + s.radius * Math.sin(s.angle);
+      this.ctx.save();
+      this.ctx.globalAlpha = s.alpha;
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, s.size, 0, Math.PI * 2);
+      this.ctx.fillStyle = 'rgba(255, 223, 80, 1)'; // gold sparkle
+      this.ctx.shadowColor = '#ffe066';
+      this.ctx.shadowBlur = 8;
+      this.ctx.fill();
+      this.ctx.restore();
+    }
+  }
+
+  private drawGoldHighlight() {
+    if (!this.isListening) return;
+    // Animate highlight arc
+    this.highlightPhase += 0.025;
+    const arcStart = this.highlightPhase;
+    const arcEnd = arcStart + Math.PI / 3; // 60deg highlight
+    this.ctx.save();
+    this.ctx.beginPath();
+    this.ctx.arc(this.centerX, this.centerY, this.radius + 14, arcStart, arcEnd);
+    const grad = this.ctx.createLinearGradient(
+      this.centerX + Math.cos(arcStart) * (this.radius + 14),
+      this.centerY + Math.sin(arcStart) * (this.radius + 14),
+      this.centerX + Math.cos(arcEnd) * (this.radius + 14),
+      this.centerY + Math.sin(arcEnd) * (this.radius + 14)
+    );
+    grad.addColorStop(0, '#ffe066'); // gold
+    grad.addColorStop(1, '#fffbe6'); // light gold
+    this.ctx.strokeStyle = grad;
+    this.ctx.lineWidth = 7;
+    this.ctx.shadowColor = '#ffe066';
+    this.ctx.shadowBlur = 16;
+    this.ctx.stroke();
+    this.ctx.restore();
+  }
+
   private animate() {
     // Clear canvas
     this.ctx.clearRect(0, 0, this.width, this.height);
@@ -138,6 +206,8 @@ export class SiriButton {
     this.drawBaseCircle();
     this.drawRipples();
     this.drawPulsingRing();
+    this.drawGoldHighlight();
+    this.drawSparkles();
 
     // Add new ripples when listening
     if (this.isListening && Math.random() < 0.1) {
@@ -155,8 +225,10 @@ export class SiriButton {
   public setListening(listening: boolean) {
     this.isListening = listening;
     if (listening) {
-      // Reset ripples when starting to listen
+      // Reset ripples and sparkles when starting to listen
       this.ripples = [];
+      this.sparkles = [];
+      this.highlightPhase = 0;
     }
   }
 
