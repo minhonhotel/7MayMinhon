@@ -106,7 +106,9 @@
     "title": "Wine Castle 1",
     "url": "/assets/references/images/landmark/Wine_Castle1.jpg",
     "description": "Wine Castle 1",
-    "keywords": ["wine castle", "landmark", "mui ne"]
+    "keywords": [
+      "wine castle", "winecastle", "lâu đài rượu", "lau dai ruou", "winery", "castle", "vang", "wine", "tour wine castle", "wine castle mui ne", "wine castle phan thiet", "địa điểm tham quan", "attraction", "winery mui ne", "wine castle & golf", "wine castle golf"
+    ]
   },
   "wine-castle-2": {
     "type": "image",
@@ -122,7 +124,9 @@
     "title": "White Sand Dunes 1",
     "url": "/assets/references/images/landmark/White_Sand_Dunes1.jpg",
     "description": "White Sand Dunes 1",
-    "keywords": ["white sand dunes", "landmark", "mui ne"]
+    "keywords": [
+      "white sand dunes", "đồi cát trắng", "doi cat trang", "cat trang", "white dunes", "mui ne dunes", "sand dunes", "đồi cát", "cát trắng", "attraction", "địa điểm tham quan", "mui ne sand dunes", "white sand", "dune", "white dune"
+    ]
   },
   "white-sand-dunes-2": {
     "type": "image",
@@ -218,7 +222,9 @@
     "title": "KeGa Lighthouse 1",
     "url": "/assets/references/images/landmark/KeGa_Lighthouse1.jpg",
     "description": "KeGa Lighthouse 1",
-    "keywords": ["ke ga", "lighthouse", "landmark"]
+    "keywords": [
+      "ke ga lighthouse", "hải đăng kê gà", "hai dang ke ga", "kê gà", "ke ga", "lighthouse", "mui ne lighthouse", "phan thiet lighthouse", "attraction", "địa điểm tham quan", "ke ga island", "ke ga light house"
+    ]
   },
   "kega-lighthouse-2": {
     "type": "image",
@@ -266,7 +272,9 @@
     "title": "BanhXeo PhanThiet 1",
     "url": "/assets/references/images/local-cuisine/BanhXeo_PhanThiet1.jpg",
     "description": "BanhXeo PhanThiet 1",
-    "keywords": ["banh xeo", "local cuisine", "phan thiet"]
+    "keywords": [
+      "banh xeo", "bánh xèo", "banhxeo", "banh xeo phan thiet", "phan thiet pancake", "vietnamese pancake", "đặc sản", "dac san", "món ăn", "mon an", "local food", "food", "ẩm thực", "am thuc", "banh xeo mui ne", "banh xeo ngon"
+    ]
   },
   "banhxeo-phanthiet-2": {
     "type": "image",
@@ -298,7 +306,9 @@
     "title": "Pool_View1",
     "url": "/assets/references/images/hotel-amenities/Pool_View1.jpg",
     "description": "Pool_View1",
-    "keywords": ["pool", "hotel amenities"]
+    "keywords": [
+      "pool", "swimming pool", "hồ bơi", "ho boi", "bể bơi", "be boi", "amenities", "tiện ích", "tien ich", "khách sạn", "khach san", "hotel", "outdoor pool", "pool view", "poolside"
+    ]
   },
   "pool-view-2": {
     "type": "image",
@@ -314,7 +324,9 @@
     "title": "Area Map",
     "url": "/assets/references/images/area-map/Area Map.jpg",
     "description": "Area Map",
-    "keywords": ["area map", "phan thiet", "mui ne"]
+    "keywords": [
+      "area map", "bản đồ", "ban do", "map", "hotel map", "bản đồ khách sạn", "ban do khach san", "map mui ne", "map phan thiet", "map area", "khu vực", "khu vuc"
+    ]
   },
   "tourist-watersport-1": {
     "type": "image",
@@ -322,7 +334,9 @@
     "title": "Tourist_Watersport1",
     "url": "/assets/references/images/activity-experience/Tourist_Watersport1.jpg",
     "description": "Tourist_Watersport1",
-    "keywords": ["watersport", "activity", "mui ne"]
+    "keywords": [
+      "watersport", "thể thao nước", "the thao nuoc", "trải nghiệm", "trai nghiem", "activity", "hoạt động", "hoat dong", "mui ne experience", "tour", "adventure", "water sport", "water sports", "sea sport"
+    ]
   },
   "tourist-watersport-2": {
     "type": "image",
