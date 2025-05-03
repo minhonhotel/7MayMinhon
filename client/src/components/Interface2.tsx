@@ -73,12 +73,14 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     const matches: ReferenceItem[] = [];
     userMessages.forEach(msg => {
       const found = referenceService.findReferences(msg.content);
+      console.log('User message:', msg.content, '-> Found references:', found);
       found.forEach(ref => {
         if (!matches.find(m => m.url === ref.url)) {
           matches.push(ref);
         }
       });
     });
+    console.log('All matches to setReferences:', matches);
     setReferences(matches);
   }, [transcripts]);
   
