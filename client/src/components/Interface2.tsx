@@ -236,9 +236,9 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     >
       <div className="container mx-auto flex flex-row p-2 h-full gap-2">
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
-        <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4">
+        <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4 mt-20">
           {/* Replace old orb with new SiriCallButton */}
-          <div className="relative flex items-center justify-center">
+          <div className="relative flex items-center justify-center mt-20">
             <SiriCallButton
               containerId="siri-button"
               isListening={!isMuted}
@@ -253,7 +253,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           <div
             id="realTimeConversation"
             ref={conversationRef}
-            className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto"
+            className="relative p-2 w-full min-h-[60px] max-h-[128px] overflow-y-auto mt-32"
           >
             {/* Display conversation turns */}
             {conversationTurns.map((turn) => (
@@ -287,7 +287,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               ))}
           </div>
           {/* Reference container below (full width, auto height) */}
-          <div className="w-full">
+          <div className="w-full mt-4">
             <Reference references={references} />
           </div>
         </div>
@@ -299,9 +299,12 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           <button id="cancelButton" onClick={handleCancel} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs">
             <span className="material-icons mr-1 text-base">cancel</span>Cancel
           </button>
-          <button id="endCallButton" onClick={handleNext} className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs">
-            <span className="material-icons mr-1 text-base">navigate_next</span>Confirm Your Request
-          </button>
+          <div className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 rounded-lg text-xs bg-[#d4af37] hover:bg-[#bfa133]" style={{ background: '#d4af37' }}>
+            <button id="endCallButton" onClick={handleNext} className="flex items-center justify-center text-white font-semibold gap-2 w-full">
+              <span className="material-icons text-base">navigate_next</span>
+              <span>Confirm Your Request</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
