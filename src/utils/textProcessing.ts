@@ -6,62 +6,64 @@ interface ProcessTextResult {
   positions: number[];
 }
 
-// Tìm từ dài nhất có thể từ vị trí start
-export function findLongestWord(text: string, start: number): { word: string; end: number } | null {
-  let end = start;
-  let longestWord = '';
-  let longestEnd = start;
-
-  // Thử tất cả các độ dài có thể từ vị trí start
-  while (end < text.length) {
-    const currentWord = text.slice(start, end + 1);
-    
-    // Kiểm tra trong cả từ điển tiếng Anh và từ điển tùy chỉnh
-    if (englishDictionary.has(currentWord.toLowerCase()) || findInDictionary(currentWord)) {
-      longestWord = currentWord;
-      longestEnd = end;
-    }
-    end++;
-  }
-
-  return longestWord ? { word: longestWord, end: longestEnd } : null;
+// Hàm kiểm tra từ hợp lệ
+function isValidWord(word: string): boolean {
+  return englishDictionary.has(word.toLowerCase()) || !!findInDictionary(word);
 }
 
-// Xử lý text bằng thuật toán maximum matching
-export function processText(text: string): ProcessTextResult {
-  const words: string[] = [];
-  const positions: number[] = [];
-  let currentPos = 0;
+// Hàm tách camelCase/PascalCase thành các từ riêng biệt
+function splitCamelCase(text: string): string {
+  // Tách trước các chữ hoa không ở đầu chuỗi, ví dụ: "MiNhonHotel" => "Mi Nhon Hotel"
+  return text.replace(/([a-z])([A-Z])/g, '$1 $2');
+}
 
-  while (currentPos < text.length) {
-    // Bỏ qua khoảng trắng
-    if (/\s/.test(text[currentPos])) {
-      currentPos++;
-      continue;
-    }
+// Cải tiến: Maximum matching đệ quy, ưu tiên tách ra nhiều từ hợp lệ nhất
+function segmentText(text: string, start: number): { words: string[]; positions: number[] } {
+  if (start >= text.length) return { words: [], positions: [] };
+  let bestResult: { words: string[]; positions: number[] } = { words: [text.slice(start)], positions: [start] };
 
-    // Xử lý dấu câu và số
-    if (/[.,!?;:0-9]/.test(text[currentPos])) {
-      words.push(text[currentPos]);
-      positions.push(currentPos);
-      currentPos++;
-      continue;
-    }
-
-    // Tìm từ dài nhất có thể
-    const result = findLongestWord(text, currentPos);
-    if (result) {
-      words.push(result.word);
-      positions.push(currentPos);
-      currentPos = result.end + 1;
-    } else {
-      // Nếu không tìm thấy từ nào, lấy một ký tự
-      words.push(text[currentPos]);
-      positions.push(currentPos);
-      currentPos++;
+  for (let end = text.length; end > start; end--) {
+    const word = text.slice(start, end);
+    if (isValidWord(word)) {
+      // Đệ quy tách phần còn lại
+      const rest = segmentText(text, end);
+      const candidate = {
+        words: [word, ...rest.words],
+        positions: [start, ...rest.positions]
+      };
+      // Ưu tiên phương án có nhiều từ hợp lệ nhất
+      if (candidate.words.length > bestResult.words.length ||
+          (candidate.words.length === bestResult.words.length && word.length > bestResult.words[0].length)) {
+        bestResult = candidate;
+      }
     }
   }
+  return bestResult;
+}
 
+// Xử lý text bằng thuật toán maximum matching cải tiến, có tách camelCase
+export function processText(text: string): ProcessTextResult {
+  // Tiền xử lý: tách camelCase/PascalCase
+  const preprocessed = splitCamelCase(text);
+  // Có thể chuyển về lowercase nếu muốn, ví dụ: preprocessed = preprocessed.toLowerCase();
+  // Bỏ qua khoảng trắng dư thừa
+  const normalized = preprocessed.replace(/\s+/g, ' ').trim();
+  // Áp dụng maximum matching cho từng từ/cụm
+  const tokens = normalized.split(' ');
+  let words: string[] = [];
+  let positions: number[] = [];
+  let pos = 0;
+  for (const token of tokens) {
+    if (!token) continue;
+    const seg = segmentText(token, 0);
+    words = words.concat(seg.words);
+    // Ghi lại vị trí bắt đầu của từng từ (tương đối)
+    for (let i = 0; i < seg.words.length; i++) {
+      positions.push(pos);
+      pos += seg.words[i].length;
+    }
+    pos += 1; // cho dấu cách
+  }
   return { words, positions };
 }
 
@@ -78,7 +80,7 @@ export function applySmartSpacing(words: string[]): string {
     }
 
     // Không thêm space sau dấu mở ngoặc
-    if (/[\[({]$/.test(result)) {
+    if (/\[\({]$/.test(result)) {
       return result + word;
     }
 
