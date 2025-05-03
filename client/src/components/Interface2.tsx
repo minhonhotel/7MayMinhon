@@ -236,9 +236,9 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     >
       <div className="container mx-auto flex flex-row p-2 h-full gap-2">
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
-        <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4 mt-20">
+        <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4 mt-2">
           {/* Replace old orb with new SiriCallButton */}
-          <div className="relative flex items-center justify-center mt-20">
+          <div className="relative flex items-center justify-center mb-6">
             <SiriCallButton
               containerId="siri-button"
               isListening={!isMuted}
@@ -253,7 +253,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           <div
             id="realTimeConversation"
             ref={conversationRef}
-            className="relative p-2 w-full min-h-[60px] max-h-[84px] overflow-y-auto mt-32"
+            className="relative p-2 py-2 w-full min-h-[60px] max-h-[104px] overflow-y-auto mt-32"
           >
             {/* Display conversation turns */}
             {conversationTurns.map((turn) => (
