@@ -271,12 +271,16 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                       <p className="text-xl font-semibold text-yellow-200">
                         <span className="inline-flex flex-wrap">
                           {turn.messages.map((msg, idx) => {
-                            // Remove leading/trailing spaces
-                            const content = msg.content.trim();
-                            // Add appropriate spacing
-                            const needsSpaceBefore = idx > 0 && !content.startsWith(',') && !content.startsWith('.') && !content.startsWith('?') && !content.startsWith('!');
-                            // Get visible characters for this message
-                            const visibleContent = content.slice(0, visibleChars[msg.id] || 0);
+                            // Đảm bảo content là string
+                            const content = typeof msg.content === 'string' ? msg.content : '';
+                            // Tách từ và ghép lại
+                            const { words } = processText(content);
+                            const processedContent = applySmartSpacing(words);
+                            // Log kiểm tra
+                            console.log('DEBUG segmented:', processedContent);
+                            // Hiệu ứng typewriter
+                            const needsSpaceBefore = idx > 0 && !processedContent.startsWith(',') && !processedContent.startsWith('.') && !processedContent.startsWith('?') && !processedContent.startsWith('!');
+                            const visibleContent = processedContent.slice(0, visibleChars[msg.id] || 0);
                             return (
                               <span key={msg.id}>
                                 {needsSpaceBefore ? ' ' : ''}
