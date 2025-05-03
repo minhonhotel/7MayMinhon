@@ -44,8 +44,8 @@ const SiriCallButton: React.FC<SiriCallButtonProps> = ({
   return (
     <div 
       id={containerId}
-      className="w-32 h-32 relative"
-      style={{ cursor: 'pointer' }}
+      className="w-32 h-32 relative rounded-full overflow-visible"
+      style={{ cursor: 'pointer', borderRadius: '50%' }}
     />
   );
 };
