@@ -27,6 +27,7 @@ const Reference = ({ references }: ReferenceProps): JSX.Element => {
   const [docContents, setDocContents] = useState<DocContents>({});
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0]);
+  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -105,7 +106,13 @@ const Reference = ({ references }: ReferenceProps): JSX.Element => {
         {/* Thumbnail */}
         <div className="flex-1 flex items-center justify-center overflow-hidden rounded-t-xl" style={{ height: '60%' }}>
           {(reference as any).type === 'image' && (
-            <img src={getAssetUrl(reference.url)} alt={reference.title} className="object-cover w-full h-full rounded-t-xl" />
+            <img
+              src={getAssetUrl(reference.url)}
+              alt={reference.title}
+              className="object-cover w-full h-full rounded-t-xl hover:opacity-80 transition"
+              onClick={e => { e.stopPropagation(); setLightboxImg(getAssetUrl(reference.url)); }}
+              style={{ cursor: 'zoom-in' }}
+            />
           )}
           {(reference as any).type === 'document' && reference.url.endsWith('.pdf') && (
             <span className="material-icons text-5xl text-blue-700/80">picture_as_pdf</span>
@@ -159,6 +166,28 @@ const Reference = ({ references }: ReferenceProps): JSX.Element => {
   // Main render
   return (
     <div className="w-full max-w-5xl mx-auto mt-2 mb-2 px-2 py-3 rounded-2xl" style={{ background: 'rgba(26,35,126,0.85)', minHeight: 260 }}>
+      {/* Lightbox modal */}
+      {lightboxImg && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+          onClick={() => setLightboxImg(null)}
+        >
+          <div className="relative max-w-3xl w-full flex flex-col items-center">
+            <button
+              className="absolute top-2 right-2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg z-10"
+              onClick={e => { e.stopPropagation(); setLightboxImg(null); }}
+            >
+              <span className="material-icons text-2xl">close</span>
+            </button>
+            <img
+              src={lightboxImg}
+              alt="Phóng to ảnh reference"
+              className="rounded-xl max-h-[80vh] w-auto object-contain border-4 border-white shadow-2xl"
+              onClick={e => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
       {/* Tabs category */}
       <div className="flex gap-2 mb-4 px-2 overflow-x-auto scrollbar-hide">
         {CATEGORIES.map(cat => (
