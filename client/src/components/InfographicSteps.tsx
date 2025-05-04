@@ -23,11 +23,6 @@ export default function InfographicSteps({ currentStep = 1, compact = false }) {
     <div
       className={`w-full ${compact ? 'max-w-[160px] py-2 gap-3' : 'max-w-xs py-6 gap-6'} mx-auto flex flex-col items-center`}
     >
-      <h3
-        className={`font-bold font-poppins mb-2 tracking-wide ${compact ? 'text-base' : 'text-xl'} text-white`}
-      >
-        Steps to Process Your Request
-      </h3>
       {steps.map((step, idx) => (
         <div
           key={step.title}
