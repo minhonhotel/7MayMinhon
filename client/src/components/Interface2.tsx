@@ -241,7 +241,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               volumeLevel={micLevel}
             />
             {/* Duration bar với 2 nút hai bên, căn giữa tuyệt đối */}
-            <div className="flex items-center justify-center mt-2 w-full" style={{gap: '10px'}}>
+            <div className="flex items-center justify-center mt-2 w-full" style={{gap: '2px'}}>
               {/* Nút Mute bên trái */}
               <button
                 className="flex items-center justify-center transition-colors"
@@ -291,7 +291,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             <div
               id="realTimeConversation"
               ref={conversationRef}
-              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-2xl mx-auto min-h-[60px] max-h-[40vh] overflow-y-auto mt-4 mb-2"
+              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-2xl mx-auto min-h-[60px] max-h-[26vh] overflow-y-auto mt-4 mb-2"
               style={{
                 background: 'rgba(255,255,255,0.88)',
                 borderRadius: 12,
