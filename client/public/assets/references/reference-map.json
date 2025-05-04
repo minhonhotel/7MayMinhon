@@ -1,4 +1,5 @@
 {
+  
   "swimming-pool": {
     "type": "image",
     "category": "Hotel Amenities",
@@ -22,6 +23,7 @@
     "url": "/assets/references/images/banh-xeo.jpg",
     "description": "Đặc sản bánh xèo nổi tiếng vùng biển",
     "keywords": ["banh xeo", "local cuisine", "ẩm thực"]
+  
   },
   "seafood-guide": {
     "type": "document",
@@ -329,5 +331,221 @@
     "url": "/assets/references/images/activity-experience/Tourist_Watersport2.jpg",
     "description": "Tourist_Watersport2",
     "keywords": ["watersport", "activity", "mui ne"]
+  },
+  "family-beachfun-1": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Family Beachfun 1",
+    "url": "/assets/references/images/activity-experience/Family_Beachfun1.jpg",
+    "description": "Family Beachfun 1",
+    "keywords": ["family", "beachfun", "activity", "experience"]
+  },
+  "family-beachfun-2": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Family Beachfun 2",
+    "url": "/assets/references/images/activity-experience/Family_Beachfun2.jpg",
+    "description": "Family Beachfun 2",
+    "keywords": ["family", "beachfun", "activity", "experience"]
+  },
+  "friends-jeepdunes-1": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Friends JeepDunes 1",
+    "url": "/assets/references/images/activity-experience/Friends_JeepDunes1.jpg",
+    "description": "Friends JeepDunes 1",
+    "keywords": ["friends", "jeep", "dunes", "activity", "experience"]
+  },
+  "friends-jeepdunes-2": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Friends JeepDunes 2",
+    "url": "/assets/references/images/activity-experience/Friends_JeepDunes2.jpg",
+    "description": "Friends JeepDunes 2",
+    "keywords": ["friends", "jeep", "dunes", "activity", "experience"]
+  },
+  "relaxing-poolside": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Relaxing Poolside",
+    "url": "/assets/references/images/activity-experience/Relaxing_Poolside.jpg",
+    "description": "Relaxing Poolside",
+    "keywords": ["relaxing", "poolside", "activity", "experience"]
+  },
+  "tourist-bar": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Tourist Bar",
+    "url": "/assets/references/images/activity-experience/Tourist_Bar.jpg",
+    "description": "Tourist Bar",
+    "keywords": ["tourist", "bar", "activity", "experience"]
+  },
+  "tourist-fairystream-1": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Tourist FairyStream 1",
+    "url": "/assets/references/images/activity-experience/Tourist_FairyStream1.jpg",
+    "description": "Tourist FairyStream 1",
+    "keywords": ["tourist", "fairystream", "activity", "experience"]
+  },
+  "tourist-fairystream-2": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Tourist FairyStream 2",
+    "url": "/assets/references/images/activity-experience/Tourist_FairyStream2.jpg",
+    "description": "Tourist FairyStream 2",
+    "keywords": ["tourist", "fairystream", "activity", "experience"]
+  },
+  "tourist-localfood": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Tourist LocalFood",
+    "url": "/assets/references/images/activity-experience/Tourist_LocalFood.jpg",
+    "description": "Tourist LocalFood",
+    "keywords": ["tourist", "localfood", "activity", "experience"]
+  },
+  "tourist-seaviewcafe": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Tourist Seaviewcafe",
+    "url": "/assets/references/images/activity-experience/Tourist_Seaviewcafe.jpg",
+    "description": "Tourist Seaviewcafe",
+    "keywords": ["tourist", "seaviewcafe", "activity", "experience"]
+  },
+  "tourist-sunrisedune-1": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Tourist SunriseDune 1",
+    "url": "/assets/references/images/activity-experience/Tourist_SunriseDune1.jpg",
+    "description": "Tourist SunriseDune 1",
+    "keywords": ["tourist", "sunrisedune", "activity", "experience"]
+  },
+  "tourist-sunrisedune-2": {
+    "type": "image",
+    "category": "Activity and Experience",
+    "title": "Tourist SunriseDune 2",
+    "url": "/assets/references/images/activity-experience/Tourist_SunriseDune2.jpg",
+    "description": "Tourist SunriseDune 2",
+    "keywords": ["tourist", "sunrisedune", "activity", "experience"]
+  },
+  "roomview-1": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Roomview 1",
+    "url": "/assets/references/images/hotel-amenities/Roomview1.jpg",
+    "description": "Roomview 1",
+    "keywords": ["roomview", "hotel", "amenities"]
+  },
+  "roomview-2": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Roomview 2",
+    "url": "/assets/references/images/hotel-amenities/Roomview2.jpg",
+    "description": "Roomview 2",
+    "keywords": ["roomview", "hotel", "amenities"]
+  },
+  "roomview-3": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Roomview 3",
+    "url": "/assets/references/images/hotel-amenities/Roomview3.jpg",
+    "description": "Roomview 3",
+    "keywords": ["roomview", "hotel", "amenities"]
+  },
+  "roomfood-service": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Roomfood Service",
+    "url": "/assets/references/images/hotel-amenities/Roomfood_Service.jpg",
+    "description": "Roomfood Service",
+    "keywords": ["roomfood", "service", "hotel", "amenities"]
+  },
+  "restaurant": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Restaurant",
+    "url": "/assets/references/images/hotel-amenities/Restaurant.jpg",
+    "description": "Restaurant",
+    "keywords": ["restaurant", "hotel", "amenities"]
+  },
+  "restaurant-2": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Restaurant 2",
+    "url": "/assets/references/images/hotel-amenities/Restaurant2.jpg",
+    "description": "Restaurant 2",
+    "keywords": ["restaurant", "hotel", "amenities"]
+  },
+  "lunch": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Lunch",
+    "url": "/assets/references/images/hotel-amenities/Lunch.jpg",
+    "description": "Lunch",
+    "keywords": ["lunch", "hotel", "amenities"]
+  },
+  "general-view-1": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "General View 1",
+    "url": "/assets/references/images/hotel-amenities/General_View1.jpg",
+    "description": "General View 1",
+    "keywords": ["general", "view", "hotel", "amenities"]
+  },
+  "general-view-2": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "General View 2",
+    "url": "/assets/references/images/hotel-amenities/General_View2.jpg",
+    "description": "General View 2",
+    "keywords": ["general", "view", "hotel", "amenities"]
+  },
+  "free-bicyles-service": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Free Bicyles Service",
+    "url": "/assets/references/images/hotel-amenities/Free_Bicyles Service.jpg",
+    "description": "Free Bicyles Service",
+    "keywords": ["free", "bicyles", "service", "hotel", "amenities"]
+  },
+  "decorate-service": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Decorate Service",
+    "url": "/assets/references/images/hotel-amenities/Decorate_Service.jpg",
+    "description": "Decorate Service",
+    "keywords": ["decorate", "service", "hotel", "amenities"]
+  },
+  "breakfast": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Breakfast",
+    "url": "/assets/references/images/hotel-amenities/Breakfast.jpg",
+    "description": "Breakfast",
+    "keywords": ["breakfast", "hotel", "amenities"]
+  },
+  "fairy-stream-1-png": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Fairy Stream 1 (PNG)",
+    "url": "/assets/references/images/landmark/Fairy_Stream1.png",
+    "description": "Fairy Stream 1 (PNG)",
+    "keywords": ["fairy", "stream", "landmark"]
+  },
+  "banhre-sweet-1": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "BanhRe Sweet 1",
+    "url": "/assets/references/images/local-cuisine/BanhRe_Sweet1.jpg",
+    "description": "BanhRe Sweet 1",
+    "keywords": ["banhre", "sweet", "local cuisine"]
+  },
+  "area-map-jpg": {
+    "type": "image",
+    "category": "Area Map",
+    "title": "Area Map (JPG)",
+    "url": "/assets/references/images/area-map/Area Map.jpg",
+    "description": "Area Map (JPG)",
+    "keywords": ["area", "map"]
   }
 } 
