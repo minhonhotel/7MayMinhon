@@ -48,121 +48,84 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
         <h2 className="font-poppins font-bold text-3xl lg:text-4xl text-amber-400 mb-2 text-center">Mi Nhon Hotel Mui Ne</h2>
         <p className="text-lg lg:text-xl text-center max-w-lg mb-8">AI-powered Voice Assistant - Supporting All Your Needs</p>
         
-        {/* Main Call Button + Menu Icons Around */}
-        <div className="relative flex items-center justify-center mb-16 w-full h-[420px] max-w-2xl mx-auto">
-          {/* Menu icons around call button */}
-          {/* Top row */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 flex gap-8">
-            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
-              <span className="material-icons text-4xl text-amber-400">login</span>
-            </div>
-            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
-              <span className="material-icons text-4xl text-amber-400">restaurant</span>
-            </div>
-            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
-              <span className="material-icons text-4xl text-amber-400">event_seat</span>
-            </div>
-          </div>
-          {/* Middle left/right */}
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col gap-8">
-            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
-              <span className="material-icons text-4xl text-amber-400">place</span>
-            </div>
-          </div>
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col gap-8">
-            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
-              <span className="material-icons text-4xl text-amber-400">translate</span>
-            </div>
-          </div>
-          {/* Bottom row */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-8">
-            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
-              <span className="material-icons text-4xl text-amber-400">wifi</span>
-            </div>
-            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
-              <span className="material-icons text-4xl text-amber-400">spa</span>
-            </div>
-            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
-              <span className="material-icons text-4xl text-amber-400">support_agent</span>
-            </div>
-          </div>
-          {/* Main Call Button center */}
-          <div className="relative z-10 flex flex-col items-center justify-center">
-            <div className="absolute inset-0 rounded-full border-4 border-amber-400 animate-[ripple_1.5s_linear_infinite] pointer-events-none transition-opacity duration-300 group-hover:opacity-80 opacity-60"></div>
-            <div className="absolute inset-0 rounded-full border-4 border-amber-400/70 animate-[ripple_2s_linear_infinite] pointer-events-none transition-opacity duration-300 group-hover:opacity-60 opacity-40"></div>
-            <button 
-              id="vapiButton" 
-              className="group relative w-40 h-40 lg:w-56 lg:h-56 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-primary-dark font-poppins font-bold flex flex-col items-center justify-center shadow-2xl transition-transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-amber-300 overflow-hidden"
-              onClick={startCall}
-            >
-              <span className="material-icons text-6xl lg:text-7xl mb-2 animate-mic-pulse group-hover:animate-mic-bounce text-shadow-lg">mic</span>
-              <span className="text-lg lg:text-xl font-medium">Press to Call</span>
-              {/* Sóng âm khi hover */}
-              <span className="absolute w-full h-full rounded-full pointer-events-none group-hover:animate-wave-pulse"></span>
-            </button>
-          </div>
+        {/* Main Call Button */}
+        <div className="relative mb-12 flex items-center justify-center">
+          {/* Ripple Animation (luôn hiển thị, mạnh hơn khi hover) */}
+          <div className="absolute inset-0 rounded-full border-4 border-amber-400 animate-[ripple_1.5s_linear_infinite] pointer-events-none transition-opacity duration-300 group-hover:opacity-80 opacity-60"></div>
+          <div className="absolute inset-0 rounded-full border-4 border-amber-400/70 animate-[ripple_2s_linear_infinite] pointer-events-none transition-opacity duration-300 group-hover:opacity-60 opacity-40"></div>
+          {/* Main Button */}
+          <button 
+            id="vapiButton" 
+            className="group relative w-40 h-40 lg:w-56 lg:h-56 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-primary-dark font-poppins font-bold flex flex-col items-center justify-center shadow-2xl transition-transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-amber-300 overflow-hidden"
+            onClick={startCall}
+          >
+            <span className="material-icons text-6xl lg:text-7xl mb-2 animate-mic-pulse group-hover:animate-mic-bounce text-shadow-lg">mic</span>
+            <span className="text-lg lg:text-xl font-medium">Press to Call</span>
+            {/* Sóng âm khi hover */}
+            <span className="absolute w-full h-full rounded-full pointer-events-none group-hover:animate-wave-pulse"></span>
+          </button>
         </div>
         {/* Services Section */}
         <div className="text-center w-full max-w-5xl">
           <div className="flex flex-row flex-wrap justify-center gap-3 text-left mx-auto">
             {/* Room & Stay */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 flex flex-col items-center">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Room & Stay</h4>
-              <ul className="grid grid-cols-5 gap-3 justify-items-center">
-                <li><span className="material-icons text-3xl text-amber-400">login</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">hourglass_empty</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">info</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">policy</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">wifi</span></li>
+              <ul className="grid grid-cols-5 gap-2 py-2">
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">login</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">hourglass_empty</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">info</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">policy</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">wifi</span></li>
               </ul>
             </div>
             {/* Room Services */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 flex flex-col items-center">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Room Services</h4>
-              <ul className="grid grid-cols-4 gap-3 justify-items-center">
-                <li><span className="material-icons text-3xl text-amber-400">restaurant</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">local_bar</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">cleaning_services</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">local_laundry_service</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">alarm</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">add_circle</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">build</span></li>
+              <ul className="grid grid-cols-7 gap-2 py-2">
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">restaurant</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">local_bar</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">cleaning_services</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">local_laundry_service</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">alarm</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">add_circle</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">build</span></li>
               </ul>
             </div>
             {/* Bookings & Facilities */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 flex flex-col items-center">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Bookings & Facilities</h4>
-              <ul className="grid grid-cols-4 gap-3 justify-items-center">
-                <li><span className="material-icons text-3xl text-amber-400">event_seat</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">spa</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">fitness_center</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">pool</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">directions_car</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">medical_services</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">support_agent</span></li>
+              <ul className="grid grid-cols-7 gap-2 py-2">
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">event_seat</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">spa</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">fitness_center</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">pool</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">directions_car</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">medical_services</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">support_agent</span></li>
               </ul>
             </div>
             {/* Tourism & Exploration */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 flex flex-col items-center">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Tourism & Exploration</h4>
-              <ul className="grid grid-cols-4 gap-3 justify-items-center">
-                <li><span className="material-icons text-3xl text-amber-400">place</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">local_dining</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">directions_bus</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">directions_car</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">event</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">shopping_bag</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">map</span></li>
+              <ul className="grid grid-cols-7 gap-2 py-2">
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">location_on</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">local_dining</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">directions_bus</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">directions_car</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">event</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">shopping_bag</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">map</span></li>
               </ul>
             </div>
             {/* Support */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 flex flex-col items-center">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Support</h4>
-              <ul className="grid grid-cols-4 gap-3 justify-items-center">
-                <li><span className="material-icons text-3xl text-amber-400">translate</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">rate_review</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">report_problem</span></li>
-                <li><span className="material-icons text-3xl text-amber-400">luggage</span></li>
+              <ul className="grid grid-cols-4 gap-2 py-2">
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">translate</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">rate_review</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">report_problem</span></li>
+                <li className="flex flex-col items-center justify-center"><span className="material-icons text-4xl text-amber-400">luggage</span></li>
               </ul>
             </div>
           </div>
