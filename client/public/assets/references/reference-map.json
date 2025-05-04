@@ -1,20 +1,704 @@
 {
-  
-  "spa-menu": {
-    "type": "document",
-    "category": "Hotel Amenities",
-    "title": "Spa Menu",
-    "url": "/assets/references/documents/spa-menu.pdf",
-    "description": "Danh sách dịch vụ spa và massage",
-    "keywords": ["spa", "massage", "amenities", "menu"]
-  },
-  "banh-xeo": {
+  "BanhCan_Muine1": {
     "type": "image",
     "category": "Local Cuisine",
-    "title": "Bánh xèo Mũi Né",
-    "url": "/assets/references/images/banh-xeo.jpg",
-    "description": "Đặc sản bánh xèo nổi tiếng vùng biển",
-    "keywords": ["banh xeo", "local cuisine", "ẩm thực"]
+    "title": "Banh Can Mui Ne",
+    "url": "/assets/references/images/local-cuisine/BanhCan_Muine1.jpg",
+    "description": "Traditional Banh Can rice pancakes from Mui Ne region",
+    "keywords": [
+      "banh can",
+      "vietnamese food",
+      "rice cake",
+      "mui ne",
+      "local dish",
+      "traditional"
+    ]
+  },
+  "BanhCan_Muine2": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Banh Can Preparation",
+    "url": "/assets/references/images/local-cuisine/BanhCan_Muine2.jpg",
+    "description": "Preparation of Banh Can small rice pancakes in clay molds",
+    "keywords": [
+      "banh can",
+      "cooking",
+      "street food",
+      "rice cake",
+      "vietnamese cuisine"
+    ]
+  },
+  "BanhQuaiVac1": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Banh Quai Vac Dumplings",
+    "url": "/assets/references/images/local-cuisine/BanhQuaiVac1.jpg",
+    "description": "Vietnamese crescent-shaped dumplings known as Banh Quai Vac",
+    "keywords": [
+      "banh quai vac",
+      "dumplings",
+      "vietnamese food",
+      "traditional",
+      "steamed"
+    ]
+  },
+  "BanhQuaiVac2": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Banh Quai Vac Serving",
+    "url": "/assets/references/images/local-cuisine/BanhQuaiVac2.jpg",
+    "description": "Served plate of colorful Banh Quai Vac crescent dumplings",
+    "keywords": [
+      "banh quai vac",
+      "dumplings",
+      "vietnamese cuisine",
+      "colorful food",
+      "local delicacy"
+    ]
+  },
+  "BanhRe_Sweet1": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Banh Re Sweet Treat",
+    "url": "/assets/references/images/local-cuisine/BanhRe_Sweet1.jpg",
+    "description": "Sweet version of Banh Re fried coconut rice cake dessert",
+    "keywords": [
+      "banh re",
+      "dessert",
+      "sweet",
+      "vietnamese dessert",
+      "coconut",
+      "fried cake"
+    ]
+  },
+  "BanhRe_Sweet2": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Banh Re Dessert Platter",
+    "url": "/assets/references/images/local-cuisine/BanhRe_Sweet2.jpg",
+    "description": "Platter of sweet Banh Re desserts served with accompaniments",
+    "keywords": [
+      "banh re",
+      "dessert platter",
+      "vietnamese sweets",
+      "traditional dessert",
+      "coconut"
+    ]
+  },
+  "BanhXeo1": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Banh Xeo Phan Thiet Style",
+    "url": "/assets/references/images/local-cuisine/BanhXeo_PhanThiet1.jpg",
+    "description": "Phan Thiet style crispy Vietnamese pancakes filled with seafood and bean sprouts",
+    "keywords": [
+      "banh xeo",
+      "pancake",
+      "phan thiet",
+      "crispy",
+      "seafood",
+      "vietnamese pancake",
+      "bánh xèo",
+      "banhxeo",
+      "đặc sản",
+      "dac san",
+      "món ăn",
+      "mon an",
+      "local food",
+      "food",
+      "ẩm thực",
+      "am thuc",
+      "banh xeo mui ne",
+      "banh xeo ngon"
+    ]
+  },
+  "BanhXeo2": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Banh Xeo Serving Style",
+    "url": "/assets/references/images/local-cuisine/BanhXeo_PhanThiet2.jpg",
+    "description": "Traditional serving style of Banh Xeo with herbs and rice paper",
+    "keywords": [
+      "banh xeo",
+      "vietnamese cuisine",
+      "pancake",
+      "herbs",
+      "dining",
+      "local specialty"
+    ]
+  },
+  "Grilled_Squid1": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Fresh Grilled Squid",
+    "url": "/assets/references/images/local-cuisine/Grilled_Squid1.jpg",
+    "description": "Freshly grilled squid, a popular seafood dish in coastal regions",
+    "keywords": [
+      "squid",
+      "grilled",
+      "seafood",
+      "coastal cuisine",
+      "vietnamese bbq",
+      "street food"
+    ]
+  },
+  "Grilled_Squid2": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Grilled Squid Platter",
+    "url": "/assets/references/images/local-cuisine/Grilled_Squid2.jpg",
+    "description": "Platter of seasoned grilled squid served with dipping sauce",
+    "keywords": [
+      "squid",
+      "grilled seafood",
+      "vietnamese cuisine",
+      "seafood platter",
+      "dipping sauce"
+    ]
+  },
+  "Lautha_Traditional1": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Traditional Lau Tha Hotpot",
+    "url": "/assets/references/images/local-cuisine/Lautha_Traditional1.jpg",
+    "description": "Traditional Vietnamese Lau Tha fish hotpot with fresh herbs",
+    "keywords": [
+      "lau tha",
+      "hotpot",
+      "fish soup",
+      "vietnamese cuisine",
+      "communal dining",
+      "herbs"
+    ]
+  },
+  "Lautha_Traditional2": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Lau Tha Ingredients",
+    "url": "/assets/references/images/local-cuisine/Lautha_Traditional2.jpg",
+    "description": "Fresh ingredients and preparation for Lau Tha traditional hotpot",
+    "keywords": [
+      "lau tha",
+      "hotpot",
+      "ingredients",
+      "fresh fish",
+      "vietnamese food",
+      "soup"
+    ]
+  },
+  "Local_Market": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Local Food Market",
+    "url": "/assets/references/images/local-cuisine/Local_Market.jpg",
+    "description": "Colorful local market with fresh produce and food ingredients",
+    "keywords": [
+      "market",
+      "local produce",
+      "food shopping",
+      "fresh ingredients",
+      "vietnamese market"
+    ]
+  },
+  "Local_SeafoodMarket": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Fresh Seafood Market",
+    "url": "/assets/references/images/local-cuisine/Local_SeafoodMarket.jpg",
+    "description": "Local market displaying variety of fresh seafood options",
+    "keywords": [
+      "seafood",
+      "market",
+      "fresh fish",
+      "local catch",
+      "coastal cuisine",
+      "fish market"
+    ]
+  },
+  "Nuocmam_Traditional1": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Traditional Fish Sauce Production",
+    "url": "/assets/references/images/local-cuisine/Nuocmam_Traditional1.jpg",
+    "description": "Traditional method of producing Nuoc Mam fish sauce",
+    "keywords": [
+      "nuoc mam",
+      "fish sauce",
+      "fermentation",
+      "traditional production",
+      "vietnamese condiment"
+    ]
+  },
+  "Nuocmam_Traditional2": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Fish Sauce Barrels",
+    "url": "/assets/references/images/local-cuisine/Nuocmam_Traditional2.jpg",
+    "description": "Wooden barrels used for fermenting fish sauce in traditional method",
+    "keywords": [
+      "nuoc mam",
+      "fish sauce",
+      "fermentation",
+      "barrels",
+      "artisanal",
+      "production"
+    ]
+  },
+  "Tourist_LocalMeal1": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Tourists Enjoying Local Meal",
+    "url": "/assets/references/images/local-cuisine/Tourist_LocalMeal1.jpg",
+    "description": "Tourists experiencing authentic local Vietnamese cuisine",
+    "keywords": [
+      "tourists",
+      "local food",
+      "dining experience",
+      "vietnamese meal",
+      "cultural experience"
+    ]
+  },
+  "Tourist_LocalMeal2": {
+    "type": "image",
+    "category": "Local Cuisine",
+    "title": "Local Dining Experience",
+    "url": "/assets/references/images/local-cuisine/Tourist_LocalMeal2.jpg",
+    "description": "Visitors enjoying a traditional Vietnamese dining experience",
+    "keywords": [
+      "tourists",
+      "local cuisine",
+      "vietnamese food",
+      "dining",
+      "culinary tourism",
+      "authentic meal"
+    ]
+  },
+  "Family_Beachfun1": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Family Beach Activities",
+    "url": "/assets/references/images/activities-experiences/Family_Beachfun1.jpg",
+    "description": "Families enjoying fun beach activities and games",
+    "keywords": [
+      "family",
+      "beach",
+      "fun",
+      "activities",
+      "vacation",
+      "sand"
+    ]
+  },
+  "Family_Beachfun2": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Family Water Play",
+    "url": "/assets/references/images/activities-experiences/Family_Beachfun2.jpg",
+    "description": "Families playing in the water and enjoying beach time together",
+    "keywords": [
+      "family",
+      "beach",
+      "water",
+      "play",
+      "swimming",
+      "children"
+    ]
+  },
+  "Friends_JeepDunes1": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Dune Jeep Adventure",
+    "url": "/assets/references/images/activities-experiences/Friends_JeepDunes1.jpg",
+    "description": "Friends exploring sand dunes in a jeep adventure tour",
+    "keywords": [
+      "jeep",
+      "dunes",
+      "adventure",
+      "friends",
+      "safari",
+      "exploration"
+    ]
+  },
+  "Friends_JeepDunes2": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Group Dune Expedition",
+    "url": "/assets/references/images/activities-experiences/Friends_JeepDunes2.jpg",
+    "description": "Group of friends on an exciting dune driving expedition",
+    "keywords": [
+      "jeep",
+      "dunes",
+      "adventure",
+      "friends",
+      "expedition",
+      "offroad"
+    ]
+  },
+  "Relaxing_Poolside": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Poolside Relaxation",
+    "url": "/assets/references/images/activities-experiences/Relaxing_Poolside.jpg",
+    "description": "Guests relaxing by the swimming pool with refreshments",
+    "keywords": [
+      "pool",
+      "relaxation",
+      "sunbathing",
+      "leisure",
+      "swimming",
+      "lounge"
+    ]
+  },
+  "Tourist_Bar": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Local Bar Experience",
+    "url": "/assets/references/images/activities-experiences/Tourist_Bar.jpg",
+    "description": "Tourists enjoying drinks and atmosphere at a local bar",
+    "keywords": [
+      "bar",
+      "drinks",
+      "nightlife",
+      "social",
+      "cocktails",
+      "entertainment"
+    ]
+  },
+  "Tourist_FairyStream1": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Fairy Stream Exploration",
+    "url": "/assets/references/images/activities-experiences/Tourist_FairyStream1.jpg",
+    "description": "Tourists exploring the scenic Fairy Stream natural attraction",
+    "keywords": [
+      "fairy stream",
+      "nature",
+      "walking",
+      "sightseeing",
+      "water",
+      "exploration"
+    ]
+  },
+  "Tourist_FairyStream2": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Fairy Stream Walking Tour",
+    "url": "/assets/references/images/activities-experiences/Tourist_FairyStream2.jpg",
+    "description": "Walking tour through the colorful canyons of Fairy Stream",
+    "keywords": [
+      "fairy stream",
+      "tour",
+      "canyon",
+      "hiking",
+      "nature walk",
+      "sightseeing"
+    ]
+  },
+  "Tourist_LocalFood": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Local Cuisine Experience",
+    "url": "/assets/references/images/activities-experiences/Tourist_LocalFood.jpg",
+    "description": "Tourists sampling authentic local cuisine and delicacies",
+    "keywords": [
+      "food",
+      "local cuisine",
+      "dining",
+      "culinary",
+      "gastronomy",
+      "cultural experience"
+    ]
+  },
+  "Tourist_Seaviewcafe": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Seaside Café Visit",
+    "url": "/assets/references/images/activities-experiences/Tourist_Seaviewcafe.jpg",
+    "description": "Visitors enjoying refreshments at a café with ocean views",
+    "keywords": [
+      "café",
+      "sea view",
+      "coffee",
+      "relaxation",
+      "dining",
+      "ocean"
+    ]
+  },
+  "Tourist_SunriseDune1": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Sunrise Dune Experience",
+    "url": "/assets/references/images/activities-experiences/Tourist_SunriseDune1.jpg",
+    "description": "Tourists watching the spectacular sunrise over sand dunes",
+    "keywords": [
+      "sunrise",
+      "dunes",
+      "morning",
+      "photography",
+      "desert",
+      "scenery"
+    ]
+  },
+  "Tourist_SunriseDune2": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Morning Dune Viewing",
+    "url": "/assets/references/images/activities-experiences/Tourist_SunriseDune2.jpg",
+    "description": "Early morning tour to witness golden light on the sand dunes",
+    "keywords": [
+      "sunrise",
+      "dunes",
+      "morning light",
+      "tour",
+      "photography",
+      "landscape"
+    ]
+  },
+  "Tourist_Watersport1": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Water Sports Activities",
+    "url": "/assets/references/images/activities-experiences/Tourist_Watersport1.jpg",
+    "description": "Exciting water sports and activities available for tourists",
+    "keywords": [
+      "water sports",
+      "activities",
+      "adventure",
+      "ocean",
+      "recreation",
+      "fun",
+      "thể thao nước",
+      "the thao nuoc",
+      "trải nghiệm",
+      "trai nghiem",
+      "hoạt động",
+      "hoat dong",
+      "mui ne experience",
+      "tour",
+      "water sport",
+      "sea sport"
+    ]
+  },
+  "Tourist_Watersport2": {
+    "type": "image",
+    "category": "Activity and Experiences",
+    "title": "Advanced Water Sports",
+    "url": "/assets/references/images/activities-experiences/Tourist_Watersport2.jpg",
+    "description": "Various water sports options for thrill-seeking visitors",
+    "keywords": [
+      "water sports",
+      "adventure",
+      "extreme",
+      "ocean activities",
+      "water fun",
+      "recreation"
+    ]
+  },
+  "Breakfast": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Hotel Breakfast",
+    "url": "/assets/references/images/ hotel-amenities /Breakfast.jpg",
+    "description": "Delicious breakfast spread offered at the hotel restaurant",
+    "keywords": [
+      "breakfast",
+      "dining",
+      "food",
+      "morning meal",
+      "buffet"
+    ]
+  },
+  "Decorate_Service": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Room Decoration Service",
+    "url": "/assets/references/images/ hotel-amenities /Decorate_Service.jpg",
+    "description": "Special room decoration service available upon request",
+    "keywords": [
+      "decoration",
+      "service",
+      "special occasion",
+      "room setup"
+    ]
+  },
+  "Free_Bicyles-Service": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Free Bicycle Service",
+    "url": "/assets/references/images/hotel-amenities/Free_Bicyles-Service.jpg",
+    "description": "Complimentary bicycle rental service for hotel guests",
+    "keywords": [
+      "bicycle",
+      "bike",
+      "rental",
+      "free",
+      "activity",
+      "transport"
+    ]
+  },
+  "General_View1": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Hotel Exterior View",
+    "url": "/assets/references/images/ hotel-amenities /General_View1.jpg",
+    "description": "Exterior view of the hotel building and surroundings",
+    "keywords": [
+      "exterior",
+      "building",
+      "architecture",
+      "hotel view"
+    ]
+  },
+  "General_View2": {
+    "type": "image",
+    "category": " Hotel Amenities ",
+    "title": "Hotel Panoramic View",
+    "url": "/assets/references/images/ hotel-amenities /General_View2.jpg",
+    "description": "Panoramic view of the hotel property and landscape",
+    "keywords": [
+      "panorama",
+      "exterior",
+      "landscape",
+      "property view"
+    ]
+  },
+  "Lunch": {
+    "type": "image",
+    "category": " Hotel Amenities ",
+    "title": "Hotel Lunch Service",
+    "url": "/assets/references/images/ hotel-amenities /Lunch.jpg",
+    "description": "Lunch options available at the hotel restaurant",
+    "keywords": [
+      "lunch",
+      "dining",
+      "food",
+      "meal",
+      "restaurant"
+    ]
+  },
+  "Pool_View1": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Swimming Pool View",
+    "url": "/assets/references/images/hotel-amenities/Pool_View1.jpg",
+    "description": "Main swimming pool area of the hotel",
+    "keywords": [
+      "pool",
+      "swimming",
+      "recreation",
+      "water",
+      "relaxation",
+      "hồ bơi",
+      "ho boi",
+      "bể bơi",
+      "be boi",
+      "amenities",
+      "tiện ích",
+      "tien ich",
+      "khách sạn",
+      "khach san",
+      "hotel",
+      "outdoor pool",
+      "poolside"
+    ]
+  },
+  "Pool_View2": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Secondary Pool Area",
+    "url": "/assets/references/images/hotel-amenities/Pool_View2.jpg",
+    "description": "Alternative angle of the hotel swimming facilities",
+    "keywords": [
+      "pool",
+      "swimming",
+      "recreation",
+      "water",
+      "relaxation",
+      "hotel amenities"
+    ]
+  },
+  "Restaurant": {
+    "type": "image",
+    "category": " Hotel Amenities ",
+    "title": "Hotel Restaurant",
+    "url": "/assets/references/images/ hotel-amenities /Restaurant.jpg",
+    "description": "Main dining restaurant area of the hotel",
+    "keywords": [
+      "restaurant",
+      "dining",
+      "food",
+      "meal",
+      "interior"
+    ]
+  },
+  "Restaurant2": {
+    "type": "image",
+    "category": " Hotel Amenities ",
+    "title": "Secondary Hotel Restaurant",
+    "url": "/assets/references/images/ hotel-amenities /Restaurant2.jpg",
+    "description": "Alternative dining venue within the hotel",
+    "keywords": [
+      "restaurant",
+      "dining",
+      "food",
+      "meal",
+      "interior"
+    ]
+  },
+  "Roomfood_Service": {
+    "type": "image",
+    "category": " Hotel Amenities ",
+    "title": "Room Service",
+    "url": "/assets/references/images/ hotel-amenities /Roomfood_Service.jpg",
+    "description": "In-room dining and food service available to guests",
+    "keywords": [
+      "room service",
+      "in-room dining",
+      "food delivery",
+      "private dining"
+    ]
+  },
+  "Roomview1": {
+    "type": "image",
+    "category": "Hotel Amenities",
+    "title": "Guest Room View 1",
+    "url": "/assets/references/images/ hotel-amenities /Roomview1.jpg",
+    "description": "Interior view of standard guest room",
+    "keywords": [
+      "room",
+      "accommodation",
+      "interior",
+      "lodging",
+      "guest room"
+    ]
+  },
+  "Roomview2": {
+    "type": "image",
+    "category": " Hotel Amenities ",
+    "title": "Guest Room View 2",
+    "url": "/assets/references/images/ hotel-amenities /Roomview2.jpg",
+    "description": "Alternative angle of guest room accommodations",
+    "keywords": [
+      "room",
+      "accommodation",
+      "interior",
+      "lodging",
+      "guest room"
+    ]
+  },
+  "Roomview3": {
+    "type": "image",
+    "category": " Hotel Amenities ",
+    "title": "Premium Guest Room",
+    "url": "/assets/references/images/hotel-amenities/Roomview3.jpg",
+    "description": "View of premium or suite accommodation option",
+    "keywords": [
+      "room",
+      "accommodation",
+      "suite",
+      "premium",
+      "interior",
+      "luxury"
+    ]
   },
   "seafood-guide": {
     "type": "document",
@@ -22,257 +706,11 @@
     "title": "Seafood Guide",
     "url": "/assets/references/documents/seafood-guide.txt",
     "description": "Hướng dẫn chọn hải sản tươi ngon",
-    "keywords": ["seafood", "local cuisine", "hải sản"]
-  },
-  "hotel-map": {
-    "type": "image",
-    "category": "Area Map",
-    "title": "Hotel Map",
-    "url": "/assets/references/images/hotel-map.jpg",
-    "description": "Bản đồ khách sạn Mi Nhon",
-    "keywords": ["map", "hotel", "bản đồ"]
-  },
-  "phan-thiet-map": {
-    "type": "image",
-    "category": "Area Map",
-    "title": "Phan Thiet Area Map",
-    "url": "/assets/references/images/phan-thiet-map.jpg",
-    "description": "Bản đồ khu vực Phan Thiết",
-    "keywords": ["area map", "phan thiet", "bản đồ"]
-  },
-  "surfing-guide": {
-    "type": "document",
-    "category": "Activity and Experiences",
-    "title": "Surfing Guide",
-    "url": "/assets/references/documents/surfing-guide.pdf",
-    "description": "Hướng dẫn lướt sóng tại Mũi Né",
-    "keywords": ["surfing", "activity", "lướt sóng"]
-  },
-  "local-tour": {
-    "type": "link",
-    "category": "Activity and Experiences",
-    "title": "Book Local Tour",
-    "url": "https://minhonhotel.com/tours",
-    "description": "Đặt tour trải nghiệm địa phương",
-    "keywords": ["tour", "activity", "trải nghiệm"]
-  },
-  "wine-castle-1": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "Wine Castle 1",
-    "url": "/assets/references/images/landmark/Wine_Castle1.jpg",
-    "description": "Wine Castle 1",
     "keywords": [
-      "wine castle", "winecastle", "lâu đài rượu", "lau dai ruou", "winery", "castle", "vang", "wine", "tour wine castle", "wine castle mui ne", "wine castle phan thiet", "địa điểm tham quan", "attraction", "winery mui ne", "wine castle & golf", "wine castle golf"
+      "seafood",
+      "local cuisine",
+      "hải sản"
     ]
-  },
-  "wine-castle-2": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "Wine Castle 2",
-    "url": "/assets/references/images/landmark/Wine_Castle2.jpg",
-    "description": "Wine Castle 2",
-    "keywords": ["wine castle", "landmark", "mui ne"]
-  },
-  "white-sand-dunes-1": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "White Sand Dunes 1",
-    "url": "/assets/references/images/landmark/White_Sand_Dunes1.jpg",
-    "description": "White Sand Dunes 1",
-    "keywords": [
-      "white sand dunes", "đồi cát trắng", "doi cat trang", "cat trang", "white dunes", "mui ne dunes", "sand dunes", "đồi cát", "cát trắng", "attraction", "địa điểm tham quan", "mui ne sand dunes", "white sand", "dune", "white dune"
-    ]
-  },
-  "white-sand-dunes-2": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "White Sand Dunes 2",
-    "url": "/assets/references/images/landmark/White_Sand_Dunes2.jpg",
-    "description": "White Sand Dunes 2",
-    "keywords": ["white sand dunes", "landmark", "mui ne"]
-  },
-  "tacu-mountain-1": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "TaCu Mountain 1",
-    "url": "/assets/references/images/landmark/TaCu_Mountain1.jpg",
-    "description": "TaCu Mountain 1",
-    "keywords": ["ta cu mountain", "landmark", "phan thiet"]
-  },
-  "tacu-mountain-2": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "TaCu Mountain 2",
-    "url": "/assets/references/images/landmark/TaCu_Mountain2.jpg",
-    "description": "TaCu Mountain 2",
-    "keywords": ["ta cu mountain", "landmark", "phan thiet"]
-  },
-  "red-sand-dunes-1": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "Red Sand Dunes 1",
-    "url": "/assets/references/images/landmark/Red_Sand_Dunes1.jpg",
-    "description": "Red Sand Dunes 1",
-    "keywords": ["red sand dunes", "landmark", "mui ne"]
-  },
-  "red-sand-dunes-2": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "Red Sand Dunes 2",
-    "url": "/assets/references/images/landmark/Red_Sand_Dunes2.jpg",
-    "description": "Red Sand Dunes 2",
-    "keywords": ["red sand dunes", "landmark", "mui ne"]
-  },
-  "posahinu-tower-1": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "PoSahInu Tower 1",
-    "url": "/assets/references/images/landmark/PoSahInu_Tower1.jpg",
-    "description": "PoSahInu Tower 1",
-    "keywords": ["po sah inu", "cham tower", "landmark"]
-  },
-  "posahinu-tower-2": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "PoSahInu Tower 2",
-    "url": "/assets/references/images/landmark/PoSahInu_Tower2.jpg",
-    "description": "PoSahInu Tower 2",
-    "keywords": ["po sah inu", "cham tower", "landmark"]
-  },
-  "muine-fishing-village-1": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "Muine FishingVillage 1",
-    "url": "/assets/references/images/landmark/Muine_FishingVillage1.jpg",
-    "description": "Muine FishingVillage 1",
-    "keywords": ["mui ne", "fishing village", "landmark"]
-  },
-  "muine-fishing-village-2": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "Muine FishingVillage 2",
-    "url": "/assets/references/images/landmark/Muine_FishingVillage2.jpg",
-    "description": "Muine FishingVillage 2",
-    "keywords": ["mui ne", "fishing village", "landmark"]
-  },
-  "muine-beach-1": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "Muine Beach 1",
-    "url": "/assets/references/images/landmark/Muine_Beach1.jpg",
-    "description": "Muine Beach 1",
-    "keywords": ["mui ne", "beach", "landmark"]
-  },
-  "muine-beach-2": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "Muine Beach 2",
-    "url": "/assets/references/images/landmark/Muine_Beach2.jpg",
-    "description": "Muine Beach 2",
-    "keywords": ["mui ne", "beach", "landmark"]
-  },
-  "kega-lighthouse-1": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "KeGa Lighthouse 1",
-    "url": "/assets/references/images/landmark/KeGa_Lighthouse1.jpg",
-    "description": "KeGa Lighthouse 1",
-    "keywords": [
-      "ke ga lighthouse", "hải đăng kê gà", "hai dang ke ga", "kê gà", "ke ga", "lighthouse", "mui ne lighthouse", "phan thiet lighthouse", "attraction", "địa điểm tham quan", "ke ga island", "ke ga light house"
-    ]
-  },
-  "kega-lighthouse-2": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "KeGa Lighthouse 2",
-    "url": "/assets/references/images/landmark/KeGa_Lighthouse2.jpg",
-    "description": "KeGa Lighthouse 2",
-    "keywords": ["ke ga", "lighthouse", "landmark"]
-  },
-  "hamtien-beach-1": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "HamTien Beach 1",
-    "url": "/assets/references/images/landmark/HamTien_Beach1.jpg",
-    "description": "HamTien Beach 1",
-    "keywords": ["ham tien", "beach", "landmark"]
-  },
-  "hamtien-beach-2": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "HamTien Beach 2",
-    "url": "/assets/references/images/landmark/HamTien_Beach2.jpg",
-    "description": "HamTien Beach 2",
-    "keywords": ["ham tien", "beach", "landmark"]
-  },
-  "fairy-stream-1": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "Fairy Stream 1",
-    "url": "/assets/references/images/landmark/Fairy_Stream1.png",
-    "description": "Fairy Stream 1",
-    "keywords": ["fairy stream", "landmark", "mui ne"]
-  },
-  "fairy-stream-2": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "Fairy Stream 2",
-    "url": "/assets/references/images/landmark/Fairy_Stream2.jpg",
-    "description": "Fairy Stream 2",
-    "keywords": ["fairy stream", "landmark", "mui ne"]
-  },
-  "banhxeo-phanthiet-1": {
-    "type": "image",
-    "category": "Local Cuisine",
-    "title": "BanhXeo PhanThiet 1",
-    "url": "/assets/references/images/local-cuisine/BanhXeo_PhanThiet1.jpg",
-    "description": "BanhXeo PhanThiet 1",
-    "keywords": [
-      "banh xeo", "bánh xèo", "banhxeo", "banh xeo phan thiet", "phan thiet pancake", "vietnamese pancake", "đặc sản", "dac san", "món ăn", "mon an", "local food", "food", "ẩm thực", "am thuc", "banh xeo mui ne", "banh xeo ngon"
-    ]
-  },
-  "banhxeo-phanthiet-2": {
-    "type": "image",
-    "category": "Local Cuisine",
-    "title": "BanhXeo PhanThiet 2",
-    "url": "/assets/references/images/local-cuisine/BanhXeo_PhanThiet2.jpg",
-    "description": "BanhXeo PhanThiet 2",
-    "keywords": ["banh xeo", "local cuisine", "phan thiet"]
-  },
-  "banhcan-muine-1": {
-    "type": "image",
-    "category": "Local Cuisine",
-    "title": "BanhCan Muine 1",
-    "url": "/assets/references/images/local-cuisine/BanhCan_Muine1.jpg",
-    "description": "BanhCan Muine 1",
-    "keywords": ["banh can", "local cuisine", "mui ne"]
-  },
-  "banhcan-muine-2": {
-    "type": "image",
-    "category": "Local Cuisine",
-    "title": "BanhCan Muine 2",
-    "url": "/assets/references/images/local-cuisine/BanhCan_Muine2.jpg",
-    "description": "BanhCan Muine 2",
-    "keywords": ["banh can", "local cuisine", "mui ne"]
-  },
-  "pool-view-1": {
-    "type": "image",
-    "category": "Hotel Amenities",
-    "title": "Pool_View1",
-    "url": "/assets/references/images/hotel-amenities/Pool_View1.jpg",
-    "description": "Pool_View1",
-    "keywords": [
-      "pool", "swimming pool", "hồ bơi", "ho boi", "bể bơi", "be boi", "amenities", "tiện ích", "tien ich", "khách sạn", "khach san", "hotel", "outdoor pool", "pool view", "poolside"
-    ]
-  },
-  "pool-view-2": {
-    "type": "image",
-    "category": "Hotel Amenities",
-    "title": "Pool_View2",
-    "url": "/assets/references/images/hotel-amenities/Pool_View2.jpg",
-    "description": "Pool_View2",
-    "keywords": ["pool", "hotel amenities"]
   },
   "area-map": {
     "type": "image",
@@ -281,25 +719,292 @@
     "url": "/assets/references/images/area-map/Area Map.jpg",
     "description": "Area Map",
     "keywords": [
-      "area map", "bản đồ", "ban do", "map", "hotel map", "bản đồ khách sạn", "ban do khach san", "map mui ne", "map phan thiet", "map area", "khu vực", "khu vuc"
+      "area map",
+      "bản đồ",
+      "ban do",
+      "map",
+      "hotel map",
+      "bản đồ khách sạn",
+      "ban do khach san",
+      "map mui ne",
+      "map phan thiet",
+      "map area",
+      "khu vực",
+      "khu vuc"
     ]
   },
-  "tourist-watersport-1": {
+  "wine-castle-1": {
     "type": "image",
-    "category": "Activity and Experience",
-    "title": "Tourist_Watersport1",
-    "url": "/assets/references/images/activity-experience/Tourist_Watersport1.jpg",
-    "description": "Tourist_Watersport1",
+    "category": "Landmark",
+    "title": "Wine Castle 1",
+    "url": "/assets/references/images/landmark/Wine_Castle1.jpg",
+    "description": "Wine Castle 1",
     "keywords": [
-      "watersport", "thể thao nước", "the thao nuoc", "trải nghiệm", "trai nghiem", "activity", "hoạt động", "hoat dong", "mui ne experience", "tour", "adventure", "water sport", "water sports", "sea sport"
+      "wine castle",
+      "winecastle",
+      "lâu đài rượu",
+      "lau dai ruou",
+      "winery",
+      "castle",
+      "vang",
+      "wine",
+      "tour wine castle",
+      "wine castle mui ne",
+      "wine castle phan thiet",
+      "địa điểm tham quan",
+      "attraction",
+      "winery mui ne",
+      "wine castle & golf",
+      "wine castle golf"
     ]
   },
-  "tourist-watersport-2": {
+  "wine-castle-2": {
     "type": "image",
-    "category": "Activity and Experience",
-    "title": "Tourist_Watersport2",
-    "url": "/assets/references/images/activity-experience/Tourist_Watersport2.jpg",
-    "description": "Tourist_Watersport2",
-    "keywords": ["watersport", "activity", "mui ne"]
+    "category": "Landmark",
+    "title": "Wine Castle 2",
+    "url": "/assets/references/images/landmark/Wine_Castle2.jpg",
+    "description": "Wine Castle 2",
+    "keywords": [
+      "wine castle",
+      "landmark",
+      "mui ne"
+    ]
+  },
+  "white-sand-dunes-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "White Sand Dunes 1",
+    "url": "/assets/references/images/landmark/White_Sand_Dunes1.jpg",
+    "description": "White Sand Dunes 1",
+    "keywords": [
+      "white sand dunes",
+      "đồi cát trắng",
+      "doi cat trang",
+      "cat trang",
+      "white dunes",
+      "mui ne dunes",
+      "sand dunes",
+      "đồi cát",
+      "cát trắng",
+      "attraction",
+      "địa điểm tham quan",
+      "mui ne sand dunes",
+      "white sand",
+      "dune",
+      "white dune"
+    ]
+  },
+  "white-sand-dunes-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "White Sand Dunes 2",
+    "url": "/assets/references/images/landmark/White_Sand_Dunes2.jpg",
+    "description": "White Sand Dunes 2",
+    "keywords": [
+      "white sand dunes",
+      "landmark",
+      "mui ne"
+    ]
+  },
+  "tacu-mountain-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "TaCu Mountain 1",
+    "url": "/assets/references/images/landmark/TaCu_Mountain1.jpg",
+    "description": "TaCu Mountain 1",
+    "keywords": [
+      "ta cu mountain",
+      "landmark",
+      "phan thiet"
+    ]
+  },
+  "tacu-mountain-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "TaCu Mountain 2",
+    "url": "/assets/references/images/landmark/TaCu_Mountain2.jpg",
+    "description": "TaCu Mountain 2",
+    "keywords": [
+      "ta cu mountain",
+      "landmark",
+      "phan thiet"
+    ]
+  },
+  "red-sand-dunes-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Red Sand Dunes 1",
+    "url": "/assets/references/images/landmark/Red_Sand_Dunes1.jpg",
+    "description": "Red Sand Dunes 1",
+    "keywords": [
+      "red sand dunes",
+      "landmark",
+      "mui ne"
+    ]
+  },
+  "red-sand-dunes-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Red Sand Dunes 2",
+    "url": "/assets/references/images/landmark/Red_Sand_Dunes2.jpg",
+    "description": "Red Sand Dunes 2",
+    "keywords": [
+      "red sand dunes",
+      "landmark",
+      "mui ne"
+    ]
+  },
+  "posahinu-tower-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "PoSahInu Tower 1",
+    "url": "/assets/references/images/landmark/PoSahInu_Tower1.jpg",
+    "description": "PoSahInu Tower 1",
+    "keywords": [
+      "po sah inu",
+      "cham tower",
+      "landmark"
+    ]
+  },
+  "posahinu-tower-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "PoSahInu Tower 2",
+    "url": "/assets/references/images/landmark/PoSahInu_Tower2.jpg",
+    "description": "PoSahInu Tower 2",
+    "keywords": [
+      "po sah inu",
+      "cham tower",
+      "landmark"
+    ]
+  },
+  "muine-fishing-village-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Muine FishingVillage 1",
+    "url": "/assets/references/images/landmark/Muine_FishingVillage1.jpg",
+    "description": "Muine FishingVillage 1",
+    "keywords": [
+      "mui ne",
+      "fishing village",
+      "landmark"
+    ]
+  },
+  "muine-fishing-village-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Muine FishingVillage 2",
+    "url": "/assets/references/images/landmark/Muine_FishingVillage2.jpg",
+    "description": "Muine FishingVillage 2",
+    "keywords": [
+      "mui ne",
+      "fishing village",
+      "landmark"
+    ]
+  },
+  "muine-beach-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Muine Beach 1",
+    "url": "/assets/references/images/landmark/Muine_Beach1.jpg",
+    "description": "Muine Beach 1",
+    "keywords": [
+      "mui ne",
+      "beach",
+      "landmark"
+    ]
+  },
+  "muine-beach-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Muine Beach 2",
+    "url": "/assets/references/images/landmark/Muine_Beach2.jpg",
+    "description": "Muine Beach 2",
+    "keywords": [
+      "mui ne",
+      "beach",
+      "landmark"
+    ]
+  },
+  "kega-lighthouse-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "KeGa Lighthouse 1",
+    "url": "/assets/references/images/landmark/KeGa_Lighthouse1.jpg",
+    "description": "KeGa Lighthouse 1",
+    "keywords": [
+      "ke ga lighthouse",
+      "hải đăng kê gà",
+      "hai dang ke ga",
+      "kê gà",
+      "ke ga",
+      "lighthouse",
+      "mui ne lighthouse",
+      "phan thiet lighthouse",
+      "attraction",
+      "địa điểm tham quan",
+      "ke ga island",
+      "ke ga light house"
+    ]
+  },
+  "kega-lighthouse-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "KeGa Lighthouse 2",
+    "url": "/assets/references/images/landmark/KeGa_Lighthouse2.jpg",
+    "description": "KeGa Lighthouse 2",
+    "keywords": [
+      "ke ga",
+      "lighthouse",
+      "landmark"
+    ]
+  },
+  "fairy-stream-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Fairy Stream 1",
+    "url": "/assets/references/images/landmark/Fairy_Stream1.png",
+    "description": "Fairy Stream 1",
+    "keywords": [
+      "fairy stream",
+      "landmark",
+      "mui ne"
+    ]
+  },
+  "fairy-stream-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "Fairy Stream 2",
+    "url": "/assets/references/images/landmark/Fairy_Stream2.jpg",
+    "description": "Fairy Stream 2",
+    "keywords": [
+      "fairy stream",
+      "landmark",
+      "mui ne"
+    ]
+  },
+  "hamtien-beach-1": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "HamTien Beach 1",
+    "url": "/assets/references/images/landmark/HamTien_Beach1.jpg",
+    "description": "HamTien Beach 1",
+    "keywords": [
+      "ham tien",
+      "beach",
+      "landmark"
+    ]
+  },
+  "hamtien-beach-2": {
+    "type": "image",
+    "category": "Landmark",
+    "title": "HamTien Beach 2",
+    "url": "/assets/references/images/landmark/HamTien_Beach2.jpg",
+    "description": "HamTien Beach 2",
+    "keywords": [
+      "ham tien",
+      "beach",
+      "landmark"
+    ]
   }
-} 
+}
