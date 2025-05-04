@@ -291,15 +291,13 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             <div
               id="realTimeConversation"
               ref={conversationRef}
-              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-2xl mx-auto min-h-[60px] max-h-[40vh] overflow-y-auto mt-4 mb-2"
+              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-2xl mx-auto min-h-[60px] max-h-[40vh] overflow-y-auto"
               style={{
                 background: 'rgba(255,255,255,0.88)',
                 borderRadius: 12,
                 border: '1px solid rgba(255,255,255,0.35)',
                 boxShadow: '0px 4px 10px rgba(0,0,0,0.15)',
-                padding: '18px',
-                marginTop: 16,
-                marginBottom: 8,
+                padding: '8px',
                 transition: 'box-shadow 0.3s, background 0.3s',
                 fontFamily: 'SF Pro Text, Roboto, Open Sans, Arial, sans-serif',
                 fontSize: window.innerWidth < 640 ? 15 : 17,
