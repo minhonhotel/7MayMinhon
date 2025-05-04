@@ -1,12 +1,5 @@
 {
-  "swimming-pool": {
-    "type": "image",
-    "category": "Hotel Amenities",
-    "title": "Swimming Pool",
-    "url": "/assets/references/images/swimming-pool.jpg",
-    "description": "Hồ bơi ngoài trời tại khách sạn",
-    "keywords": ["pool", "amenities", "hồ bơi"]
-  },
+  
   "spa-menu": {
     "type": "document",
     "category": "Hotel Amenities",
@@ -62,27 +55,6 @@
     "url": "https://minhonhotel.com/tours",
     "description": "Đặt tour trải nghiệm địa phương",
     "keywords": ["tour", "activity", "trải nghiệm"]
-  },
-  "pool-guidelines": {
-    "type": "document",
-    "title": "Pool Guidelines",
-    "url": "/assets/references/documents/pool-guidelines.txt",
-    "description": "Quy định sử dụng hồ bơi",
-    "keywords": ["pool", "hồ bơi", "guideline"]
-  },
-  "phan-thiet-tour": {
-    "type": "document",
-    "title": "Phan Thiet Tour PDF",
-    "url": "/assets/references/documents/PHAN THIET TOUR .pdf",
-    "description": "Thông tin tour Phan Thiết",
-    "keywords": ["tour", "phan thiet", "pdf"]
-  },
-  "minhon-website": {
-    "type": "link",
-    "title": "Mi Nhon Hotel Website",
-    "url": "https://minhonhotel.com",
-    "description": "Truy cập website chính thức",
-    "keywords": ["website", "minhon", "link"]
   },
   "wine-castle-1": {
     "type": "image",
