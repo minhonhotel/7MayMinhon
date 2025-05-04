@@ -439,8 +439,8 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
             {/* Left column: summary, notes, room number */}
             <div className="md:w-3/4 w-full space-y-3 sm:space-y-4">
               {/* AI-generated Call Summary Container */}
-              <div id="summary-container" className="mb-3 sm:mb-4">
-                {callSummary ? (
+              {callSummary && (
+                <div id="summary-container" className="mb-3 sm:mb-4">
                   <div className="p-3 sm:p-5 bg-white/80 rounded-xl shadow border border-white/30 mb-3 sm:mb-4 relative" style={{backdropFilter:'blur(2px)'}}>
                     <h3 className="font-semibold text-base sm:text-lg mb-1 sm:mb-2 text-blue-800">Summary</h3>
                     <p className="text-sm sm:text-base leading-relaxed text-gray-800 whitespace-pre-line" style={{fontWeight: 400}}>{callSummary.content}</p>
@@ -450,22 +450,8 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
                       </div>
                     </div>
                   </div>
-                ) : (
-                  <div className="p-3 sm:p-5 bg-gray-50 rounded-xl shadow border border-dashed border-gray-300 mb-3 sm:mb-4">
-                    <div className="animate-pulse flex space-x-2 items-center">
-                      <div className="h-4 w-4 bg-gray-300 rounded-full"></div>
-                      <div className="h-4 bg-gray-300 rounded w-1/4"></div>
-                    </div>
-                    <h3 className="font-semibold text-base sm:text-lg my-2 text-gray-600">Generating Summary...</h3>
-                    <div className="space-y-2">
-                      <div className="h-2 bg-gray-200 rounded w-3/4"></div>
-                      <div className="h-2 bg-gray-200 rounded w-full"></div>
-                      <div className="h-2 bg-gray-200 rounded w-5/6"></div>
-                    </div>
-                    <p className="text-gray-400 italic mt-3">Our AI is analyzing your conversation and preparing a summary...</p>
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
               {/* Additional Notes and Actions */}
               <div className="flex items-center justify-between h-10">
                 <button className="h-full px-3 sm:px-4 bg-[#ffe082] hover:bg-[#ffe9b3] text-blue-900 rounded-full text-xs sm:text-sm font-semibold shadow transition-colors" onClick={handleAddNote} disabled={!note.trim()}>Add Note</button>
