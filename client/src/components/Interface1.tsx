@@ -48,22 +48,59 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
         <h2 className="font-poppins font-bold text-3xl lg:text-4xl text-amber-400 mb-2 text-center">Mi Nhon Hotel Mui Ne</h2>
         <p className="text-lg lg:text-xl text-center max-w-lg mb-8">AI-powered Voice Assistant - Supporting All Your Needs</p>
         
-        {/* Main Call Button */}
-        <div className="relative mb-12 flex items-center justify-center">
-          {/* Ripple Animation (luôn hiển thị, mạnh hơn khi hover) */}
-          <div className="absolute inset-0 rounded-full border-4 border-amber-400 animate-[ripple_1.5s_linear_infinite] pointer-events-none transition-opacity duration-300 group-hover:opacity-80 opacity-60"></div>
-          <div className="absolute inset-0 rounded-full border-4 border-amber-400/70 animate-[ripple_2s_linear_infinite] pointer-events-none transition-opacity duration-300 group-hover:opacity-60 opacity-40"></div>
-          {/* Main Button */}
-          <button 
-            id="vapiButton" 
-            className="group relative w-40 h-40 lg:w-56 lg:h-56 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-primary-dark font-poppins font-bold flex flex-col items-center justify-center shadow-2xl transition-transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-amber-300 overflow-hidden"
-            onClick={startCall}
-          >
-            <span className="material-icons text-6xl lg:text-7xl mb-2 animate-mic-pulse group-hover:animate-mic-bounce text-shadow-lg">mic</span>
-            <span className="text-lg lg:text-xl font-medium">Press to Call</span>
-            {/* Sóng âm khi hover */}
-            <span className="absolute w-full h-full rounded-full pointer-events-none group-hover:animate-wave-pulse"></span>
-          </button>
+        {/* Main Call Button + Menu Icons Around */}
+        <div className="relative flex items-center justify-center mb-16 w-full h-[420px] max-w-2xl mx-auto">
+          {/* Menu icons around call button */}
+          {/* Top row */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 flex gap-8">
+            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
+              <span className="material-icons text-4xl text-amber-400">login</span>
+            </div>
+            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
+              <span className="material-icons text-4xl text-amber-400">restaurant</span>
+            </div>
+            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
+              <span className="material-icons text-4xl text-amber-400">event_seat</span>
+            </div>
+          </div>
+          {/* Middle left/right */}
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col gap-8">
+            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
+              <span className="material-icons text-4xl text-amber-400">place</span>
+            </div>
+          </div>
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col gap-8">
+            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
+              <span className="material-icons text-4xl text-amber-400">translate</span>
+            </div>
+          </div>
+          {/* Bottom row */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-8">
+            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
+              <span className="material-icons text-4xl text-amber-400">wifi</span>
+            </div>
+            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
+              <span className="material-icons text-4xl text-amber-400">spa</span>
+            </div>
+            <div className="bg-white/20 rounded-full p-4 flex flex-col items-center shadow-md hover:bg-amber-400/40 transition cursor-pointer">
+              <span className="material-icons text-4xl text-amber-400">support_agent</span>
+            </div>
+          </div>
+          {/* Main Call Button center */}
+          <div className="relative z-10 flex flex-col items-center justify-center">
+            <div className="absolute inset-0 rounded-full border-4 border-amber-400 animate-[ripple_1.5s_linear_infinite] pointer-events-none transition-opacity duration-300 group-hover:opacity-80 opacity-60"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-amber-400/70 animate-[ripple_2s_linear_infinite] pointer-events-none transition-opacity duration-300 group-hover:opacity-60 opacity-40"></div>
+            <button 
+              id="vapiButton" 
+              className="group relative w-40 h-40 lg:w-56 lg:h-56 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-primary-dark font-poppins font-bold flex flex-col items-center justify-center shadow-2xl transition-transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-amber-300 overflow-hidden"
+              onClick={startCall}
+            >
+              <span className="material-icons text-6xl lg:text-7xl mb-2 animate-mic-pulse group-hover:animate-mic-bounce text-shadow-lg">mic</span>
+              <span className="text-lg lg:text-xl font-medium">Press to Call</span>
+              {/* Sóng âm khi hover */}
+              <span className="absolute w-full h-full rounded-full pointer-events-none group-hover:animate-wave-pulse"></span>
+            </button>
+          </div>
         </div>
         {/* Services Section */}
         <div className="text-center w-full max-w-5xl">
