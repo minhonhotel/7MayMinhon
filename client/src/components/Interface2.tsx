@@ -241,13 +241,13 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               volumeLevel={micLevel}
             />
             {/* Duration bar với 2 nút hai bên, căn giữa tuyệt đối */}
-            <div className="flex items-center justify-center mt-2 w-full" style={{gap: '2px'}}>
+            <div className="flex items-center justify-center mt-2 w-full" style={{gap: 0}}>
               {/* Nút Mute bên trái */}
               <button
                 className="flex items-center justify-center transition-colors"
                 title={isMuted ? 'Unmute' : 'Mute'}
                 onClick={toggleMute}
-                style={{fontSize: 22, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 28, height: 28}}
+                style={{fontSize: 22, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 28, height: 28, marginRight: 0}}
                 onMouseOver={e => (e.currentTarget.style.color = '#ffd700')}
                 onMouseOut={e => (e.currentTarget.style.color = '#d4af37')}
               >
@@ -263,7 +263,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               <button
                 className="flex items-center justify-center transition-colors"
                 title="Mic Level"
-                style={{fontSize: 22, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 28, height: 28}}
+                style={{fontSize: 22, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 28, height: 28, marginLeft: 0}}
                 tabIndex={-1}
                 disabled
                 onMouseOver={e => (e.currentTarget.style.color = '#ffd700')}
