@@ -229,9 +229,9 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
         backgroundPosition: 'center'
       }}
     >
-      <div className="container mx-auto flex flex-row p-2 h-full gap-2">
+      <div className="container mx-auto flex flex-row p-2 h-full gap-2" style={{minHeight: 0}}>
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
-        <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4 mt-2">
+        <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4 mt-2" style={{height: '100%', minHeight: 0, overflowY: 'auto'}}>
           {/* Replace old orb with new SiriCallButton */}
           <div className="relative flex flex-col items-center justify-center mb-6 w-full max-w-xs mx-auto">
             {/* SiriCallButton ở trên */}
@@ -378,7 +378,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             </div>
           )}
           {/* Reference container below (full width, auto height) */}
-          <div className="w-full mt-4" style={{height: 260, minHeight: 260, maxHeight: 260, flexShrink: 0, flexGrow: 0}}>
+          <div className="w-full mt-4" style={{height: 260, minHeight: 260, maxHeight: 260, flexShrink: 0, flexGrow: 0, overflow: 'hidden'}}>
             <Reference references={references} />
           </div>
         </div>
