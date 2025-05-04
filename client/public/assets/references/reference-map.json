@@ -1,20 +1,4 @@
 {
-  "mui-ne-beach": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "Mui Ne Beach",
-    "url": "/assets/references/images/mui-ne-beach.jpg",
-    "description": "Bãi biển nổi tiếng ở Mũi Né",
-    "keywords": ["mui ne", "beach", "landmark", "biển"]
-  },
-  "po-shanu-tower": {
-    "type": "image",
-    "category": "Landmark",
-    "title": "Po Shanu Cham Towers",
-    "url": "/assets/references/images/po-shanu-tower.jpg",
-    "description": "Tháp Chăm cổ nổi tiếng tại Phan Thiết",
-    "keywords": ["po shanu", "cham tower", "landmark", "tháp chăm"]
-  },
   "swimming-pool": {
     "type": "image",
     "category": "Hotel Amenities",
