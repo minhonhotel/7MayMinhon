@@ -32,7 +32,10 @@ const VoiceAssistant: React.FC = () => {
               </a>
             </Link>
             <div className="flex-1 flex justify-center">
-              <InfographicSteps horizontal currentStep={1} />
+              <InfographicSteps horizontal currentStep={
+                currentInterface === 'interface3' ? 3 :
+                currentInterface === 'interface2' ? 2 : 1
+              } />
             </div>
           </div>
         </div>
