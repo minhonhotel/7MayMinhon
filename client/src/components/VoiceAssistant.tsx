@@ -22,15 +22,23 @@ const VoiceAssistant: React.FC = () => {
       <header className="w-full bg-primary text-white p-4 shadow-md">
         <div className="container mx-auto flex items-center justify-between">
           {/* Left: Logo */}
-          <div className="flex items-center min-w-[120px]">
-            <img src="/assets/references/images/minhon-logo.jpg" alt="Minhon Logo" className="h-16 w-auto rounded-lg shadow-md bg-white/80 p-1" />
+          <div className="flex items-center min-w-[80px] sm:min-w-[120px]">
+            <img src="/assets/references/images/minhon-logo.jpg" alt="Minhon Logo" className="h-10 sm:h-16 w-auto rounded-lg shadow-md bg-white/80 p-1" />
           </div>
-          {/* Center: InfographicSteps */}
+          {/* Center: InfographicSteps - vertical on mobile, horizontal on sm+ */}
           <div className="flex-1 flex justify-center">
-            <InfographicSteps horizontal currentStep={
-              currentInterface === 'interface3' ? 3 :
-              currentInterface === 'interface2' ? 2 : 1
-            } />
+            <div className="block sm:hidden w-full max-w-[120px]">
+              <InfographicSteps currentStep={
+                currentInterface === 'interface3' ? 3 :
+                currentInterface === 'interface2' ? 2 : 1
+              } />
+            </div>
+            <div className="hidden sm:block w-full">
+              <InfographicSteps horizontal currentStep={
+                currentInterface === 'interface3' ? 3 :
+                currentInterface === 'interface2' ? 2 : 1
+              } />
+            </div>
           </div>
           {/* Right: Call History */}
           <div className="flex items-center min-w-[140px] justify-end">
