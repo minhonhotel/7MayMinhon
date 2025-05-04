@@ -244,38 +244,78 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           <div
             id="realTimeConversation"
             ref={conversationRef}
-            className="relative p-2 py-2 w-full min-h-[60px] max-h-[104px] overflow-y-auto mt-32"
+            className="relative w-full max-w-2xl mx-auto min-h-[60px] max-h-[40vh] overflow-y-auto mt-4 mb-2"
+            style={{
+              background: 'rgba(255,255,255,0.88)',
+              borderRadius: 12,
+              border: '1px solid rgba(255,255,255,0.35)',
+              boxShadow: '0px 4px 10px rgba(0,0,0,0.15)',
+              padding: '18px',
+              marginTop: 16,
+              marginBottom: 8,
+              transition: 'box-shadow 0.3s, background 0.3s',
+              fontFamily: 'SF Pro Text, Roboto, Open Sans, Arial, sans-serif',
+              fontSize: window.innerWidth < 640 ? 15 : 17,
+              lineHeight: 1.5,
+              color: '#222',
+              fontWeight: 400,
+              backdropFilter: 'blur(2px)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-end',
+            }}
           >
+            {/* Nút đóng transcript (optional) */}
+            <button
+              className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full bg-white/70 hover:bg-white text-gray-700 shadow-md z-10"
+              style={{fontSize: 18, display: 'block'}}
+              title="Đóng transcript"
+              onClick={() => setCurrentInterface('interface1')}
+            >
+              <span className="material-icons">close</span>
+            </button>
             {/* Display conversation turns */}
-            {conversationTurns.map((turn) => (
-              <div key={turn.id} className="mb-2">
-                  <div className="flex items-start mb-1">
-                  <div className="flex-grow">
-                    {turn.role === 'user' ? (
-                      // User message - display as is
-                      <p className="text-xl font-semibold text-white font-poppins">
-                        {turn.messages[0].content}
-                      </p>
-                    ) : (
-                      // Assistant messages - display inline with proper spacing and paint-on effect
-                      <p className="text-xl font-semibold text-yellow-200 font-poppins">
-                        <span className="inline-flex flex-wrap">
-                          {turn.messages.map((msg, idx) => {
-                            // Không trim, giữ nguyên khoảng trắng gốc
-                            const content = msg.content.slice(0, visibleChars[msg.id] || 0);
-                            return (
-                              <span key={msg.id} style={{ whiteSpace: 'pre' }}>
-                                {content}
-                              </span>
-                            );
-                          })}
-                      </span>
-                      </p>
-                    )}
+            <div className="w-full flex flex-col gap-2 pr-2" style={{overflowY: 'auto', maxHeight: '28vh'}}>
+              {conversationTurns.length === 0 && (
+                <div className="text-gray-400 text-base text-center select-none" style={{opacity: 0.7}}>
+                  Tap to speak or start a conversation...
+                </div>
+              )}
+              {conversationTurns.map((turn, turnIdx) => (
+                <div key={turn.id} className="mb-1">
+                  <div className="flex items-start">
+                    <div className="flex-grow">
+                      {turn.role === 'user' ? (
+                        <p className="text-base md:text-lg font-medium text-gray-900" style={{marginBottom: 2}}>
+                          {turn.messages[0].content}
+                        </p>
+                      ) : (
+                        <p className="text-base md:text-lg font-medium text-[#333333]" style={{marginBottom: 2, position: 'relative'}}>
+                          <span className="inline-flex flex-wrap">
+                            {turn.messages.map((msg, idx) => {
+                              const content = msg.content.slice(0, visibleChars[msg.id] || 0);
+                              return (
+                                <span key={msg.id} style={{ whiteSpace: 'pre' }}>
+                                  {content}
+                                  {/* Blinking cursor cho từ cuối cùng khi đang xử lý */}
+                                  {idx === turn.messages.length - 1 && turnIdx === conversationTurns.length - 1 && visibleChars[msg.id] < msg.content.length && (
+                                    <span className="animate-blink text-yellow-500" style={{marginLeft: 1}}>|</span>
+                                  )}
+                                </span>
+                              );
+                            })}
+                          </span>
+                          {/* 3 chấm nhấp nháy khi assistant đang nghe */}
+                          {turnIdx === conversationTurns.length - 1 && turn.role === 'assistant' && visibleChars[turn.messages[turn.messages.length-1].id] === turn.messages[turn.messages.length-1].content.length && (
+                            <span className="ml-2 animate-ellipsis text-yellow-500">...</span>
+                          )}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
               ))}
+            </div>
           </div>
           {/* Reference container below (full width, auto height) */}
           <div className="w-full mt-4">
