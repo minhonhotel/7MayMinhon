@@ -421,7 +421,7 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
     <div
       className={`absolute w-full h-full transition-opacity duration-500 ${
         isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'
-      } z-30`}
+      } z-30 overflow-y-auto`}
       id="interface3"
       style={{
         backgroundImage: `linear-gradient(rgba(26, 35, 126, 0.8), rgba(63, 81, 181, 0.8)), url(${hotelImage})`,
