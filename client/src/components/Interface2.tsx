@@ -246,7 +246,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                 className="flex items-center justify-center transition-colors"
                 title={isMuted ? 'Unmute' : 'Mute'}
                 onClick={toggleMute}
-                style={{fontSize: 26, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 40, height: 40}}
+                style={{fontSize: 22, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 28, height: 28, marginRight: 0}}
                 onMouseOver={e => (e.currentTarget.style.color = '#ffd700')}
                 onMouseOut={e => (e.currentTarget.style.color = '#d4af37')}
               >
@@ -262,7 +262,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               <button
                 className="flex items-center justify-center transition-colors"
                 title="Mic Level"
-                style={{fontSize: 26, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 40, height: 40}}
+                style={{fontSize: 22, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 28, height: 28, marginLeft: 0}}
                 tabIndex={-1}
                 disabled
                 onMouseOver={e => (e.currentTarget.style.color = '#ffd700')}
