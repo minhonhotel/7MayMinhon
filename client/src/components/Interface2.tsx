@@ -229,9 +229,9 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
         backgroundPosition: 'center'
       }}
     >
-      <div className="container mx-auto flex flex-row p-2 h-full gap-2" style={{minHeight: 0}}>
+      <div className="container mx-auto flex flex-row p-2 h-full gap-2" style={{height: '100vh', minHeight: 0}}>
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
-        <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4 mt-2" style={{height: '100%', minHeight: 0, overflowY: 'auto'}}>
+        <div className="w-3/4 lg:w-2/3 flex flex-col justify-between items-center mt-2" style={{height: '100%', minHeight: 0}}>
           {/* Replace old orb with new SiriCallButton */}
           <div className="relative flex flex-col items-center justify-center mb-6 w-full max-w-xs mx-auto">
             {/* SiriCallButton ở trên */}
@@ -291,7 +291,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             <div
               id="realTimeConversation"
               ref={conversationRef}
-              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-2xl mx-auto min-h-[60px] max-h-[24vh] overflow-y-auto mt-4 mb-2"
+              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-2xl mx-auto min-h-[60px] overflow-y-auto mt-4 mb-2"
               style={{
                 background: 'rgba(255,255,255,0.88)',
                 borderRadius: 12,
@@ -302,14 +302,11 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                 marginBottom: 8,
                 transition: 'box-shadow 0.3s, background 0.3s',
                 fontFamily: 'SF Pro Text, Roboto, Open Sans, Arial, sans-serif',
-                fontSize: window.innerWidth < 640 ? 15 : 17,
-                lineHeight: 1.5,
-                color: '#222',
-                fontWeight: 400,
-                backdropFilter: 'blur(2px)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-end',
+                fontSize: 16,
+                color: '#1a1a1a',
+                flex: 1,
+                minHeight: 0,
+                maxHeight: '100%',
               }}
             >
               {/* Nút đóng transcript (ẩn realtime conversation) */}
@@ -378,7 +375,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             </div>
           )}
           {/* Reference container below (full width, auto height) */}
-          <div className="w-full mt-4" style={{height: 260, minHeight: 260, maxHeight: 260, flexShrink: 0, flexGrow: 0, overflow: 'hidden'}}>
+          <div className="w-full" style={{height: 260, minHeight: 260, maxHeight: 260, flexShrink: 0}}>
             <Reference references={references} />
           </div>
         </div>
