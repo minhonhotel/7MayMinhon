@@ -20,23 +20,26 @@ const VoiceAssistant: React.FC = () => {
     <div className="relative h-screen overflow-hidden font-sans text-gray-800 bg-neutral-50" id="app">
       {/* Header Bar */}
       <header className="w-full bg-primary text-white p-4 shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center">
-            {/* Logo and hotel name removed as requested */}
+        <div className="container mx-auto flex items-center justify-between">
+          {/* Left: Logo */}
+          <div className="flex items-center min-w-[120px]">
+            <img src="/assets/references/images/minhon-logo.jpg" alt="Minhon Logo" className="h-10 w-auto rounded-lg shadow-md bg-white/80 p-1" />
           </div>
-          <div className="hidden md:flex items-center w-full justify-end gap-6">
+          {/* Center: InfographicSteps */}
+          <div className="flex-1 flex justify-center">
+            <InfographicSteps horizontal currentStep={
+              currentInterface === 'interface3' ? 3 :
+              currentInterface === 'interface2' ? 2 : 1
+            } />
+          </div>
+          {/* Right: Call History */}
+          <div className="flex items-center min-w-[140px] justify-end">
             <Link href="/call-history">
               <a className="px-3 py-1 rounded bg-primary-dark text-white text-sm flex items-center">
                 <History className="w-4 h-4 mr-1" />
                 Call History
               </a>
             </Link>
-            <div className="flex-1 flex justify-center">
-              <InfographicSteps horizontal currentStep={
-                currentInterface === 'interface3' ? 3 :
-                currentInterface === 'interface2' ? 2 : 1
-              } />
-            </div>
           </div>
         </div>
       </header>
