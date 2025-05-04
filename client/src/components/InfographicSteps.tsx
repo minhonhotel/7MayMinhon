@@ -21,7 +21,7 @@ const steps = [
 export default function InfographicSteps({ currentStep = 1, compact = false, horizontal = false }) {
   if (horizontal) {
     return (
-      <div className="flex flex-row items-center justify-center w-full gap-4 md:gap-8 py-2">
+      <div className="flex flex-row items-center justify-center w-full gap-2 md:gap-6 py-1">
         {steps.map((step, idx) => (
           <React.Fragment key={step.title}>
             <div
@@ -34,26 +34,26 @@ export default function InfographicSteps({ currentStep = 1, compact = false, hor
               }`}
             >
               <div
-                className={`flex items-center justify-center rounded-full shadow-lg mb-1 transition-all duration-300 ${
+                className={`flex items-center justify-center rounded-full shadow-lg mb-0.5 transition-all duration-300 ${
                   idx + 1 === currentStep
                     ? 'bg-[#d4af37] text-blue-900 border-2 border-[#d4af37]'
                     : 'bg-white/30 text-white border border-gray-200'
                 }`}
                 style={{
-                  width: 32,
-                  height: 32,
-                  fontSize: 18,
+                  width: 22,
+                  height: 22,
+                  fontSize: 13,
                 }}
               >
                 <span className="material-icons">{step.icon}</span>
               </div>
               <div className="text-center">
-                <div className={`font-semibold font-poppins mb-0 text-xs ${idx + 1 === currentStep ? 'text-white' : 'text-white/70'}`}>{step.title}</div>
-                <div className="font-light text-[10px] text-white/80 hidden md:block">{step.desc}</div>
+                <div className={`font-semibold font-poppins mb-0 text-[10px] ${idx + 1 === currentStep ? 'text-white' : 'text-white/70'}`}>{step.title}</div>
+                <div className="font-light text-[8px] text-white/80 hidden md:block">{step.desc}</div>
               </div>
             </div>
             {idx < steps.length - 1 && (
-              <div className="h-0.5 w-6 md:w-10 bg-gradient-to-r from-[#d4af37]/80 to-transparent mx-2 rounded-full" />
+              <div className="h-0.5 w-3 md:w-8 bg-gradient-to-r from-[#d4af37]/80 to-transparent mx-1 rounded-full" />
             )}
           </React.Fragment>
         ))}
