@@ -442,7 +442,7 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
               <div id="summary-container" className="mb-3 sm:mb-4">
                 {callSummary ? (
                   <div className="p-3 sm:p-5 bg-white/80 rounded-xl shadow border border-white/30 mb-3 sm:mb-4 relative" style={{backdropFilter:'blur(2px)'}}>
-                    <h3 className="font-semibold text-base sm:text-lg mb-1 sm:mb-2 text-blue-800">Conversation Summary</h3>
+                    <h3 className="font-semibold text-base sm:text-lg mb-1 sm:mb-2 text-blue-800">Summary</h3>
                     <p className="text-sm sm:text-base leading-relaxed text-gray-800 whitespace-pre-line" style={{fontWeight: 400}}>{callSummary.content}</p>
                     <div className="mt-2 sm:mt-3 flex justify-end">
                       <div className="text-xs text-gray-500">
@@ -473,7 +473,7 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
                   <span className="material-icons text-base">language</span>
                 </button>
               </div>
-              <textarea placeholder="Enter any corrections or additional Information & Press Add Note to update into the Conversation Summary" className="w-full p-2 sm:p-3 border border-white/30 rounded-xl mb-3 sm:mb-4 text-sm sm:text-base bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-[#d4af37] transition" value={note} onChange={(e) => setNote(e.target.value)} rows={3} style={{fontFamily:'inherit', color:'#222'}} />
+              <textarea placeholder="Enter any corrections or additional Information & Press Add Note to update into the Conversation Summary" className="w-full p-2 sm:p-3 border border-white/30 rounded-xl mb-3 sm:mb-4 text-xs sm:text-sm bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-[#d4af37] transition italic font-light text-gray-500" value={note} onChange={(e) => setNote(e.target.value)} rows={3} style={{fontFamily:'inherit'}} />
               {/* Room Number input */}
               <div className="flex items-center space-x-2">
                 <label className="text-sm sm:text-base text-gray-600 font-medium">Room Number</label>
@@ -493,7 +493,7 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
                   style={{letterSpacing:0.5}}
                 >
                   <span className="material-icons">send</span>
-                  <span>Send To Reception</span>
+                  <span className="whitespace-nowrap">Send To Reception</span>
                 </button>
               </div>
             </div>
