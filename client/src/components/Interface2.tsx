@@ -235,9 +235,9 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     >
       <div className="container mx-auto flex flex-col md:flex-row p-2 h-full gap-2">
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
-        <div className="w-full md:w-3/4 lg:w-2/3 flex flex-col items-center space-y-3 sm:space-y-4 mt-2">
+        <div className="w-full md:w-3/4 lg:w-2/3 flex flex-col items-center space-y-1 sm:space-y-4 mt-1">
           {/* Replace old orb with new SiriCallButton */}
-          <div className="relative flex flex-col items-center justify-center mb-4 sm:mb-6 w-full max-w-xs mx-auto">
+          <div className="relative flex flex-col items-center justify-center mb-1 sm:mb-6 w-full max-w-xs mx-auto">
             {/* SiriCallButton ở trên */}
             <SiriCallButton
               containerId="siri-button"
@@ -314,7 +314,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             <div
               id="realTimeConversation"
               ref={conversationRef}
-              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-full sm:max-w-2xl mx-auto min-h-[60px] max-h-[12vh] overflow-y-auto"
+              className="w-full flex flex-col-reverse gap-1 pr-2 relative max-w-full sm:max-w-2xl mx-auto min-h-[60px] max-h-[12vh] overflow-y-auto mb-1"
               style={{
                 background: 'rgba(255,255,255,0.88)',
                 borderRadius: 12,
@@ -399,7 +399,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             </div>
           )}
           {/* Reference container below (full width, auto height) */}
-          <div className="w-full mt-4">
+          <div className="w-full mt-1">
             <div className="block sm:hidden">
               <div className="w-full flex flex-row items-center gap-x-2 mb-3 px-2">
                 <Reference references={references} />
