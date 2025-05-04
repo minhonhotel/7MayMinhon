@@ -520,21 +520,7 @@
       "room setup"
     ]
   },
-  "Free_Bicyles-Service": {
-    "type": "image",
-    "category": "Hotel Amenities",
-    "title": "Free Bicycle Service",
-    "url": "/assets/references/images/hotel-amenities/Free_Bicyles-Service.jpg",
-    "description": "Complimentary bicycle rental service for hotel guests",
-    "keywords": [
-      "bicycle",
-      "bike",
-      "rental",
-      "free",
-      "activity",
-      "transport"
-    ]
-  },
+
   "General_View1": {
     "type": "image",
     "category": "Hotel Amenities",
