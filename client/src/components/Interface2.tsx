@@ -241,12 +241,14 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             />
             {/* Duration bar với 2 nút hai bên */}
             <div className="flex items-center justify-center gap-3 mt-2">
-              {/* Nút Mute bên trái, không nền tròn */}
+              {/* Nút Mute bên trái, màu vàng đồng nổi bật */}
               <button
-                className="flex items-center justify-center text-blue-900 hover:text-yellow-600 transition-colors"
+                className="flex items-center justify-center transition-colors"
                 title={isMuted ? 'Unmute' : 'Mute'}
                 onClick={toggleMute}
-                style={{fontSize: 26, padding: 0, background: 'none', border: 'none'}}
+                style={{fontSize: 26, padding: 0, background: 'none', border: 'none', color: '#d4af37'}}
+                onMouseOver={e => (e.currentTarget.style.color = '#ffd700')}
+                onMouseOut={e => (e.currentTarget.style.color = '#d4af37')}
               >
                 <span className="material-icons">
                   {isMuted ? 'mic_off' : 'mic'}
@@ -256,13 +258,15 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               <div className="text-white text-sm bg-blue-900/80 rounded-full px-4 py-1 shadow-lg border border-white/30 flex items-center justify-center" style={{backdropFilter:'blur(2px)'}}>
                 {formatDuration(localDuration)}
               </div>
-              {/* Nút MicLevel bên phải, không nền tròn, không hiện số, có thể có thanh visualizer nhỏ */}
+              {/* Nút MicLevel bên phải, màu vàng đồng nổi bật */}
               <button
-                className="flex items-center justify-center text-blue-900 hover:text-yellow-600 transition-colors"
+                className="flex items-center justify-center transition-colors"
                 title="Mic Level"
-                style={{fontSize: 26, padding: 0, background: 'none', border: 'none'}}
+                style={{fontSize: 26, padding: 0, background: 'none', border: 'none', color: '#d4af37'}}
                 tabIndex={-1}
                 disabled
+                onMouseOver={e => (e.currentTarget.style.color = '#ffd700')}
+                onMouseOut={e => (e.currentTarget.style.color = '#d4af37')}
               >
                 <span className="material-icons">graphic_eq</span>
                 {/* Thanh visualizer nhỏ */}
@@ -272,7 +276,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                       display: 'inline-block',
                       width: 2,
                       height: `${4 + Math.round((micLevel/100)*12) * ((i%2)+1)}px`,
-                      background: '#4B9CD3',
+                      background: '#d4af37',
                       marginLeft: 1,
                       borderRadius: 1
                     }} />
@@ -318,7 +322,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                 <span className="material-icons">close</span>
               </button>
               {/* Display conversation turns */}
-              <div className="w-full flex flex-col-reverse gap-2 pr-2" style={{overflowY: 'auto', maxHeight: '28vh'}}>
+              <div className="w-full flex flex-col gap-1 pr-2" style={{overflowY: 'auto', maxHeight: '28vh'}}>
                 {conversationTurns.length === 0 && (
                   <div className="text-gray-400 text-base text-center select-none" style={{opacity: 0.7}}>
                     Tap to speak or start a conversation...
