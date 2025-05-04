@@ -232,40 +232,53 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
         <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4 mt-2">
           {/* Replace old orb with new SiriCallButton */}
-          <div className="relative flex items-center justify-center mb-6 w-full max-w-xs mx-auto">
-            {/* Mute button bên trái */}
-            <button
-              className="absolute left-0 flex items-center justify-center w-10 h-10 rounded-full bg-white/80 hover:bg-yellow-100 text-blue-900 shadow-md"
-              title={isMuted ? 'Unmute' : 'Mute'}
-              onClick={toggleMute}
-              style={{transition: 'background 0.2s'}}
-            >
-              <span className="material-icons text-2xl">
-                {isMuted ? 'mic_off' : 'mic'}
-              </span>
-            </button>
-            {/* SiriCallButton ở giữa */}
+          <div className="relative flex flex-col items-center justify-center mb-6 w-full max-w-xs mx-auto">
+            {/* SiriCallButton ở trên */}
             <SiriCallButton
               containerId="siri-button"
               isListening={!isMuted}
               volumeLevel={micLevel}
             />
-            {/* MicLevel button bên phải */}
-            <button
-              className="absolute right-0 flex items-center justify-center w-10 h-10 rounded-full bg-white/80 hover:bg-yellow-100 text-blue-900 shadow-md"
-              title="Mic Level"
-              onClick={() => alert(`Mic Level: ${micLevel}`)}
-              style={{transition: 'background 0.2s'}}
-            >
-              <span className="material-icons text-2xl">
-                graphic_eq
-              </span>
-              {/* Hiển thị mức micLevel dạng số nhỏ */}
-              <span className="ml-1 text-xs font-bold text-blue-900">{micLevel}</span>
-            </button>
-            {/* Duration ở giữa dưới */}
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-[-30px] text-white text-sm bg-blue-900/80 rounded-full px-3 py-1 shadow-lg border border-white/30" style={{backdropFilter:'blur(2px)'}}>
-              {formatDuration(localDuration)}
+            {/* Duration bar với 2 nút hai bên */}
+            <div className="flex items-center justify-center gap-3 mt-2">
+              {/* Nút Mute bên trái, không nền tròn */}
+              <button
+                className="flex items-center justify-center text-blue-900 hover:text-yellow-600 transition-colors"
+                title={isMuted ? 'Unmute' : 'Mute'}
+                onClick={toggleMute}
+                style={{fontSize: 26, padding: 0, background: 'none', border: 'none'}}
+              >
+                <span className="material-icons">
+                  {isMuted ? 'mic_off' : 'mic'}
+                </span>
+              </button>
+              {/* Duration ở giữa */}
+              <div className="text-white text-sm bg-blue-900/80 rounded-full px-4 py-1 shadow-lg border border-white/30 flex items-center justify-center" style={{backdropFilter:'blur(2px)'}}>
+                {formatDuration(localDuration)}
+              </div>
+              {/* Nút MicLevel bên phải, không nền tròn, không hiện số, có thể có thanh visualizer nhỏ */}
+              <button
+                className="flex items-center justify-center text-blue-900 hover:text-yellow-600 transition-colors"
+                title="Mic Level"
+                style={{fontSize: 26, padding: 0, background: 'none', border: 'none'}}
+                tabIndex={-1}
+                disabled
+              >
+                <span className="material-icons">graphic_eq</span>
+                {/* Thanh visualizer nhỏ */}
+                <span className="ml-1 flex items-end h-4 w-6">
+                  {[...Array(4)].map((_, i) => (
+                    <span key={i} style={{
+                      display: 'inline-block',
+                      width: 2,
+                      height: `${4 + Math.round((micLevel/100)*12) * ((i%2)+1)}px`,
+                      background: '#4B9CD3',
+                      marginLeft: 1,
+                      borderRadius: 1
+                    }} />
+                  ))}
+                </span>
+              </button>
             </div>
           </div>
           
