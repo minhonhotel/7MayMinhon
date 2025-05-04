@@ -171,14 +171,18 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
 
   // Handler for Next button - End call and proceed to interface3
   const handleNext = useCallback(() => {
+    // Nếu chưa có hội thoại thì không cho xác nhận
+    if (!transcripts || transcripts.length === 0) {
+      alert('Bạn cần trao đổi với trợ lý trước khi xác nhận yêu cầu!');
+      return;
+    }
     // Capture the current duration for the email
     const finalDuration = callDuration > 0 ? callDuration : localDuration;
     console.log('Ending call with duration:', finalDuration);
-    
     // Call the context's endCall and switch to interface3
     contextEndCall();
     setCurrentInterface('interface3');
-  }, [callDuration, localDuration, contextEndCall, setCurrentInterface]);
+  }, [callDuration, localDuration, contextEndCall, setCurrentInterface, transcripts]);
   
   // Format duration for display
   const formatDuration = (seconds: number) => {
