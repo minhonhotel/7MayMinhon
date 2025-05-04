@@ -53,6 +53,9 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   
   const conversationRef = useRef<HTMLDivElement>(null);
 
+  // NEW: State để ẩn/hiện khung realtime conversation
+  const [showRealtimeConversation, setShowRealtimeConversation] = useState(true);
+  
   // Cleanup function for animations
   const cleanupAnimations = () => {
     Object.values(animationFrames.current).forEach(frameId => {
@@ -207,10 +210,10 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
     };
   }, [isActive, callDuration]);
   
-  // Scroll to bottom of conversation when new messages arrive
+  // Auto scroll to top when new transcript arrives
   useEffect(() => {
     if (conversationRef.current && isActive) {
-      conversationRef.current.scrollTop = conversationRef.current.scrollHeight;
+      conversationRef.current.scrollTop = 0;
     }
   }, [conversationTurns, isActive]);
   
@@ -229,94 +232,126 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
         <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4 mt-2">
           {/* Replace old orb with new SiriCallButton */}
-          <div className="relative flex items-center justify-center mb-6">
+          <div className="relative flex items-center justify-center mb-6 w-full max-w-xs mx-auto">
+            {/* Mute button bên trái */}
+            <button
+              className="absolute left-0 flex items-center justify-center w-10 h-10 rounded-full bg-white/80 hover:bg-yellow-100 text-blue-900 shadow-md"
+              title={isMuted ? 'Unmute' : 'Mute'}
+              onClick={toggleMute}
+              style={{transition: 'background 0.2s'}}
+            >
+              <span className="material-icons text-2xl">
+                {isMuted ? 'mic_off' : 'mic'}
+              </span>
+            </button>
+            {/* SiriCallButton ở giữa */}
             <SiriCallButton
               containerId="siri-button"
               isListening={!isMuted}
               volumeLevel={micLevel}
             />
-            <div className="absolute bottom-[-30px] text-white text-sm">
+            {/* MicLevel button bên phải */}
+            <button
+              className="absolute right-0 flex items-center justify-center w-10 h-10 rounded-full bg-white/80 hover:bg-yellow-100 text-blue-900 shadow-md"
+              title="Mic Level"
+              onClick={() => alert(`Mic Level: ${micLevel}`)}
+              style={{transition: 'background 0.2s'}}
+            >
+              <span className="material-icons text-2xl">
+                graphic_eq
+              </span>
+              {/* Hiển thị mức micLevel dạng số nhỏ */}
+              <span className="ml-1 text-xs font-bold text-blue-900">{micLevel}</span>
+            </button>
+            {/* Duration ở giữa dưới */}
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-[-30px] text-white text-sm bg-blue-900/80 rounded-full px-3 py-1 shadow-lg border border-white/30" style={{backdropFilter:'blur(2px)'}}>
               {formatDuration(localDuration)}
             </div>
           </div>
           
           {/* Realtime conversation container spans full width */}
-          <div
-            id="realTimeConversation"
-            ref={conversationRef}
-            className="relative w-full max-w-2xl mx-auto min-h-[60px] max-h-[40vh] overflow-y-auto mt-4 mb-2"
-            style={{
-              background: 'rgba(255,255,255,0.88)',
-              borderRadius: 12,
-              border: '1px solid rgba(255,255,255,0.35)',
-              boxShadow: '0px 4px 10px rgba(0,0,0,0.15)',
-              padding: '18px',
-              marginTop: 16,
-              marginBottom: 8,
-              transition: 'box-shadow 0.3s, background 0.3s',
-              fontFamily: 'SF Pro Text, Roboto, Open Sans, Arial, sans-serif',
-              fontSize: window.innerWidth < 640 ? 15 : 17,
-              lineHeight: 1.5,
-              color: '#222',
-              fontWeight: 400,
-              backdropFilter: 'blur(2px)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-end',
-            }}
-          >
-            {/* Nút đóng transcript (optional) */}
-            <button
-              className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full bg-white/70 hover:bg-white text-gray-700 shadow-md z-10"
-              style={{fontSize: 18, display: 'block'}}
-              title="Đóng transcript"
-              onClick={() => setCurrentInterface('interface1')}
+          {showRealtimeConversation && (
+            <div
+              id="realTimeConversation"
+              ref={conversationRef}
+              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-2xl mx-auto min-h-[60px] max-h-[40vh] overflow-y-auto mt-4 mb-2"
+              style={{
+                background: 'rgba(255,255,255,0.88)',
+                borderRadius: 12,
+                border: '1px solid rgba(255,255,255,0.35)',
+                boxShadow: '0px 4px 10px rgba(0,0,0,0.15)',
+                padding: '18px',
+                marginTop: 16,
+                marginBottom: 8,
+                transition: 'box-shadow 0.3s, background 0.3s',
+                fontFamily: 'SF Pro Text, Roboto, Open Sans, Arial, sans-serif',
+                fontSize: window.innerWidth < 640 ? 15 : 17,
+                lineHeight: 1.5,
+                color: '#222',
+                fontWeight: 400,
+                backdropFilter: 'blur(2px)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+              }}
             >
-              <span className="material-icons">close</span>
-            </button>
-            {/* Display conversation turns */}
-            <div className="w-full flex flex-col gap-2 pr-2" style={{overflowY: 'auto', maxHeight: '28vh'}}>
-              {conversationTurns.length === 0 && (
-                <div className="text-gray-400 text-base text-center select-none" style={{opacity: 0.7}}>
-                  Tap to speak or start a conversation...
-                </div>
-              )}
-              {conversationTurns.map((turn, turnIdx) => (
-                <div key={turn.id} className="mb-1">
-                  <div className="flex items-start">
-                    <div className="flex-grow">
-                      {turn.role === 'user' ? (
-                        <p className="text-base md:text-lg font-medium text-gray-900" style={{marginBottom: 2}}>
-                          {turn.messages[0].content}
-                        </p>
-                      ) : (
-                        <p className="text-base md:text-lg font-medium text-[#333333]" style={{marginBottom: 2, position: 'relative'}}>
-                          <span className="inline-flex flex-wrap">
-                            {turn.messages.map((msg, idx) => {
-                              const content = msg.content.slice(0, visibleChars[msg.id] || 0);
-                              return (
-                                <span key={msg.id} style={{ whiteSpace: 'pre' }}>
-                                  {content}
-                                  {/* Blinking cursor cho từ cuối cùng khi đang xử lý */}
-                                  {idx === turn.messages.length - 1 && turnIdx === conversationTurns.length - 1 && visibleChars[msg.id] < msg.content.length && (
-                                    <span className="animate-blink text-yellow-500" style={{marginLeft: 1}}>|</span>
-                                  )}
-                                </span>
-                              );
-                            })}
-                          </span>
-                          {/* 3 chấm nhấp nháy khi assistant đang nghe */}
-                          {turnIdx === conversationTurns.length - 1 && turn.role === 'assistant' && visibleChars[turn.messages[turn.messages.length-1].id] === turn.messages[turn.messages.length-1].content.length && (
-                            <span className="ml-2 animate-ellipsis text-yellow-500">...</span>
-                          )}
-                        </p>
-                      )}
+              {/* Nút đóng transcript (ẩn realtime conversation) */}
+              <button
+                className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full bg-white/70 hover:bg-white text-gray-700 shadow-md z-10"
+                style={{fontSize: 18, display: 'block'}}
+                title="Ẩn realtime conversation"
+                onClick={() => setShowRealtimeConversation(false)}
+              >
+                <span className="material-icons">close</span>
+              </button>
+              {/* Display conversation turns */}
+              <div className="w-full flex flex-col-reverse gap-2 pr-2" style={{overflowY: 'auto', maxHeight: '28vh'}}>
+                {conversationTurns.length === 0 && (
+                  <div className="text-gray-400 text-base text-center select-none" style={{opacity: 0.7}}>
+                    Tap to speak or start a conversation...
+                  </div>
+                )}
+                {[...conversationTurns].reverse().map((turn, turnIdx) => (
+                  <div key={turn.id} className="mb-1">
+                    <div className="flex items-start">
+                      <div className="flex-grow">
+                        {turn.role === 'user' ? (
+                          <p className="text-base md:text-lg font-medium text-gray-900" style={{marginBottom: 2}}>
+                            {turn.messages[0].content}
+                          </p>
+                        ) : (
+                          <p className="text-base md:text-lg font-medium" style={{marginBottom: 2, position: 'relative', background: 'linear-gradient(90deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #4B0082, #9400D3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>
+                            <span className="inline-flex flex-wrap">
+                              {turn.messages.map((msg, idx) => {
+                                const content = msg.content.slice(0, visibleChars[msg.id] || 0);
+                                // Rainbow effect: mỗi ký tự 1 màu cầu vồng
+                                const rainbowColors = ['#FF0000','#FF7F00','#FFFF00','#00FF00','#0000FF','#4B0082','#9400D3'];
+                                return (
+                                  <span key={msg.id} style={{ whiteSpace: 'pre' }}>
+                                    {Array.from(content).map((char, i) => (
+                                      <span key={i} style={{color: rainbowColors[i % rainbowColors.length]}}>{char}</span>
+                                    ))}
+                                    {/* Blinking cursor cho từ cuối cùng khi đang xử lý */}
+                                    {idx === turn.messages.length - 1 && turnIdx === 0 && visibleChars[msg.id] < msg.content.length && (
+                                      <span className="animate-blink text-yellow-500" style={{marginLeft: 1}}>|</span>
+                                    )}
+                                  </span>
+                                );
+                              })}
+                            </span>
+                            {/* 3 chấm nhấp nháy khi assistant đang nghe */}
+                            {turnIdx === 0 && turn.role === 'assistant' && visibleChars[turn.messages[turn.messages.length-1].id] === turn.messages[turn.messages.length-1].content.length && (
+                              <span className="ml-2 animate-ellipsis text-yellow-500">...</span>
+                            )}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
           {/* Reference container below (full width, auto height) */}
           <div className="w-full mt-4">
             <Reference references={references} />
