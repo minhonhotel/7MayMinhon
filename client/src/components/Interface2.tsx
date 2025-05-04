@@ -239,37 +239,36 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               isListening={!isMuted}
               volumeLevel={micLevel}
             />
-            {/* Duration bar với 2 nút hai bên */}
-            <div className="flex items-center justify-center gap-3 mt-2">
-              {/* Nút Mute bên trái, màu vàng đồng nổi bật */}
+            {/* Duration bar với 2 nút hai bên, căn giữa tuyệt đối */}
+            <div className="flex items-center justify-center gap-0 mt-2 w-full">
+              {/* Nút Mute bên trái */}
               <button
                 className="flex items-center justify-center transition-colors"
                 title={isMuted ? 'Unmute' : 'Mute'}
                 onClick={toggleMute}
-                style={{fontSize: 26, padding: 0, background: 'none', border: 'none', color: '#d4af37'}}
+                style={{fontSize: 26, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 40, height: 40}}
                 onMouseOver={e => (e.currentTarget.style.color = '#ffd700')}
                 onMouseOut={e => (e.currentTarget.style.color = '#d4af37')}
               >
-                <span className="material-icons">
-                  {isMuted ? 'mic_off' : 'mic'}
-                </span>
+                <span className="material-icons">{isMuted ? 'mic_off' : 'mic'}</span>
               </button>
-              {/* Duration ở giữa */}
-              <div className="text-white text-sm bg-blue-900/80 rounded-full px-4 py-1 shadow-lg border border-white/30 flex items-center justify-center" style={{backdropFilter:'blur(2px)'}}>
-                {formatDuration(localDuration)}
+              {/* Duration ở giữa, luôn căn giữa */}
+              <div className="flex-1 flex justify-center">
+                <div className="text-white text-sm bg-blue-900/80 rounded-full px-4 py-1 shadow-lg border border-white/30 flex items-center justify-center" style={{backdropFilter:'blur(2px)'}}>
+                  {formatDuration(localDuration)}
+                </div>
               </div>
-              {/* Nút MicLevel bên phải, màu vàng đồng nổi bật */}
+              {/* Nút MicLevel bên phải */}
               <button
                 className="flex items-center justify-center transition-colors"
                 title="Mic Level"
-                style={{fontSize: 26, padding: 0, background: 'none', border: 'none', color: '#d4af37'}}
+                style={{fontSize: 26, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 40, height: 40}}
                 tabIndex={-1}
                 disabled
                 onMouseOver={e => (e.currentTarget.style.color = '#ffd700')}
                 onMouseOut={e => (e.currentTarget.style.color = '#d4af37')}
               >
                 <span className="material-icons">graphic_eq</span>
-                {/* Thanh visualizer nhỏ */}
                 <span className="ml-1 flex items-end h-4 w-6">
                   {[...Array(4)].map((_, i) => (
                     <span key={i} style={{

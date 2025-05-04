@@ -425,24 +425,24 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
       style={{
         backgroundImage: `linear-gradient(rgba(26, 35, 126, 0.8), rgba(63, 81, 181, 0.8)), url(${hotelImage})`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center'
+        backgroundPosition: 'center',
+        fontFamily: 'SF Pro Text, Roboto, Open Sans, Arial, sans-serif'
       }}
     >
-      <div className="container mx-auto h-full flex flex-col p-5">
-        <div className="bg-white rounded-lg shadow-md p-5 mb-5 flex-grow overflow-auto">
+      <div className="container mx-auto h-full flex flex-col p-4 md:p-8">
+        <div className="mx-auto w-full max-w-3xl bg-white/90 rounded-2xl shadow-xl p-6 md:p-10 mb-6 flex-grow border border-white/40 backdrop-blur-md" style={{minHeight: 420}}>
           <div className="mb-4 pb-3 border-b border-gray-200">
-            <p className="font-poppins font-bold text-lg text-primary">REVIEW & CONFIRM</p>
+            <p className="font-poppins font-bold text-2xl text-blue-900 tracking-wide">REVIEW & CONFIRM</p>
           </div>
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-6">
             {/* Left column: summary, notes, room number */}
-            <div className="w-3/4 space-y-4">
+            <div className="md:w-3/4 w-full space-y-4">
               {/* AI-generated Call Summary Container */}
               <div id="summary-container" className="mb-4">
                 {callSummary ? (
-                  <div className="p-4 bg-blue-50 rounded-lg shadow-sm mb-4 relative">
-                    <h3 className="font-medium text-base mb-2 text-blue-800">Conversation Summary</h3>
-                    <p className="text-sm leading-snug text-gray-700 whitespace-pre-line">{callSummary.content}</p>
-                    
+                  <div className="p-5 bg-white/80 rounded-xl shadow border border-white/30 mb-4 relative" style={{backdropFilter:'blur(2px)'}}>
+                    <h3 className="font-semibold text-lg mb-2 text-blue-800">Conversation Summary</h3>
+                    <p className="text-base leading-relaxed text-gray-800 whitespace-pre-line" style={{fontWeight: 400}}>{callSummary.content}</p>
                     <div className="mt-3 flex justify-end">
                       <div className="text-xs text-gray-500">
                         Generated at {new Date(callSummary.timestamp).toLocaleTimeString()}
@@ -450,12 +450,12 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
                     </div>
                   </div>
                 ) : (
-                  <div className="p-4 bg-gray-50 rounded-lg shadow-sm mb-4 border border-dashed border-gray-300">
+                  <div className="p-5 bg-gray-50 rounded-xl shadow border border-dashed border-gray-300 mb-4">
                     <div className="animate-pulse flex space-x-2 items-center">
                       <div className="h-4 w-4 bg-gray-300 rounded-full"></div>
                       <div className="h-4 bg-gray-300 rounded w-1/4"></div>
                     </div>
-                    <h3 className="font-medium text-lg my-2 text-gray-600">Generating Summary...</h3>
+                    <h3 className="font-semibold text-lg my-2 text-gray-600">Generating Summary...</h3>
                     <div className="space-y-2">
                       <div className="h-2 bg-gray-200 rounded w-3/4"></div>
                       <div className="h-2 bg-gray-200 rounded w-full"></div>
@@ -467,31 +467,32 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
               </div>
               {/* Additional Notes and Actions */}
               <div className="flex items-center justify-between h-10">
-                <button className="h-full px-3 bg-blue-500 text-white rounded-lg text-sm font-medium" onClick={handleAddNote} disabled={!note.trim()}>Add Note</button>
-                <button className="h-full px-3 bg-blue-50 text-primary rounded-lg text-sm font-medium" onClick={() => setCurrentInterface('interface3vi')}>Vietnamese</button>
+                <button className="h-full px-4 bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 rounded-full text-sm font-semibold shadow transition-colors" onClick={handleAddNote} disabled={!note.trim()}>Add Note</button>
+                <button className="h-full px-4 bg-white/70 text-blue-900 rounded-full text-sm font-semibold border border-white/30 shadow" onClick={() => setCurrentInterface('interface3vi')}>Vietnamese</button>
               </div>
-              <textarea placeholder="Enter any corrections or additional Information & Press Add Note to update into the Conversation Summary" className="w-full p-2 border rounded-lg mb-4 text-sm md:text-base" value={note} onChange={(e) => setNote(e.target.value)} rows={3} />
+              <textarea placeholder="Enter any corrections or additional Information & Press Add Note to update into the Conversation Summary" className="w-full p-3 border border-white/30 rounded-xl mb-4 text-base bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-[#d4af37] transition" value={note} onChange={(e) => setNote(e.target.value)} rows={3} style={{fontFamily:'inherit', color:'#222'}} />
               {/* Room Number input */}
               <div className="flex items-center space-x-2">
-                <label className="text-sm text-gray-500">Room Number</label>
-                <input type="text" className="w-32 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary" value={orderSummary.roomNumber} onChange={(e) => handleInputChange('roomNumber', e.target.value)} />
+                <label className="text-base text-gray-600 font-medium">Room Number</label>
+                <input type="text" className="w-32 p-2 border border-white/30 rounded-xl focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] bg-white/70 text-gray-900 font-semibold" value={orderSummary.roomNumber} onChange={(e) => handleInputChange('roomNumber', e.target.value)} />
               </div>
             </div>
             {/* Right column: control buttons at top-right */}
-            <div className="w-1/4 flex justify-end">
-              <div className="flex flex-col items-end space-y-2">
-                <button className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs" onClick={() => setCurrentInterface('interface2')}>
-                  <span className="material-icons text-sm mr-1">arrow_back</span>Back
+            <div className="md:w-1/4 w-full flex md:justify-end justify-center">
+              <div className="flex flex-col items-end space-y-3 w-full md:w-auto">
+                <button className="w-full md:w-auto flex items-center justify-center px-4 py-2 bg-white/80 hover:bg-blue-100 text-blue-900 rounded-full text-sm font-semibold border border-white/30 shadow transition-colors" onClick={() => setCurrentInterface('interface2')}>
+                  <span className="material-icons text-base mr-1">arrow_back</span>Back
                 </button>
-                <button className="w-full lg:w-auto flex items-center justify-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-lg text-xs" onClick={() => setCurrentInterface('interface1')}>
-                  <span className="material-icons text-sm mr-1">cancel</span>Cancel
+                <button className="w-full md:w-auto flex items-center justify-center px-4 py-2 bg-white/80 hover:bg-blue-100 text-blue-900 rounded-full text-sm font-semibold border border-white/30 shadow transition-colors" onClick={() => setCurrentInterface('interface1')}>
+                  <span className="material-icons text-base mr-1">cancel</span>Cancel
                 </button>
                 <button
                   onClick={handleConfirmOrder}
-                  className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition-colors"
+                  className="w-full md:w-auto bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 font-bold py-3 px-6 rounded-full shadow-lg flex items-center justify-center space-x-2 transition-colors border border-white/30"
+                  style={{fontSize:18, letterSpacing:1}}
                 >
                   <span className="material-icons">send</span>
-                  <span>Press Here to Send Your Request To Receptionist</span>
+                  <span>Send To Reception</span>
                 </button>
               </div>
             </div>
