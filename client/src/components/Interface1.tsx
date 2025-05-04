@@ -116,7 +116,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
         </div>
         {/* Active orders status panels (up to 60 min countdown) */}
         {activeOrders && activeOrders.length > 0 && (
-          <div className="flex flex-row flex-nowrap gap-x-4 mb-6 w-full overflow-x-auto justify-center">
+          <div className="flex flex-row flex-nowrap gap-x-4 mb-6 w-full overflow-x-auto justify-start px-2">
             {activeOrders.map((o) => {
               const deadline = new Date(o.requestedAt.getTime() + 60 * 60 * 1000);
               const diffSec = Math.max(Math.ceil((deadline.getTime() - now.getTime()) / 1000), 0);
