@@ -291,7 +291,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             <div
               id="realTimeConversation"
               ref={conversationRef}
-              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-2xl mx-auto min-h-[60px] max-h-[28vh] overflow-y-auto mt-4 mb-2"
+              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-2xl mx-auto min-h-[60px] max-h-[24vh] overflow-y-auto mt-4 mb-2"
               style={{
                 background: 'rgba(255,255,255,0.88)',
                 borderRadius: 12,
@@ -378,7 +378,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             </div>
           )}
           {/* Reference container below (full width, auto height) */}
-          <div className="w-full mt-4">
+          <div className="w-full mt-4" style={{height: 260, minHeight: 260, maxHeight: 260, flexShrink: 0, flexGrow: 0}}>
             <Reference references={references} />
           </div>
         </div>
