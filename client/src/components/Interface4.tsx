@@ -31,7 +31,6 @@ const Interface4: React.FC<Interface4Props> = ({ isActive }) => {
           {/* Order Tracking Info */}
           <div className="bg-neutral p-3 sm:p-4 rounded-lg mb-4 sm:mb-6">
             <p className="font-medium text-gray-800 text-sm sm:text-base">Order Reference: <span className="font-bold">{order.reference}</span></p>
-            <p className="text-xs sm:text-sm text-gray-600 mt-1">You can check the status with your room number</p>
           </div>
           {/* Estimated Time */}
           <div className="mb-4 sm:mb-6">

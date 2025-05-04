@@ -120,7 +120,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
             </div>
             {/* Support */}
             <div className="bg-white/10 p-2 sm:p-3 rounded-lg backdrop-blur-sm w-full sm:w-64 mb-3 md:mb-0">
-              <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-xs sm:text-sm">Support</h4>
+              <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-xs sm:text-sm">Support to book external services</h4>
               <ul className="grid grid-cols-4 gap-1 sm:gap-2 py-1 sm:py-2">
                 <li className="flex flex-col items-center justify-center"><span className="material-icons text-2xl sm:text-4xl text-amber-400">translate</span></li>
                 <li className="flex flex-col items-center justify-center"><span className="material-icons text-2xl sm:text-4xl text-amber-400">rate_review</span></li>
