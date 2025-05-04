@@ -29,26 +29,6 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
       }}
     >
       <div className="container mx-auto h-full flex flex-col items-center justify-start text-white p-3 pt-6 sm:p-5 sm:pt-10 lg:pt-16 overflow-y-auto">
-        {/* Logo Minhon lớn ở đầu interface1 */}
-        <div className="flex justify-center items-center mb-6">
-          <img src="/assets/references/images/minhon-logo.jpg" alt="Minhon Logo" className="h-20 w-auto rounded-xl shadow-lg bg-white/80 p-2 border-2 border-[#d4af37]" />
-        </div>
-        {/* Active orders status panels (up to 60 min countdown) */}
-        {activeOrders.map((o) => {
-          const deadline = new Date(o.requestedAt.getTime() + 60 * 60 * 1000);
-          const diffSec = Math.max(Math.ceil((deadline.getTime() - now.getTime()) / 1000), 0);
-          if (diffSec <= 0) return null;
-          const mins = Math.floor(diffSec / 60).toString().padStart(2, '0');
-          const secs = (diffSec % 60).toString().padStart(2, '0');
-          return (
-            <div key={o.reference} className="bg-white/80 backdrop-blur-sm p-3 rounded-md mb-4 text-gray-800 shadow-md max-w-sm w-full">
-              <p className="text-sm mb-1"><strong>Order Ref:</strong> {o.reference}</p>
-              <p className="text-sm mb-1"><strong>Requested At:</strong> {o.requestedAt.toLocaleString('en-US', {timeZone: 'Asia/Ho_Chi_Minh', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit'})}</p>
-              <p className="text-sm mb-1"><strong>Estimated Completion:</strong> {o.estimatedTime}</p>
-              <p className="text-sm"><strong>Time Remaining:</strong> {`${mins}:${secs}`}</p>
-            </div>
-          );
-        })}
         <h2 className="font-poppins font-bold text-2xl sm:text-3xl lg:text-4xl text-amber-400 mb-2 text-center">Mi Nhon Hotel Mui Ne</h2>
         <p className="text-base sm:text-lg lg:text-xl text-center max-w-lg mb-8">AI-powered Voice Assistant - Supporting All Your Needs</p>
         
