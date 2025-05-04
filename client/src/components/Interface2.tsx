@@ -229,9 +229,9 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
         backgroundPosition: 'center'
       }}
     >
-      <div className="container mx-auto flex flex-row p-2 h-full gap-2" style={{height: '100vh', minHeight: 0}}>
+      <div className="container mx-auto flex flex-row p-2 h-full gap-2">
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
-        <div className="w-3/4 lg:w-2/3 flex flex-col justify-between items-center mt-2" style={{height: '100%', minHeight: 0}}>
+        <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4 mt-2">
           {/* Replace old orb with new SiriCallButton */}
           <div className="relative flex flex-col items-center justify-center mb-6 w-full max-w-xs mx-auto">
             {/* SiriCallButton ở trên */}
@@ -241,13 +241,13 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               volumeLevel={micLevel}
             />
             {/* Duration bar với 2 nút hai bên, căn giữa tuyệt đối */}
-            <div className="flex items-center justify-center mt-2 w-full" style={{gap: 0}}>
+            <div className="flex items-center justify-center mt-2 w-full" style={{gap: '10px'}}>
               {/* Nút Mute bên trái */}
               <button
                 className="flex items-center justify-center transition-colors"
                 title={isMuted ? 'Unmute' : 'Mute'}
                 onClick={toggleMute}
-                style={{fontSize: 22, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 28, height: 28, marginRight: 0}}
+                style={{fontSize: 22, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 28, height: 28}}
                 onMouseOver={e => (e.currentTarget.style.color = '#ffd700')}
                 onMouseOut={e => (e.currentTarget.style.color = '#d4af37')}
               >
@@ -263,7 +263,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               <button
                 className="flex items-center justify-center transition-colors"
                 title="Mic Level"
-                style={{fontSize: 22, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 28, height: 28, marginLeft: 0}}
+                style={{fontSize: 22, padding: 0, background: 'none', border: 'none', color: '#d4af37', width: 28, height: 28}}
                 tabIndex={-1}
                 disabled
                 onMouseOver={e => (e.currentTarget.style.color = '#ffd700')}
@@ -291,7 +291,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             <div
               id="realTimeConversation"
               ref={conversationRef}
-              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-2xl mx-auto min-h-[60px] overflow-y-auto mt-4 mb-2"
+              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-2xl mx-auto min-h-[60px] max-h-[40vh] overflow-y-auto mt-4 mb-2"
               style={{
                 background: 'rgba(255,255,255,0.88)',
                 borderRadius: 12,
@@ -302,11 +302,14 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                 marginBottom: 8,
                 transition: 'box-shadow 0.3s, background 0.3s',
                 fontFamily: 'SF Pro Text, Roboto, Open Sans, Arial, sans-serif',
-                fontSize: 16,
-                color: '#1a1a1a',
-                flex: 1,
-                minHeight: 0,
-                maxHeight: '100%',
+                fontSize: window.innerWidth < 640 ? 15 : 17,
+                lineHeight: 1.5,
+                color: '#222',
+                fontWeight: 400,
+                backdropFilter: 'blur(2px)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
               }}
             >
               {/* Nút đóng transcript (ẩn realtime conversation) */}
@@ -375,7 +378,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             </div>
           )}
           {/* Reference container below (full width, auto height) */}
-          <div className="w-full" style={{height: 260, minHeight: 260, maxHeight: 260, flexShrink: 0}}>
+          <div className="w-full mt-4">
             <Reference references={references} />
           </div>
         </div>
