@@ -244,8 +244,8 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               isListening={!isMuted}
               volumeLevel={micLevel}
             />
-            {/* Duration bar với 2 nút hai bên, căn giữa tuyệt đối */}
-            <div className="flex items-center justify-center mt-2 w-full" style={{gap: '10px'}}>
+            {/* Duration bar với các nút hai bên, căn giữa tuyệt đối */}
+            <div className="flex items-center justify-center mt-2 w-full gap-2 sm:gap-3">
               {/* Nút Mute bên trái */}
               <button
                 className="flex items-center justify-center transition-colors"
@@ -257,12 +257,31 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               >
                 <span className="material-icons">{isMuted ? 'mic_off' : 'mic'}</span>
               </button>
+              {/* Nút Cancel (chỉ mobile) */}
+              <button
+                id="cancelButton"
+                onClick={handleCancel}
+                className="flex items-center justify-center px-2 py-1 bg-white/80 hover:bg-blue-100 text-blue-900 rounded-full text-xs font-semibold border border-white/30 shadow transition-colors sm:hidden"
+                style={{fontFamily:'inherit', letterSpacing:0.2}}
+              >
+                <span className="material-icons text-base mr-1">cancel</span>Cancel
+              </button>
               {/* Duration ở giữa, luôn căn giữa */}
               <div className="flex-1 flex justify-center">
                 <div className="text-white text-xs sm:text-sm bg-blue-900/80 rounded-full px-3 sm:px-4 py-1 shadow-lg border border-white/30 flex items-center justify-center" style={{backdropFilter:'blur(2px)'}}>
                   {formatDuration(localDuration)}
                 </div>
               </div>
+              {/* Nút Confirm (chỉ mobile) */}
+              <button
+                id="endCallButton"
+                onClick={handleNext}
+                className="flex items-center justify-center bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 font-bold py-1 px-2 rounded-full shadow-lg transition-colors border border-white/30 text-xs sm:hidden"
+                style={{fontFamily:'inherit', letterSpacing:0.5}}
+              >
+                <span className="material-icons">send</span>
+                <span className="whitespace-nowrap ml-1">Confirm</span>
+              </button>
               {/* Nút MicLevel bên phải */}
               <button
                 className="flex items-center justify-center transition-colors"
@@ -382,20 +401,8 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           {/* Reference container below (full width, auto height) */}
           <div className="w-full mt-4">
             <div className="block sm:hidden">
-              <div className="flex flex-row items-center gap-x-2 mb-3 px-2">
-                <button id="cancelButton" onClick={handleCancel} className="flex-1 flex items-center justify-center px-2 py-1 bg-white/80 hover:bg-blue-100 text-blue-900 rounded-full text-xs font-semibold border border-white/30 shadow transition-colors" style={{fontFamily:'inherit', letterSpacing:0.2}}>
-                  <span className="material-icons text-base mr-1">cancel</span>Cancel
-                </button>
+              <div className="w-full flex flex-row items-center gap-x-2 mb-3 px-2">
                 <Reference references={references} />
-                <button
-                  id="endCallButton"
-                  onClick={handleNext}
-                  className="flex-1 bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 font-bold py-1 px-2 rounded-full shadow-lg flex items-center justify-center space-x-2 transition-colors border border-white/30 text-xs"
-                  style={{fontFamily:'inherit', letterSpacing:0.5}}
-                >
-                  <span className="material-icons">send</span>
-                  <span className="whitespace-nowrap">Confirm</span>
-                </button>
               </div>
             </div>
             <div className="hidden sm:block">
