@@ -419,7 +419,7 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
   
   return (
     <div
-      className={`absolute w-full h-full transition-opacity duration-500 ${
+      className={`absolute w-full min-h-screen h-full transition-opacity duration-500 ${
         isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'
       } z-30 overflow-y-auto`}
       id="interface3"

@@ -224,9 +224,9 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
   
   return (
     <div 
-      className={`absolute w-full h-full transition-opacity duration-500 ${
+      className={`absolute w-full min-h-screen h-full transition-opacity duration-500 ${
         isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'
-      } z-20`} id="interface2"
+      } z-20 overflow-y-auto`} id="interface2"
       style={{
         backgroundImage: "linear-gradient(rgba(26, 35, 126, 0.8), rgba(63, 81, 181, 0.8)), url('/assets/courtyard.jpeg')",
         backgroundSize: 'cover',
