@@ -201,9 +201,6 @@ const Reference = ({ references }: ReferenceProps): JSX.Element => {
           </button>
         ))}
       </div>
-      <div className="flex items-center mb-3 px-2">
-        <h3 className="font-poppins font-semibold text-[20px] text-white tracking-wide">References</h3>
-      </div>
       {/* Loading state */}
       {loading ? (
         <div className="flex gap-4 overflow-x-auto pb-2">
