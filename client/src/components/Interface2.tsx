@@ -381,10 +381,6 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           <div className="w-full mt-4">
             <Reference references={references} />
           </div>
-          {/* Infographic Steps dưới Reference, nhỏ lại và cân đối */}
-          <div className="w-full flex justify-center items-start mt-2 mb-2">
-            <InfographicSteps currentStep={1} compact />
-          </div>
         </div>
         {/* Right: Control buttons */}
         <div className="w-1/4 lg:w-1/3 flex flex-col items-center lg:items-end p-2 space-y-4 overflow-auto" style={{ maxHeight: '100%' }}>

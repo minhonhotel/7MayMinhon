@@ -498,8 +498,6 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
               </div>
             </div>
           </div>
-          {/* Infographic Steps dưới các nút controls */}
-          <InfographicSteps currentStep={3} />
         </div>
       </div>
     </div>
