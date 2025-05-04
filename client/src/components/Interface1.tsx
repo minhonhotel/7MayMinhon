@@ -69,63 +69,63 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
         <div className="text-center w-full max-w-5xl">
           <div className="flex flex-row flex-wrap justify-center gap-3 text-left mx-auto">
             {/* Room & Stay */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 flex flex-col items-center">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Room & Stay</h4>
-              <ul className="space-y-1 text-sm">
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Check-in/check-out</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Room extension</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Room information</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Hotel policies</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Wi-Fi & FAQ</span></li>
+              <ul className="grid grid-cols-5 gap-3 justify-items-center">
+                <li><span className="material-icons text-3xl text-amber-400">login</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">hourglass_empty</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">info</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">policy</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">wifi</span></li>
               </ul>
             </div>
             {/* Room Services */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 flex flex-col items-center">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Room Services</h4>
-              <ul className="space-y-1 text-sm">
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Food & beverages</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Mini bar service</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Housekeeping</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Laundry</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Wake-up service</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Additional amenities</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Technical assistance</span></li>
+              <ul className="grid grid-cols-4 gap-3 justify-items-center">
+                <li><span className="material-icons text-3xl text-amber-400">restaurant</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">local_bar</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">cleaning_services</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">local_laundry_service</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">alarm</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">add_circle</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">build</span></li>
               </ul>
             </div>
             {/* Bookings & Facilities */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 flex flex-col items-center">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Bookings & Facilities</h4>
-              <ul className="space-y-1 text-sm">
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Restaurant reservations</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Spa/massage appointments</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Gym facilities</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Swimming pool</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Transportation</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Medical assistance</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Special assistance</span></li>
+              <ul className="grid grid-cols-4 gap-3 justify-items-center">
+                <li><span className="material-icons text-3xl text-amber-400">event_seat</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">spa</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">fitness_center</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">pool</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">directions_car</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">medical_services</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">support_agent</span></li>
               </ul>
             </div>
             {/* Tourism & Exploration */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 flex flex-col items-center">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Tourism & Exploration</h4>
-              <ul className="space-y-1 text-sm">
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Nearby attractions</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Local restaurants</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Public transportation</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Car rental</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Weather & Events</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Shopping</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Tours</span></li>
+              <ul className="grid grid-cols-4 gap-3 justify-items-center">
+                <li><span className="material-icons text-3xl text-amber-400">place</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">local_dining</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">directions_bus</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">directions_car</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">event</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">shopping_bag</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">map</span></li>
               </ul>
             </div>
             {/* Support */}
-            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64">
+            <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm w-64 flex flex-col items-center">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-1 mb-2 text-sm">Support</h4>
-              <ul className="space-y-1 text-sm">
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Language assistance</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Feedback & Reviews</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Emergency support</span></li>
-                <li className="flex items-start"><span className="material-icons text-amber-400 mr-1 mt-0.5 text-base">arrow_forward</span><span>Luggage service</span></li>
+              <ul className="grid grid-cols-4 gap-3 justify-items-center">
+                <li><span className="material-icons text-3xl text-amber-400">translate</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">rate_review</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">report_problem</span></li>
+                <li><span className="material-icons text-3xl text-amber-400">luggage</span></li>
               </ul>
             </div>
           </div>
