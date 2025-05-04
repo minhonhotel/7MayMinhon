@@ -232,7 +232,6 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
       <div className="container mx-auto flex flex-row p-2 h-full gap-2">
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
         <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4 mt-2">
-          {/* Replace old orb with new SiriCallButton */}
           <div className="relative flex flex-col items-center justify-center mb-6 w-full max-w-xs mx-auto">
             {/* SiriCallButton ở trên */}
             <SiriCallButton
@@ -286,100 +285,104 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             </div>
           </div>
           
-          {/* Realtime conversation container spans full width */}
-          {showRealtimeConversation && (
-            <div
-              id="realTimeConversation"
-              ref={conversationRef}
-              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-2xl mx-auto min-h-[60px] max-h-[40vh] overflow-y-auto mt-4 mb-2"
-              style={{
-                background: 'rgba(255,255,255,0.88)',
-                borderRadius: 12,
-                border: '1px solid rgba(255,255,255,0.35)',
-                boxShadow: '0px 4px 10px rgba(0,0,0,0.15)',
-                padding: '18px',
-                marginTop: 16,
-                marginBottom: 8,
-                transition: 'box-shadow 0.3s, background 0.3s',
-                fontFamily: 'SF Pro Text, Roboto, Open Sans, Arial, sans-serif',
-                fontSize: window.innerWidth < 640 ? 15 : 17,
-                lineHeight: 1.5,
-                color: '#222',
-                fontWeight: 400,
-                backdropFilter: 'blur(2px)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-end',
-              }}
-            >
-              {/* Nút đóng transcript (ẩn realtime conversation) */}
-              <button
-                className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full bg-white/70 hover:bg-white text-gray-700 shadow-md z-10"
-                style={{fontSize: 18, display: 'block'}}
-                title="Ẩn realtime conversation"
-                onClick={() => setShowRealtimeConversation(false)}
+          <div className="flex flex-col h-full w-full max-w-2xl mx-auto flex-1">
+            {showRealtimeConversation && (
+              <div
+                id="realTimeConversation"
+                ref={conversationRef}
+                className="w-full flex flex-col-reverse gap-2 pr-2 relative flex-1 min-h-[60px] overflow-y-auto mt-4 mb-2"
+                style={{
+                  background: 'rgba(255,255,255,0.88)',
+                  borderRadius: 12,
+                  border: '1px solid rgba(255,255,255,0.35)',
+                  boxShadow: '0px 4px 10px rgba(0,0,0,0.15)',
+                  padding: '18px',
+                  marginTop: 16,
+                  marginBottom: 8,
+                  transition: 'box-shadow 0.3s, background 0.3s',
+                  fontFamily: 'SF Pro Text, Roboto, Open Sans, Arial, sans-serif',
+                  fontSize: window.innerWidth < 640 ? 15 : 17,
+                  lineHeight: 1.5,
+                  color: '#222',
+                  fontWeight: 400,
+                  backdropFilter: 'blur(2px)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-end',
+                  flex: 1,
+                  minHeight: 0,
+                  maxHeight: '100%'
+                }}
               >
-                <span className="material-icons">close</span>
-              </button>
-              {/* Display conversation turns */}
-              <div className="w-full flex flex-col gap-1 pr-2" style={{overflowY: 'auto', maxHeight: '28vh'}}>
-                {conversationTurns.length === 0 && (
-                  <div className="text-gray-400 text-base text-center select-none" style={{opacity: 0.7}}>
-                    Tap to speak or start a conversation...
-                  </div>
-                )}
-                {[...conversationTurns].reverse().map((turn, turnIdx) => (
-                  <div key={turn.id} className="mb-1">
-                    <div className="flex items-start">
-                      <div className="flex-grow">
-                        {turn.role === 'user' ? (
-                          <p className="text-base md:text-lg font-medium text-gray-900" style={{marginBottom: 2}}>
-                            {turn.messages[0].content}
-                          </p>
-                        ) : (
-                          <p
-                            className="text-base md:text-lg font-medium"
-                            style={{
-                              marginBottom: 2,
-                              position: 'relative',
-                              background: 'linear-gradient(90deg, #FF512F, #F09819, #FFD700, #56ab2f, #43cea2, #1e90ff, #6a11cb, #FF512F)',
-                              WebkitBackgroundClip: 'text',
-                              WebkitTextFillColor: 'transparent',
-                              fontWeight: 600,
-                              letterSpacing: 0.2,
-                              transition: 'background 0.5s'
-                            }}
-                          >
-                            <span className="inline-flex flex-wrap">
-                              {turn.messages.map((msg, idx) => {
-                                const content = msg.content.slice(0, visibleChars[msg.id] || 0);
-                                return (
-                                  <span key={msg.id} style={{ whiteSpace: 'pre' }}>
-                                    {content}
-                                    {/* Blinking cursor cho từ cuối cùng khi đang xử lý */}
-                                    {idx === turn.messages.length - 1 && turnIdx === 0 && visibleChars[msg.id] < msg.content.length && (
-                                      <span className="animate-blink text-yellow-500" style={{marginLeft: 1}}>|</span>
-                                    )}
-                                  </span>
-                                );
-                              })}
-                            </span>
-                            {/* 3 chấm nhấp nháy khi assistant đang nghe */}
-                            {turnIdx === 0 && turn.role === 'assistant' && visibleChars[turn.messages[turn.messages.length-1].id] === turn.messages[turn.messages.length-1].content.length && (
-                              <span className="ml-2 animate-ellipsis text-yellow-500">...</span>
-                            )}
-                          </p>
-                        )}
+                {/* Nút đóng transcript (ẩn realtime conversation) */}
+                <button
+                  className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full bg-white/70 hover:bg-white text-gray-700 shadow-md z-10"
+                  style={{fontSize: 18, display: 'block'}}
+                  title="Ẩn realtime conversation"
+                  onClick={() => setShowRealtimeConversation(false)}
+                >
+                  <span className="material-icons">close</span>
+                </button>
+                {/* Display conversation turns */}
+                <div className="w-full flex flex-col gap-1 pr-2 flex-1 overflow-y-auto" style={{maxHeight: '100%'}}>
+                  {conversationTurns.length === 0 && (
+                    <div className="text-gray-400 text-base text-center select-none" style={{opacity: 0.7}}>
+                      Tap to speak or start a conversation...
+                    </div>
+                  )}
+                  {[...conversationTurns].reverse().map((turn, turnIdx) => (
+                    <div key={turn.id} className="mb-1">
+                      <div className="flex items-start">
+                        <div className="flex-grow">
+                          {turn.role === 'user' ? (
+                            <p className="text-base md:text-lg font-medium text-gray-900" style={{marginBottom: 2}}>
+                              {turn.messages[0].content}
+                            </p>
+                          ) : (
+                            <p
+                              className="text-base md:text-lg font-medium"
+                              style={{
+                                marginBottom: 2,
+                                position: 'relative',
+                                background: 'linear-gradient(90deg, #FF512F, #F09819, #FFD700, #56ab2f, #43cea2, #1e90ff, #6a11cb, #FF512F)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                fontWeight: 600,
+                                letterSpacing: 0.2,
+                                transition: 'background 0.5s'
+                              }}
+                            >
+                              <span className="inline-flex flex-wrap">
+                                {turn.messages.map((msg, idx) => {
+                                  const content = msg.content.slice(0, visibleChars[msg.id] || 0);
+                                  return (
+                                    <span key={msg.id} style={{ whiteSpace: 'pre' }}>
+                                      {content}
+                                      {/* Blinking cursor cho từ cuối cùng khi đang xử lý */}
+                                      {idx === turn.messages.length - 1 && turnIdx === 0 && visibleChars[msg.id] < msg.content.length && (
+                                        <span className="animate-blink text-yellow-500" style={{marginLeft: 1}}>|</span>
+                                      )}
+                                    </span>
+                                  );
+                                })}
+                              </span>
+                              {/* 3 chấm nhấp nháy khi assistant đang nghe */}
+                              {turnIdx === 0 && turn.role === 'assistant' && visibleChars[turn.messages[turn.messages.length-1].id] === turn.messages[turn.messages.length-1].content.length && (
+                                <span className="ml-2 animate-ellipsis text-yellow-500">...</span>
+                              )}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
+            )}
+            {/* Reference container luôn ở dưới cùng, min-h cố định, không co lại */}
+            <div className="w-full mt-4 flex-shrink-0" style={{minHeight: 260}}>
+              <Reference references={references} />
             </div>
-          )}
-          {/* Reference container below (full width, auto height) */}
-          <div className="w-full mt-4">
-            <Reference references={references} />
           </div>
         </div>
         {/* Right: Control buttons */}
