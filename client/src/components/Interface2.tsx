@@ -337,17 +337,25 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                             {turn.messages[0].content}
                           </p>
                         ) : (
-                          <p className="text-base md:text-lg font-medium" style={{marginBottom: 2, position: 'relative', background: 'linear-gradient(90deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #4B0082, #9400D3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>
+                          <p
+                            className="text-base md:text-lg font-medium"
+                            style={{
+                              marginBottom: 2,
+                              position: 'relative',
+                              background: 'linear-gradient(90deg, #FF512F, #F09819, #FFD700, #56ab2f, #43cea2, #1e90ff, #6a11cb, #FF512F)',
+                              WebkitBackgroundClip: 'text',
+                              WebkitTextFillColor: 'transparent',
+                              fontWeight: 600,
+                              letterSpacing: 0.2,
+                              transition: 'background 0.5s'
+                            }}
+                          >
                             <span className="inline-flex flex-wrap">
                               {turn.messages.map((msg, idx) => {
                                 const content = msg.content.slice(0, visibleChars[msg.id] || 0);
-                                // Rainbow effect: mỗi ký tự 1 màu cầu vồng
-                                const rainbowColors = ['#FF0000','#FF7F00','#FFFF00','#00FF00','#0000FF','#4B0082','#9400D3'];
                                 return (
                                   <span key={msg.id} style={{ whiteSpace: 'pre' }}>
-                                    {Array.from(content).map((char, i) => (
-                                      <span key={i} style={{color: rainbowColors[i % rainbowColors.length]}}>{char}</span>
-                                    ))}
+                                    {content}
                                     {/* Blinking cursor cho từ cuối cùng khi đang xử lý */}
                                     {idx === turn.messages.length - 1 && turnIdx === 0 && visibleChars[msg.id] < msg.content.length && (
                                       <span className="animate-blink text-yellow-500" style={{marginLeft: 1}}>|</span>
