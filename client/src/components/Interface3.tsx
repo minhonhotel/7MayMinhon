@@ -431,11 +431,11 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
       }}
     >
       <div className="container mx-auto h-full flex flex-col p-2 sm:p-4 md:p-8">
-        <div className="mx-auto w-full max-w-3xl bg-white/90 rounded-2xl shadow-xl p-3 sm:p-6 md:p-10 mb-4 sm:mb-6 flex-grow border border-white/40 backdrop-blur-md" style={{minHeight: 420}}>
+        <div className="mx-auto w-full max-w-4xl bg-white/90 rounded-2xl shadow-xl p-3 sm:p-6 md:p-10 mb-4 sm:mb-6 flex-grow border border-white/40 backdrop-blur-md" style={{minHeight: 420}}>
           <div className="mb-3 sm:mb-4 pb-2 sm:pb-3 border-b border-gray-200">
             <p className="font-poppins font-bold text-xl sm:text-2xl text-blue-900 tracking-wide">REVIEW & CONFIRM</p>
           </div>
-          <div className="flex flex-col md:flex-row gap-4 sm:gap-6">
+          <div className="flex flex-col md:flex-row gap-4 sm:gap-10 md:gap-16">
             {/* Left column: summary, notes, room number */}
             <div className="md:w-3/4 w-full space-y-3 sm:space-y-4">
               {/* AI-generated Call Summary Container */}
