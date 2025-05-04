@@ -287,24 +287,22 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
   return (
     <div className={`absolute w-full h-full transition-opacity duration-500 ${
       isActive ? 'opacity-100 active' : 'opacity-0 pointer-events-none'
-    } bg-neutral z-30`} id="interface3vi" data-interface="interface3vi" data-active={isActive.toString()}>
-      <div className="container mx-auto h-full flex flex-col p-5">
-        <div className="bg-white rounded-lg shadow-md p-5 mb-5 flex-grow overflow-auto">
+    } z-30`} id="interface3vi" data-interface="interface3vi" data-active={isActive.toString()} style={{
+      backgroundImage: 'linear-gradient(rgba(26, 35, 126, 0.8), rgba(63, 81, 181, 0.8))',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      fontFamily: 'SF Pro Text, Roboto, Open Sans, Arial, sans-serif'
+    }}>
+      <div className="container mx-auto h-full flex flex-col p-4 md:p-8">
+        <div className="mx-auto w-full max-w-3xl bg-white/90 rounded-2xl shadow-xl p-6 md:p-10 mb-6 flex-grow border border-white/40 backdrop-blur-md" style={{minHeight: 420}}>
           <div className="mb-4 pb-3 border-b border-gray-200">
-            <p className="font-poppins font-bold text-lg text-primary">XEM XÉT & XÁC NHẬN</p>
+            <p className="font-poppins font-bold text-2xl text-blue-900 tracking-wide">XEM XÉT & XÁC NHẬN</p>
           </div>
-          
           {/* AI-generated Call Summary Container */}
           <div id="summary-container" className="mb-4">
             {callSummary ? (
-              <div className="p-4 bg-blue-50 rounded-lg shadow-sm mb-4 relative">
-                <div className="absolute top-2 right-2 bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                  </svg>
-                  <span>AI Tự động</span>
-                </div>
-                <h3 className="font-medium text-lg mb-2 text-blue-800">Tóm tắt cuộc trò chuyện</h3>
+              <div className="p-5 bg-white/80 rounded-xl shadow border border-white/30 mb-4 relative" style={{backdropFilter:'blur(2px)'}}>
+                <h3 className="font-semibold text-lg mb-2 text-blue-800">Tóm tắt cuộc trò chuyện</h3>
                 {isTranslating ? (
                   <div className="animate-pulse space-y-2">
                     <div className="h-2 bg-blue-100 rounded w-3/4"></div>
@@ -314,11 +312,10 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
                     <p className="text-blue-400 text-sm italic">Đang dịch sang tiếng Việt...</p>
                   </div>
                 ) : (
-                  <p className="text-gray-700 whitespace-pre-line">
+                  <p className="text-base leading-relaxed text-gray-800 whitespace-pre-line" style={{fontWeight: 400}}>
                     {vietnameseSummary || callSummary.content}
                   </p>
                 )}
-                
                 <div className="mt-3 flex justify-end">
                   <div className="text-xs text-gray-500">
                     Tạo lúc {new Date(callSummary.timestamp).toLocaleTimeString()}
@@ -326,12 +323,12 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
                 </div>
               </div>
             ) : (
-              <div className="p-4 bg-gray-50 rounded-lg shadow-sm mb-4 border border-dashed border-gray-300">
+              <div className="p-5 bg-gray-50 rounded-xl shadow border border-dashed border-gray-300 mb-4">
                 <div className="animate-pulse flex space-x-2 items-center">
                   <div className="h-4 w-4 bg-gray-300 rounded-full"></div>
                   <div className="h-4 bg-gray-300 rounded w-1/4"></div>
                 </div>
-                <h3 className="font-medium text-lg my-2 text-gray-600">Đang tạo bản tóm tắt...</h3>
+                <h3 className="font-semibold text-lg my-2 text-gray-600">Đang tạo bản tóm tắt...</h3>
                 <div className="space-y-2">
                   <div className="h-2 bg-gray-200 rounded w-3/4"></div>
                   <div className="h-2 bg-gray-200 rounded w-full"></div>
@@ -341,81 +338,33 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
               </div>
             )}
           </div>
-          
-          {/* Service Requests Container */}
-          <div id="summaryContainer" className="mb-6">
-            {/* Service requests processed - hidden but functional */}
-            
-            {/* Room Information Section */}
-            <div className="mb-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div className="col-span-1">
-                  <p className="text-sm text-gray-500 mb-1">Số phòng</p>
-                  <input 
-                    type="text" 
-                    className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary"
-                    value={orderSummary.roomNumber}
-                    onChange={(e) => handleInputChange('roomNumber', e.target.value)}
-                  />
-                </div>
-                <div className="col-span-1">
-                  <p className="text-sm text-gray-500 mb-1">Thời gian yêu cầu dịch vụ</p>
-                  <select 
-                    className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary"
-                    value={orderSummary.deliveryTime}
-                    onChange={(e) => handleInputChange('deliveryTime', e.target.value as any)}
-                  >
-                    <option value="asap">Càng sớm càng tốt</option>
-                    <option value="30min">Trong vòng 30 phút</option>
-                    <option value="1hour">Trong vòng 1 giờ</option>
-                    <option value="specific">Đặt lịch sau</option>
-                    <option value="info">Chỉ thông tin - không yêu cầu thời gian</option>
-                  </select>
-                </div>
-              </div>
-              
-
-            </div>
-            
-            {/* Request placeholder - hidden but data still processed */}
-            <div className="hidden">
-              {orderSummary.items.length > 0 && (
-                <div>
-                  {orderSummary.items.map((item, index) => (
-                    <div key={item.id}>
-                      {/* Hidden but functional item data */}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            
-            {/* Hidden special instructions - data is preserved but not displayed */}
-            <div className="hidden">
-              {orderSummary.specialInstructions}
-            </div>
-            
-            {/* Hidden total amount calculation - not displayed */}
-            <div className="hidden">
-              {orderSummary.totalAmount.toFixed(2)}
+          {/* Room Information Section - đồng bộ với Interface3 */}
+          <div className="mb-6">
+            <div className="flex items-center space-x-2">
+              <label className="text-base text-gray-600 font-medium">Số phòng</label>
+              <input
+                type="text"
+                className="w-32 p-2 border border-white/30 rounded-xl focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] bg-white/70 text-gray-900 font-semibold"
+                value={orderSummary.roomNumber}
+                onChange={(e) => handleInputChange('roomNumber', e.target.value)}
+              />
             </div>
           </div>
-          
           {/* Action Buttons - Responsive design for mobile */}
-          <div className="flex flex-wrap justify-center gap-2 mt-6">
+          <div className="flex flex-wrap justify-center gap-4 mt-6">
             <button 
-              className="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium flex items-center"
+              className="h-full px-4 bg-white/70 text-blue-900 rounded-full text-sm font-semibold border border-white/30 shadow flex items-center justify-center" 
               onClick={() => setCurrentInterface('interface3')}
-            >
-              <span className="material-icons text-sm align-middle mr-1">translate</span>
+              style={{fontFamily:'inherit', letterSpacing:0.2}}>
+              <span className="material-icons text-base mr-2">translate</span>
               Tiếng Anh
             </button>
             <button 
               id="confirmOrderButton" 
-              className="px-3 py-2 bg-green-500 text-white rounded-lg text-sm font-medium flex items-center"
+              className="h-full px-8 py-4 bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 font-bold rounded-full shadow-lg text-xl transition-colors border border-white/30 flex items-center justify-center"
               onClick={handleConfirmOrder}
-            >
-              <span className="material-icons text-sm align-middle mr-1">check_circle</span>
+              style={{fontFamily:'inherit', letterSpacing:0.5}}>
+              <span className="material-icons mr-2 text-2xl">check_circle</span>
               Xác nhận
             </button>
           </div>
