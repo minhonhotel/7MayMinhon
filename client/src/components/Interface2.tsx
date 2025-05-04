@@ -382,17 +382,17 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
         </div>
         {/* Right: Control buttons */}
         <div className="w-1/4 lg:w-1/3 flex flex-col items-center lg:items-end p-2 space-y-4 overflow-auto" style={{ maxHeight: '100%' }}>
-          <button id="cancelButton" onClick={handleCancel} className="w-full md:w-auto flex items-center justify-center px-6 py-3 bg-white text-blue-900 rounded-full text-base font-semibold shadow transition-colors mb-2" style={{fontFamily:'inherit', letterSpacing:0.2}}>
-            <span className="material-icons mr-2 text-lg">cancel</span>Cancel
+          <button id="cancelButton" onClick={handleCancel} className="w-full md:w-auto flex items-center justify-center px-2 sm:px-3 py-1.5 bg-white/80 hover:bg-blue-100 text-blue-900 rounded-full text-xs font-semibold border border-white/30 shadow transition-colors mb-2" style={{fontFamily:'inherit', letterSpacing:0.2}}>
+            <span className="material-icons text-base mr-1">cancel</span>Cancel
           </button>
           <button
             id="endCallButton"
             onClick={handleNext}
-            className="w-full md:w-auto flex items-center justify-center px-8 py-4 bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 font-bold rounded-full shadow-lg text-xl transition-colors border border-white/30"
+            className="w-full md:w-auto bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 font-bold py-1.5 sm:py-2 px-3 sm:px-4 rounded-full shadow-lg flex items-center justify-center space-x-2 transition-colors border border-white/30 text-xs sm:text-sm"
             style={{fontFamily:'inherit', letterSpacing:0.5}}
           >
-            <span className="material-icons mr-2 text-2xl">send</span>
-            <span>Confirm Your Request</span>
+            <span className="material-icons">send</span>
+            <span className="whitespace-nowrap">Confirm Your Request</span>
           </button>
         </div>
       </div>
