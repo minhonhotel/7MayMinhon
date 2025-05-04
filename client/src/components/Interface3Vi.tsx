@@ -338,8 +338,9 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
               </div>
             )}
           </div>
-          {/* Room Information Section - đồng bộ với Interface3 */}
-          <div className="mb-6">
+          {/* Room Information Section + Action Buttons trên cùng một hàng */}
+          <div className="flex flex-col md:flex-row items-center gap-4 mb-6 w-full">
+            {/* Số phòng */}
             <div className="flex items-center space-x-2">
               <label className="text-base text-gray-600 font-medium">Số phòng</label>
               <input
@@ -349,16 +350,15 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
                 onChange={(e) => handleInputChange('roomNumber', e.target.value)}
               />
             </div>
-          </div>
-          {/* Action Buttons - Responsive design for mobile */}
-          <div className="flex flex-wrap justify-center gap-4 mt-6">
+            {/* Nút Tiếng Anh */}
             <button 
-              className="h-full px-4 bg-white/70 text-blue-900 rounded-full text-sm font-semibold border border-white/30 shadow flex items-center justify-center" 
+              className="h-full px-4 bg-white/70 text-blue-900 rounded-full text-base font-semibold border border-white/30 shadow flex items-center justify-center" 
               onClick={() => setCurrentInterface('interface3')}
               style={{fontFamily:'inherit', letterSpacing:0.2}}>
               <span className="material-icons text-base mr-2">translate</span>
               Tiếng Anh
             </button>
+            {/* Nút Xác nhận */}
             <button 
               id="confirmOrderButton" 
               className="h-full px-8 py-4 bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 font-bold rounded-full shadow-lg text-xl transition-colors border border-white/30 flex items-center justify-center"

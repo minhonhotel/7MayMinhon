@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAssistant } from '@/context/AssistantContext';
 import { ServiceRequest } from '@/types';
 import hotelImage from '../assets/hotel-exterior.jpeg';
+import InfographicSteps from './InfographicSteps';
 
 interface Interface3Props {
   isActive: boolean;
@@ -497,6 +498,8 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
               </div>
             </div>
           </div>
+          {/* Infographic Steps dưới các nút controls */}
+          <InfographicSteps currentStep={3} />
         </div>
       </div>
     </div>

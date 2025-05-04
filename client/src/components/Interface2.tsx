@@ -3,6 +3,7 @@ import { useAssistant } from '@/context/AssistantContext';
 import Reference from './Reference';
 import SiriCallButton from './SiriCallButton';
 import { referenceService, ReferenceItem } from '@/services/ReferenceService';
+import InfographicSteps from './InfographicSteps';
 
 interface Interface2Props {
   isActive: boolean;
@@ -399,6 +400,8 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             <span>Confirm Your Request</span>
           </button>
         </div>
+        {/* Infographic Steps dưới các nút controls */}
+        <InfographicSteps currentStep={1} />
       </div>
     </div>
   );
