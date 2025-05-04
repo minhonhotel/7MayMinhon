@@ -497,7 +497,7 @@
     "type": "image",
     "category": "Hotel Amenities",
     "title": "Hotel Breakfast",
-    "url": "/assets/references/images/ hotel-amenities /Breakfast.jpg",
+    "url": "/assets/references/images/hotel-amenities/Breakfast.jpg",
     "description": "Delicious breakfast spread offered at the hotel restaurant",
     "keywords": [
       "breakfast",
@@ -511,7 +511,7 @@
     "type": "image",
     "category": "Hotel Amenities",
     "title": "Room Decoration Service",
-    "url": "/assets/references/images/ hotel-amenities /Decorate_Service.jpg",
+    "url": "/assets/references/images/hotel-amenities/Decorate_Service.jpg",
     "description": "Special room decoration service available upon request",
     "keywords": [
       "decoration",
@@ -539,7 +539,7 @@
     "type": "image",
     "category": "Hotel Amenities",
     "title": "Hotel Exterior View",
-    "url": "/assets/references/images/ hotel-amenities /General_View1.jpg",
+    "url": "/assets/references/images/hotel-amenities/General_View1.jpg",
     "description": "Exterior view of the hotel building and surroundings",
     "keywords": [
       "exterior",
@@ -552,7 +552,7 @@
     "type": "image",
     "category": " Hotel Amenities ",
     "title": "Hotel Panoramic View",
-    "url": "/assets/references/images/ hotel-amenities /General_View2.jpg",
+    "url": "/assets/references/images/hotel-amenities/General_View2.jpg",
     "description": "Panoramic view of the hotel property and landscape",
     "keywords": [
       "panorama",
@@ -565,7 +565,7 @@
     "type": "image",
     "category": " Hotel Amenities ",
     "title": "Hotel Lunch Service",
-    "url": "/assets/references/images/ hotel-amenities /Lunch.jpg",
+    "url": "/assets/references/images/hotel-amenities/Lunch.jpg",
     "description": "Lunch options available at the hotel restaurant",
     "keywords": [
       "lunch",
@@ -620,7 +620,7 @@
     "type": "image",
     "category": " Hotel Amenities ",
     "title": "Hotel Restaurant",
-    "url": "/assets/references/images/ hotel-amenities /Restaurant.jpg",
+    "url": "/assets/references/images/hotel-amenities/Restaurant.jpg",
     "description": "Main dining restaurant area of the hotel",
     "keywords": [
       "restaurant",
@@ -634,7 +634,7 @@
     "type": "image",
     "category": " Hotel Amenities ",
     "title": "Secondary Hotel Restaurant",
-    "url": "/assets/references/images/ hotel-amenities /Restaurant2.jpg",
+    "url": "/assets/references/images/hotel-amenities/Restaurant2.jpg",
     "description": "Alternative dining venue within the hotel",
     "keywords": [
       "restaurant",
@@ -648,7 +648,7 @@
     "type": "image",
     "category": " Hotel Amenities ",
     "title": "Room Service",
-    "url": "/assets/references/images/ hotel-amenities /Roomfood_Service.jpg",
+    "url": "/assets/references/images/hotel-amenities/Roomfood_Service.jpg",
     "description": "In-room dining and food service available to guests",
     "keywords": [
       "room service",
@@ -661,7 +661,7 @@
     "type": "image",
     "category": "Hotel Amenities",
     "title": "Guest Room View 1",
-    "url": "/assets/references/images/ hotel-amenities /Roomview1.jpg",
+    "url": "/assets/references/images/hotel-amenities/Roomview1.jpg",
     "description": "Interior view of standard guest room",
     "keywords": [
       "room",
@@ -675,7 +675,7 @@
     "type": "image",
     "category": " Hotel Amenities ",
     "title": "Guest Room View 2",
-    "url": "/assets/references/images/ hotel-amenities /Roomview2.jpg",
+    "url": "/assets/references/images/hotel-amenities/Roomview2.jpg",
     "description": "Alternative angle of guest room accommodations",
     "keywords": [
       "room",
@@ -700,18 +700,7 @@
       "luxury"
     ]
   },
-  "seafood-guide": {
-    "type": "document",
-    "category": "Local Cuisine",
-    "title": "Seafood Guide",
-    "url": "/assets/references/documents/seafood-guide.txt",
-    "description": "Hướng dẫn chọn hải sản tươi ngon",
-    "keywords": [
-      "seafood",
-      "local cuisine",
-      "hải sản"
-    ]
-  },
+
   "area-map": {
     "type": "image",
     "category": "Area Map",
