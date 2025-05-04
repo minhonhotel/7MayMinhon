@@ -8,6 +8,7 @@ import Interface4 from './Interface4';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { Link } from 'wouter';
 import { History } from 'lucide-react';
+import InfographicSteps from './InfographicSteps';
 
 const VoiceAssistant: React.FC = () => {
   const { currentInterface } = useAssistant();
@@ -23,13 +24,16 @@ const VoiceAssistant: React.FC = () => {
           <div className="flex items-center">
             {/* Logo and hotel name removed as requested */}
           </div>
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center w-full justify-end gap-6">
             <Link href="/call-history">
               <a className="px-3 py-1 rounded bg-primary-dark text-white text-sm flex items-center">
                 <History className="w-4 h-4 mr-1" />
                 Call History
               </a>
             </Link>
+            <div className="flex-1 flex justify-center">
+              <InfographicSteps horizontal currentStep={1} />
+            </div>
           </div>
         </div>
       </header>
