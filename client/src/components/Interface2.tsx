@@ -229,11 +229,11 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
         backgroundPosition: 'center'
       }}
     >
-      <div className="container mx-auto flex flex-row p-2 h-full gap-2">
+      <div className="container mx-auto flex flex-col md:flex-row p-2 h-full gap-2">
         {/* Left: Call indicator & Realtime conversation side by side, Reference below */}
-        <div className="w-3/4 lg:w-2/3 flex flex-col items-center space-y-4 mt-2">
+        <div className="w-full md:w-3/4 lg:w-2/3 flex flex-col items-center space-y-3 sm:space-y-4 mt-2">
           {/* Replace old orb with new SiriCallButton */}
-          <div className="relative flex flex-col items-center justify-center mb-6 w-full max-w-xs mx-auto">
+          <div className="relative flex flex-col items-center justify-center mb-4 sm:mb-6 w-full max-w-xs mx-auto">
             {/* SiriCallButton ở trên */}
             <SiriCallButton
               containerId="siri-button"
@@ -255,7 +255,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
               </button>
               {/* Duration ở giữa, luôn căn giữa */}
               <div className="flex-1 flex justify-center">
-                <div className="text-white text-sm bg-blue-900/80 rounded-full px-4 py-1 shadow-lg border border-white/30 flex items-center justify-center" style={{backdropFilter:'blur(2px)'}}>
+                <div className="text-white text-xs sm:text-sm bg-blue-900/80 rounded-full px-3 sm:px-4 py-1 shadow-lg border border-white/30 flex items-center justify-center" style={{backdropFilter:'blur(2px)'}}>
                   {formatDuration(localDuration)}
                 </div>
               </div>
@@ -291,7 +291,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             <div
               id="realTimeConversation"
               ref={conversationRef}
-              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-2xl mx-auto min-h-[60px] max-h-[40vh] overflow-y-auto"
+              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-full sm:max-w-2xl mx-auto min-h-[60px] max-h-[40vh] overflow-y-auto"
               style={{
                 background: 'rgba(255,255,255,0.88)',
                 borderRadius: 12,
@@ -300,7 +300,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
                 padding: '8px',
                 transition: 'box-shadow 0.3s, background 0.3s',
                 fontFamily: 'SF Pro Text, Roboto, Open Sans, Arial, sans-serif',
-                fontSize: window.innerWidth < 640 ? 15 : 17,
+                fontSize: window.innerWidth < 640 ? 14 : 16,
                 lineHeight: 1.5,
                 color: '#222',
                 fontWeight: 400,

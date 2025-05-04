@@ -293,42 +293,42 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
       backgroundPosition: 'center',
       fontFamily: 'SF Pro Text, Roboto, Open Sans, Arial, sans-serif'
     }}>
-      <div className="container mx-auto h-full flex flex-col p-4 md:p-8">
-        <div className="mx-auto w-full max-w-3xl bg-white/90 rounded-2xl shadow-xl p-6 md:p-10 mb-6 flex-grow border border-white/40 backdrop-blur-md" style={{minHeight: 420}}>
-          <div className="mb-4 pb-3 border-b border-gray-200">
-            <p className="font-poppins font-bold text-2xl text-blue-900 tracking-wide">XEM XÉT & XÁC NHẬN</p>
+      <div className="container mx-auto h-full flex flex-col p-2 sm:p-4 md:p-8">
+        <div className="mx-auto w-full max-w-3xl bg-white/90 rounded-2xl shadow-xl p-3 sm:p-6 md:p-10 mb-4 sm:mb-6 flex-grow border border-white/40 backdrop-blur-md" style={{minHeight: 420}}>
+          <div className="mb-3 sm:mb-4 pb-2 sm:pb-3 border-b border-gray-200">
+            <p className="font-poppins font-bold text-xl sm:text-2xl text-blue-900 tracking-wide">XEM XÉT & XÁC NHẬN</p>
           </div>
           {/* AI-generated Call Summary Container */}
-          <div id="summary-container" className="mb-4">
+          <div id="summary-container" className="mb-3 sm:mb-4">
             {callSummary ? (
-              <div className="p-5 bg-white/80 rounded-xl shadow border border-white/30 mb-4 relative" style={{backdropFilter:'blur(2px)'}}>
-                <h3 className="font-semibold text-lg mb-2 text-blue-800">Tóm tắt cuộc trò chuyện</h3>
+              <div className="p-3 sm:p-5 bg-white/80 rounded-xl shadow border border-white/30 mb-3 sm:mb-4 relative" style={{backdropFilter:'blur(2px)'}}>
+                <h3 className="font-semibold text-base sm:text-lg mb-1 sm:mb-2 text-blue-800">Tóm tắt cuộc trò chuyện</h3>
                 {isTranslating ? (
                   <div className="animate-pulse space-y-2">
                     <div className="h-2 bg-blue-100 rounded w-3/4"></div>
                     <div className="h-2 bg-blue-100 rounded w-full"></div>
                     <div className="h-2 bg-blue-100 rounded w-5/6"></div>
                     <div className="h-2 bg-blue-100 rounded w-2/3"></div>
-                    <p className="text-blue-400 text-sm italic">Đang dịch sang tiếng Việt...</p>
+                    <p className="text-blue-400 text-xs sm:text-sm italic">Đang dịch sang tiếng Việt...</p>
                   </div>
                 ) : (
-                  <p className="text-base leading-relaxed text-gray-800 whitespace-pre-line" style={{fontWeight: 400}}>
+                  <p className="text-xs sm:text-base leading-relaxed text-gray-800 whitespace-pre-line" style={{fontWeight: 400}}>
                     {vietnameseSummary || callSummary.content}
                   </p>
                 )}
-                <div className="mt-3 flex justify-end">
+                <div className="mt-2 sm:mt-3 flex justify-end">
                   <div className="text-xs text-gray-500">
                     Tạo lúc {new Date(callSummary.timestamp).toLocaleTimeString()}
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="p-5 bg-gray-50 rounded-xl shadow border border-dashed border-gray-300 mb-4">
+              <div className="p-3 sm:p-5 bg-gray-50 rounded-xl shadow border border-dashed border-gray-300 mb-3 sm:mb-4">
                 <div className="animate-pulse flex space-x-2 items-center">
                   <div className="h-4 w-4 bg-gray-300 rounded-full"></div>
                   <div className="h-4 bg-gray-300 rounded w-1/4"></div>
                 </div>
-                <h3 className="font-semibold text-lg my-2 text-gray-600">Đang tạo bản tóm tắt...</h3>
+                <h3 className="font-semibold text-base sm:text-lg my-2 text-gray-600">Đang tạo bản tóm tắt...</h3>
                 <div className="space-y-2">
                   <div className="h-2 bg-gray-200 rounded w-3/4"></div>
                   <div className="h-2 bg-gray-200 rounded w-full"></div>
@@ -339,20 +339,20 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
             )}
           </div>
           {/* Room Information Section + Action Buttons trên cùng một hàng */}
-          <div className="flex flex-col md:flex-row items-center gap-4 mb-6 w-full">
+          <div className="flex flex-col md:flex-row items-center gap-3 sm:gap-4 mb-4 sm:mb-6 w-full">
             {/* Số phòng */}
             <div className="flex items-center space-x-2">
-              <label className="text-base text-gray-600 font-medium">Số phòng</label>
+              <label className="text-xs sm:text-base text-gray-600 font-medium">Số phòng</label>
               <input
                 type="text"
-                className="w-32 p-2 border border-white/30 rounded-xl focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] bg-white/70 text-gray-900 font-semibold"
+                className="w-20 sm:w-32 p-2 border border-white/30 rounded-xl focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] bg-white/70 text-gray-900 font-semibold"
                 value={orderSummary.roomNumber}
                 onChange={(e) => handleInputChange('roomNumber', e.target.value)}
               />
             </div>
             {/* Nút Tiếng Anh */}
             <button 
-              className="h-full px-4 bg-white/70 text-blue-900 rounded-full text-base font-semibold border border-white/30 shadow flex items-center justify-center" 
+              className="h-full px-3 sm:px-4 bg-white/70 text-blue-900 rounded-full text-xs sm:text-base font-semibold border border-white/30 shadow flex items-center justify-center" 
               onClick={() => setCurrentInterface('interface3')}
               style={{fontFamily:'inherit', letterSpacing:0.2}}>
               <span className="material-icons text-base mr-2">translate</span>
@@ -361,10 +361,10 @@ const Interface3Vi: React.FC<Interface3ViProps> = ({ isActive }) => {
             {/* Nút Xác nhận */}
             <button 
               id="confirmOrderButton" 
-              className="h-full px-8 py-4 bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 font-bold rounded-full shadow-lg text-xl transition-colors border border-white/30 flex items-center justify-center"
+              className="h-full px-4 sm:px-8 py-2 sm:py-4 bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 font-bold rounded-full shadow-lg text-base sm:text-xl transition-colors border border-white/30 flex items-center justify-center"
               onClick={handleConfirmOrder}
               style={{fontFamily:'inherit', letterSpacing:0.5}}>
-              <span className="material-icons mr-2 text-2xl">check_circle</span>
+              <span className="material-icons mr-2 text-lg sm:text-2xl">check_circle</span>
               Xác nhận
             </button>
           </div>
