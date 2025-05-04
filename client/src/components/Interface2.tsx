@@ -312,12 +312,12 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             >
               {/* Nút đóng transcript (ẩn realtime conversation) */}
               <button
-                className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full bg-white/70 hover:bg-white text-gray-700 shadow-md z-10"
-                style={{fontSize: 18, display: 'block'}}
+                className="absolute top-1.5 right-1.5 w-5 h-5 flex items-center justify-center rounded-full bg-white/40 hover:bg-white/70 text-gray-400 hover:text-gray-700 shadow z-10 opacity-60 hover:opacity-90 transition-all"
+                style={{fontSize: 14, display: 'block'}}
                 title="Ẩn realtime conversation"
                 onClick={() => setShowRealtimeConversation(false)}
               >
-                <span className="material-icons">close</span>
+                <span className="material-icons" style={{fontSize: 16}}>close</span>
               </button>
               {/* Display conversation turns */}
               <div className="w-full flex flex-col gap-1 pr-2" style={{overflowY: 'auto', maxHeight: '28vh'}}>

@@ -29,6 +29,10 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
       }}
     >
       <div className="container mx-auto h-full flex flex-col items-center justify-start text-white p-3 pt-6 sm:p-5 sm:pt-10 lg:pt-16 overflow-y-auto">
+        {/* Logo Minhon lớn ở đầu interface1 */}
+        <div className="flex justify-center items-center mb-6">
+          <img src="/assets/references/images/minhon-logo.jpg" alt="Minhon Logo" className="h-20 w-auto rounded-xl shadow-lg bg-white/80 p-2 border-2 border-[#d4af37]" />
+        </div>
         {/* Active orders status panels (up to 60 min countdown) */}
         {activeOrders.map((o) => {
           const deadline = new Date(o.requestedAt.getTime() + 60 * 60 * 1000);

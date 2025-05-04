@@ -6,6 +6,7 @@ import { Navigation, Pagination, A11y } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import { ChevronDown } from 'lucide-react';
 
 const CATEGORIES = [
   'Landmark',
@@ -189,17 +190,20 @@ const Reference = ({ references }: ReferenceProps): JSX.Element => {
         </div>
       )}
       {/* Dropdown category */}
-      <div className="flex items-center mb-4 px-2">
+      <div className="flex items-center mb-4 px-2 relative">
         <select
           value={activeCategory}
           onChange={e => setActiveCategory(e.target.value)}
-          className="px-4 py-2 rounded-full font-poppins font-semibold text-sm bg-white/90 text-blue-900 border border-[#d4af37] shadow focus:outline-none focus:ring-2 focus:ring-[#d4af37]"
+          className="px-4 py-2 rounded-full font-poppins font-semibold text-sm bg-white/90 text-blue-900 border border-[#d4af37] shadow focus:outline-none focus:ring-2 focus:ring-[#d4af37] appearance-none pr-10"
           style={{ minWidth: 180 }}
         >
           {CATEGORIES.map(cat => (
             <option key={cat} value={cat}>{cat}</option>
           ))}
         </select>
+        <span className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-[#d4af37]">
+          <ChevronDown size={22} strokeWidth={2.2} />
+        </span>
       </div>
       {/* Loading state */}
       {loading ? (
