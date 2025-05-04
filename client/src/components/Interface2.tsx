@@ -384,9 +384,6 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
         </div>
         {/* Right: Control buttons */}
         <div className="w-1/4 lg:w-1/3 flex flex-col items-center lg:items-end p-2 space-y-4 overflow-auto" style={{ maxHeight: '100%' }}>
-          <button id="backButton" onClick={() => setCurrentInterface('interface1')} className="w-full md:w-auto flex items-center justify-center px-6 py-3 bg-white text-blue-900 rounded-full text-base font-semibold shadow transition-colors mb-2" style={{fontFamily:'inherit', letterSpacing:0.2}}>
-            <span className="material-icons mr-2 text-lg">arrow_back</span>Back
-          </button>
           <button id="cancelButton" onClick={handleCancel} className="w-full md:w-auto flex items-center justify-center px-6 py-3 bg-white text-blue-900 rounded-full text-base font-semibold shadow transition-colors mb-2" style={{fontFamily:'inherit', letterSpacing:0.2}}>
             <span className="material-icons mr-2 text-lg">cancel</span>Cancel
           </button>

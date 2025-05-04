@@ -188,21 +188,18 @@ const Reference = ({ references }: ReferenceProps): JSX.Element => {
           </div>
         </div>
       )}
-      {/* Tabs category */}
-      <div className="flex gap-2 mb-4 px-2 overflow-x-auto scrollbar-hide">
-        {CATEGORIES.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`px-4 py-2 rounded-full font-poppins font-semibold text-sm transition-all duration-200 border-2 ${activeCategory === cat ? 'bg-[#d4af37] text-blue-900 border-[#d4af37] shadow-lg' : 'bg-white/10 text-white border-white/20 hover:bg-[#d4af37]/80 hover:text-blue-900'} min-w-max`}
-            style={{ boxShadow: activeCategory === cat ? '0 2px 12px 0 #d4af3760' : undefined }}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-      <div className="flex items-center mb-3 px-2">
-        <h3 className="font-poppins font-semibold text-[20px] text-white tracking-wide">References</h3>
+      {/* Dropdown category */}
+      <div className="flex items-center mb-4 px-2">
+        <select
+          value={activeCategory}
+          onChange={e => setActiveCategory(e.target.value)}
+          className="px-4 py-2 rounded-full font-poppins font-semibold text-sm bg-white/90 text-blue-900 border border-[#d4af37] shadow focus:outline-none focus:ring-2 focus:ring-[#d4af37]"
+          style={{ minWidth: 180 }}
+        >
+          {CATEGORIES.map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
       </div>
       {/* Loading state */}
       {loading ? (
