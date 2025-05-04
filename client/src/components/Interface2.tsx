@@ -295,7 +295,7 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
             <div
               id="realTimeConversation"
               ref={conversationRef}
-              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-full sm:max-w-2xl mx-auto min-h-[60px] max-h-[25vh] overflow-y-auto"
+              className="w-full flex flex-col-reverse gap-2 pr-2 relative max-w-full sm:max-w-2xl mx-auto min-h-[60px] max-h-[12vh] overflow-y-auto"
               style={{
                 background: 'rgba(255,255,255,0.88)',
                 borderRadius: 12,
@@ -381,11 +381,30 @@ const Interface2: React.FC<Interface2Props> = ({ isActive }) => {
           )}
           {/* Reference container below (full width, auto height) */}
           <div className="w-full mt-4">
-            <Reference references={references} />
+            <div className="block sm:hidden">
+              <div className="flex flex-row items-center gap-x-2 mb-3 px-2">
+                <button id="cancelButton" onClick={handleCancel} className="flex-1 flex items-center justify-center px-2 py-1 bg-white/80 hover:bg-blue-100 text-blue-900 rounded-full text-xs font-semibold border border-white/30 shadow transition-colors" style={{fontFamily:'inherit', letterSpacing:0.2}}>
+                  <span className="material-icons text-base mr-1">cancel</span>Cancel
+                </button>
+                <Reference references={references} />
+                <button
+                  id="endCallButton"
+                  onClick={handleNext}
+                  className="flex-1 bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 font-bold py-1 px-2 rounded-full shadow-lg flex items-center justify-center space-x-2 transition-colors border border-white/30 text-xs"
+                  style={{fontFamily:'inherit', letterSpacing:0.5}}
+                >
+                  <span className="material-icons">send</span>
+                  <span className="whitespace-nowrap">Confirm</span>
+                </button>
+              </div>
+            </div>
+            <div className="hidden sm:block">
+              <Reference references={references} />
+            </div>
           </div>
         </div>
         {/* Right: Control buttons */}
-        <div className="w-1/4 lg:w-1/3 flex flex-col items-center lg:items-end p-2 space-y-4 overflow-auto" style={{ maxHeight: '100%' }}>
+        <div className="w-1/4 lg:w-1/3 flex-col items-center lg:items-end p-2 space-y-4 overflow-auto hidden sm:flex" style={{ maxHeight: '100%' }}>
           <button id="cancelButton" onClick={handleCancel} className="w-full md:w-auto flex items-center justify-center px-2 sm:px-3 py-1.5 bg-white/80 hover:bg-blue-100 text-blue-900 rounded-full text-xs font-semibold border border-white/30 shadow transition-colors mb-2" style={{fontFamily:'inherit', letterSpacing:0.2}}>
             <span className="material-icons text-base mr-1">cancel</span>Cancel
           </button>
