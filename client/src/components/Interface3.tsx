@@ -452,6 +452,18 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
                   <span className="whitespace-nowrap">Send To Reception</span>
                 </button>
               </div>
+              {/* Mobile: Add Note, Room, Vietnamese in one row, textarea below */}
+              <div className="flex sm:hidden flex-row items-center gap-2 h-10 mb-2">
+                <button className="h-10 px-3 bg-[#ffe082] hover:bg-[#ffe9b3] text-blue-900 rounded-full text-xs font-semibold shadow transition-colors" onClick={handleAddNote} disabled={!note.trim()}>Add Note</button>
+                <div className="flex items-center space-x-2 w-full justify-center">
+                  <label className="text-xs text-gray-600 font-medium">Room</label>
+                  <input type="text" className="w-16 p-2 border border-white/30 rounded-xl focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] bg-white/70 text-gray-900 font-semibold text-xs" value={orderSummary.roomNumber} onChange={(e) => handleInputChange('roomNumber', e.target.value)} />
+                </div>
+                <button className="h-10 px-3 bg-white/70 text-blue-900 rounded-full text-xs font-semibold border border-white/30 shadow flex items-center justify-center" onClick={() => setCurrentInterface('interface3vi')}>
+                  <span className="material-icons text-base">language</span>
+                </button>
+              </div>
+              <textarea placeholder="Enter any corrections or additional Information & Press Add Note to update into the Conversation Summary" className="sm:hidden w-full p-2 border border-white/30 rounded-xl mb-3 text-xs bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-[#d4af37] transition italic font-light text-gray-500" value={note} onChange={(e) => setNote(e.target.value)} rows={3} style={{fontFamily:'inherit'}} />
               {/* AI-generated Call Summary Container */}
               {callSummary && (
                 <div id="summary-container" className="mb-3 sm:mb-4">
