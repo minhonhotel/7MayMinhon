@@ -438,6 +438,20 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
           <div className="flex flex-col md:flex-row gap-4 sm:gap-10 md:gap-16">
             {/* Left column: summary, notes, room number */}
             <div className="md:w-3/4 w-full space-y-3 sm:space-y-4">
+              {/* Mobile: Control buttons in a row above summary */}
+              <div className="flex sm:hidden flex-row w-full gap-2 mb-2">
+                <button className="flex-1 flex items-center justify-center px-2 py-1.5 bg-white/80 hover:bg-blue-100 text-blue-900 rounded-full text-xs font-semibold border border-white/30 shadow transition-colors" onClick={() => setCurrentInterface('interface1')}>
+                  <span className="material-icons text-base mr-1">cancel</span>Cancel
+                </button>
+                <button
+                  onClick={handleConfirmOrder}
+                  className="flex-1 bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 font-bold py-1.5 px-3 rounded-full shadow-lg flex items-center justify-center space-x-2 transition-colors border border-white/30 text-xs"
+                  style={{letterSpacing:0.5}}
+                >
+                  <span className="material-icons">send</span>
+                  <span className="whitespace-nowrap">Send To Reception</span>
+                </button>
+              </div>
               {/* AI-generated Call Summary Container */}
               {callSummary && (
                 <div id="summary-container" className="mb-3 sm:mb-4">
@@ -452,23 +466,28 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
                   </div>
                 </div>
               )}
-              {/* Additional Notes and Actions */}
-              <div className="flex items-center justify-between h-10">
-                <button className="h-full px-3 sm:px-4 bg-[#ffe082] hover:bg-[#ffe9b3] text-blue-900 rounded-full text-xs sm:text-sm font-semibold shadow transition-colors" onClick={handleAddNote} disabled={!note.trim()}>Add Note</button>
-                <button className="h-full px-3 sm:px-4 bg-white/70 text-blue-900 rounded-full text-xs sm:text-sm font-semibold border border-white/30 shadow flex items-center justify-center" onClick={() => setCurrentInterface('interface3vi')}>
+              {/* Additional Notes, Room Number, and Actions (mobile: row, desktop: column) */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-2 h-auto sm:h-10">
+                <button className="h-10 px-3 sm:px-4 bg-[#ffe082] hover:bg-[#ffe9b3] text-blue-900 rounded-full text-xs sm:text-sm font-semibold shadow transition-colors" onClick={handleAddNote} disabled={!note.trim()}>Add Note</button>
+                {/* Room Number input ở giữa trên mobile */}
+                <div className="flex items-center space-x-2 w-full sm:w-auto justify-center">
+                  <label className="text-xs sm:text-base text-gray-600 font-medium">Room</label>
+                  <input type="text" className="w-16 sm:w-32 p-2 border border-white/30 rounded-xl focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] bg-white/70 text-gray-900 font-semibold text-xs sm:text-base" value={orderSummary.roomNumber} onChange={(e) => handleInputChange('roomNumber', e.target.value)} />
+                </div>
+                <button className="h-10 px-3 sm:px-4 bg-white/70 text-blue-900 rounded-full text-xs sm:text-sm font-semibold border border-white/30 shadow flex items-center justify-center" onClick={() => setCurrentInterface('interface3vi')}>
                   <span className="material-icons text-base">language</span>
                 </button>
               </div>
               <textarea placeholder="Enter any corrections or additional Information & Press Add Note to update into the Conversation Summary" className="w-full p-2 sm:p-3 border border-white/30 rounded-xl mb-3 sm:mb-4 text-xs sm:text-sm bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-[#d4af37] transition italic font-light text-gray-500" value={note} onChange={(e) => setNote(e.target.value)} rows={3} style={{fontFamily:'inherit'}} />
-              {/* Room Number input */}
-              <div className="flex items-center space-x-2">
+              {/* Room Number input (desktop: giữ nguyên vị trí cũ) */}
+              <div className="hidden sm:flex items-center space-x-2">
                 <label className="text-sm sm:text-base text-gray-600 font-medium">Room Number</label>
                 <input type="text" className="w-24 sm:w-32 p-2 border border-white/30 rounded-xl focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] bg-white/70 text-gray-900 font-semibold" value={orderSummary.roomNumber} onChange={(e) => handleInputChange('roomNumber', e.target.value)} />
                 <span className="italic text-xs text-gray-400 ml-2">*Required in order to help our reception to process your request</span>
               </div>
             </div>
-            {/* Right column: control buttons at top-right */}
-            <div className="md:w-1/4 w-full flex md:justify-end justify-center">
+            {/* Right column: control buttons at top-right (ẩn trên mobile) */}
+            <div className="md:w-1/4 w-full hidden sm:flex md:justify-end justify-center">
               <div className="flex flex-col items-end space-y-2 sm:space-y-3 w-full md:w-auto">
                 <button className="w-full md:w-auto flex items-center justify-center px-2 sm:px-3 py-1.5 bg-white/80 hover:bg-blue-100 text-blue-900 rounded-full text-xs font-semibold border border-white/30 shadow transition-colors" onClick={() => setCurrentInterface('interface1')}>
                   <span className="material-icons text-base mr-1">cancel</span>Cancel
