@@ -44,7 +44,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
             onClick={startCall}
           >
             <span className="material-icons text-4xl sm:text-6xl lg:text-7xl mb-2 animate-mic-pulse group-hover:animate-mic-bounce text-shadow-lg">mic</span>
-            <span className="text-base sm:text-lg lg:text-xl font-medium">Press to Call</span>
+            <span className="text-lg sm:text-2xl lg:text-3xl font-bold whitespace-nowrap">Press to Call</span>
             {/* Sóng âm khi hover */}
             <span className="absolute w-full h-full rounded-full pointer-events-none group-hover:animate-wave-pulse"></span>
           </button>
