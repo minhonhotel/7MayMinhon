@@ -430,7 +430,7 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
         fontFamily: 'SF Pro Text, Roboto, Open Sans, Arial, sans-serif'
       }}
     >
-      <div className="container mx-auto h-full flex flex-col p-2 sm:p-4 md:p-8">
+      <div className="container mx-auto flex flex-col p-2 sm:p-4 md:p-8">
         <div className="mx-auto w-full max-w-4xl bg-white/90 rounded-2xl shadow-xl p-3 sm:p-6 md:p-10 mb-4 sm:mb-6 flex-grow border border-white/40 backdrop-blur-md" style={{minHeight: 420}}>
           <div className="mb-3 sm:mb-4 pb-2 sm:pb-3 border-b border-gray-200">
             <p className="font-poppins font-bold text-xl sm:text-2xl text-blue-900 tracking-wide">REVIEW & CONFIRM</p>
