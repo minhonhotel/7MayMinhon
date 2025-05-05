@@ -20,14 +20,14 @@ const VoiceAssistant: React.FC = () => {
     <div className="relative h-screen overflow-hidden font-sans text-gray-800 bg-neutral-50" id="app">
       {/* Header Bar */}
       <header className="w-full bg-primary text-white p-4 shadow-md">
-        <div className="container mx-auto flex items-center justify-between">
+        <div className="container mx-auto flex items-center px-2">
           {/* Left: Logo */}
-          <div className="flex items-center min-w-[80px] sm:min-w-[120px]">
-            <img src="/assets/references/images/minhon-logo.jpg" alt="Minhon Logo" className="h-10 sm:h-16 w-auto rounded-lg shadow-md bg-white/80 p-1" />
+          <div className="w-16 flex-shrink-0 flex items-center justify-start ml-1 sm:ml-2">
+            <img src="/assets/references/images/minhon-logo.jpg" alt="Minhon Logo" className="h-10 sm:h-14 w-auto rounded-lg shadow-md bg-white/80 p-1" />
           </div>
           {/* Center: InfographicSteps - luôn ngang, nhỏ lại trên mobile */}
           <div className="flex-1 flex justify-center">
-            <div className="w-full">
+            <div className="w-full max-w-xs sm:max-w-md">
               <InfographicSteps horizontal compact currentStep={
                 currentInterface === 'interface3' ? 3 :
                 currentInterface === 'interface2' ? 2 : 1
@@ -35,11 +35,11 @@ const VoiceAssistant: React.FC = () => {
             </div>
           </div>
           {/* Right: Call History */}
-          <div className="flex items-center min-w-[140px] justify-end">
+          <div className="w-20 flex-shrink-0 flex items-center justify-end mr-1 sm:mr-2">
             <Link href="/call-history">
-              <a className="px-3 py-1 rounded bg-primary-dark text-white text-sm flex items-center">
-                <History className="w-4 h-4 mr-1" />
-                Call History
+              <a className="flex items-center gap-1 px-2 py-1 rounded bg-primary-dark text-white text-xs sm:text-sm">
+                <History className="w-4 h-4" />
+                <span className="hidden sm:inline">Call History</span>
               </a>
             </Link>
           </div>
