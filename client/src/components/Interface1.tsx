@@ -40,7 +40,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
           {/* Main Button */}
           <button 
             id="vapiButton" 
-            className="group relative w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-primary-dark font-poppins font-bold flex flex-col items-center justify-center shadow-2xl transition-transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-amber-300 overflow-hidden"
+            className="group relative w-36 h-36 sm:w-40 sm:h-40 lg:w-56 lg:h-56 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-primary-dark font-poppins font-bold flex flex-col items-center justify-center shadow-2xl transition-transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-amber-300 overflow-hidden"
             onClick={startCall}
           >
             <span className="material-icons text-4xl sm:text-6xl lg:text-7xl mb-2 animate-mic-pulse group-hover:animate-mic-bounce text-shadow-lg">mic</span>
@@ -53,7 +53,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
         <div className="text-center w-full max-w-5xl">
           <div className="flex flex-col md:flex-row md:flex-wrap justify-center gap-y-2 md:gap-3 text-left mx-auto w-full">
             {/* Room & Stay */}
-            <div className="bg-white/10 p-0.5 sm:p-2 rounded-lg backdrop-blur-sm w-full md:w-64 mb-0 min-h-[40px]">
+            <div className="bg-white/10 p-0.5 sm:p-2 rounded-lg backdrop-blur-sm w-4/5 sm:w-full md:w-64 mb-0 min-h-[40px]">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-0.5 mb-1 text-xs sm:text-sm">Room & Stay</h4>
               <ul className="grid grid-cols-5 gap-0.5 sm:gap-2 py-0.5 sm:py-2">
                 <li className="flex flex-col items-center justify-center"><span className="material-icons text-xl sm:text-4xl text-amber-400">login</span></li>
@@ -64,7 +64,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
               </ul>
             </div>
             {/* Room Services */}
-            <div className="bg-white/10 p-0.5 sm:p-2 rounded-lg backdrop-blur-sm w-full md:w-64 mb-0 min-h-[40px]">
+            <div className="bg-white/10 p-0.5 sm:p-2 rounded-lg backdrop-blur-sm w-4/5 sm:w-full md:w-64 mb-0 min-h-[40px]">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-0.5 mb-1 text-xs sm:text-sm">Room Services</h4>
               <ul className="grid grid-cols-7 gap-0.5 sm:gap-2 py-0.5 sm:py-2">
                 <li className="flex flex-col items-center justify-center"><span className="material-icons text-xl sm:text-4xl text-amber-400">restaurant</span></li>
@@ -77,7 +77,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
               </ul>
             </div>
             {/* Bookings & Facilities */}
-            <div className="bg-white/10 p-0.5 sm:p-2 rounded-lg backdrop-blur-sm w-full md:w-64 mb-0 min-h-[40px]">
+            <div className="bg-white/10 p-0.5 sm:p-2 rounded-lg backdrop-blur-sm w-4/5 sm:w-full md:w-64 mb-0 min-h-[40px]">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-0.5 mb-1 text-xs sm:text-sm">Bookings & Facilities</h4>
               <ul className="grid grid-cols-7 gap-0.5 sm:gap-2 py-0.5 sm:py-2">
                 <li className="flex flex-col items-center justify-center"><span className="material-icons text-xl sm:text-4xl text-amber-400">event_seat</span></li>
@@ -90,7 +90,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
               </ul>
             </div>
             {/* Tourism & Exploration */}
-            <div className="bg-white/10 p-0.5 sm:p-2 rounded-lg backdrop-blur-sm w-full md:w-64 mb-0 min-h-[40px]">
+            <div className="bg-white/10 p-0.5 sm:p-2 rounded-lg backdrop-blur-sm w-4/5 sm:w-full md:w-64 mb-0 min-h-[40px]">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-0.5 mb-1 text-xs sm:text-sm">Tourism & Exploration</h4>
               <ul className="grid grid-cols-7 gap-0.5 sm:gap-2 py-0.5 sm:py-2">
                 <li className="flex flex-col items-center justify-center"><span className="material-icons text-xl sm:text-4xl text-amber-400">location_on</span></li>
@@ -103,7 +103,7 @@ const Interface1: React.FC<Interface1Props> = ({ isActive }) => {
               </ul>
             </div>
             {/* Support */}
-            <div className="bg-white/10 p-0.5 sm:p-2 rounded-lg backdrop-blur-sm w-full md:w-64 mb-0 min-h-[40px]">
+            <div className="bg-white/10 p-0.5 sm:p-2 rounded-lg backdrop-blur-sm w-4/5 sm:w-full md:w-64 mb-0 min-h-[40px]">
               <h4 className="font-medium text-amber-400 border-b border-amber-400/30 pb-0.5 mb-1 text-xs sm:text-sm">Support to book external services</h4>
               <ul className="grid grid-cols-4 gap-0.5 sm:gap-2 py-0.5 sm:py-2">
                 <li className="flex flex-col items-center justify-center"><span className="material-icons text-xl sm:text-4xl text-amber-400">translate</span></li>
