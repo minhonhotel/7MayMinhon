@@ -26,7 +26,7 @@ const VoiceAssistant: React.FC = () => {
             <img src="/assets/references/images/minhon-logo.jpg" alt="Minhon Logo" className="h-10 sm:h-14 w-auto rounded-lg shadow-md bg-white/80 p-1" />
           </div>
           {/* Center: InfographicSteps - luôn ngang, nhỏ lại trên mobile */}
-          <div className="flex-1 flex justify-center">
+          <div className="flex-1 flex justify-center mx-2 sm:mx-6">
             <div className="w-full max-w-xs sm:max-w-md">
               <InfographicSteps horizontal compact currentStep={
                 currentInterface === 'interface3' ? 3 :
