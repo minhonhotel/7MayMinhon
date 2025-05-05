@@ -438,40 +438,46 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
           <div className="flex flex-col md:flex-row gap-4 sm:gap-10 md:gap-16">
             {/* Left column: summary, notes, room number */}
             <div className="md:w-3/4 w-full space-y-3 sm:space-y-4">
-              {/* Mobile: Control buttons in a row above summary */}
-              <div className="flex sm:hidden flex-row w-full gap-2 mb-2">
-                <button className="flex-1 flex items-center justify-center px-2 py-1.5 bg-white/80 hover:bg-blue-100 text-blue-900 rounded-full text-xs font-semibold border border-white/30 shadow transition-colors" onClick={() => setCurrentInterface('interface1')}>
-                  <span className="material-icons text-base mr-1">cancel</span>Cancel
-                </button>
-                <button
-                  onClick={handleConfirmOrder}
-                  className="flex-1 bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 font-bold py-1.5 px-3 rounded-full shadow-lg flex items-center justify-center space-x-2 transition-colors border border-white/30 text-xs"
-                  style={{letterSpacing:0.5}}
-                >
-                  <span className="material-icons">send</span>
-                  <span className="whitespace-nowrap">Send To Reception</span>
-                </button>
+              {/* Mobile: Add Note, Room, Vietnamese, textarea lên trên summary */}
+              <div className="flex flex-col gap-2 mb-2 sm:hidden">
+                <div className="flex flex-row w-full gap-2">
+                  <button className="h-10 px-3 bg-[#ffe082] hover:bg-[#ffe9b3] text-blue-900 rounded-full text-xs font-semibold shadow transition-colors flex-1" onClick={handleAddNote} disabled={!note.trim()}>Add Note</button>
+                  <div className="flex items-center space-x-2 w-full justify-center">
+                    <label className="text-xs text-gray-600 font-medium">Room</label>
+                    <input type="text" className="w-16 p-2 border border-white/30 rounded-xl focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] bg-white/70 text-gray-900 font-semibold text-xs" value={orderSummary.roomNumber} onChange={(e) => handleInputChange('roomNumber', e.target.value)} />
+                  </div>
+                  <button className="h-10 px-3 bg-white/70 text-blue-900 rounded-full text-xs font-semibold border border-white/30 shadow flex items-center justify-center" onClick={() => setCurrentInterface('interface3vi')}>
+                    <span className="material-icons text-base">language</span>
+                  </button>
+                </div>
+                <textarea placeholder="Enter any corrections or additional Information & Press Add Note to update into the Conversation Summary" className="w-full p-2 border border-white/30 rounded-xl text-xs bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-[#d4af37] transition italic font-light text-gray-500" value={note} onChange={(e) => setNote(e.target.value)} rows={3} style={{fontFamily:'inherit'}} />
               </div>
-              {/* Hàng ngang: Add Note, Room, Vietnamese icon */}
-              <div className="flex flex-row items-center gap-2 h-10 mb-2">
+              {/* AI-generated Call Summary Container */}
+              {callSummary && (
+                <div id="summary-container" className="mb-3 sm:mb-4">
+                  <div className="p-3 sm:p-5 bg-white/80 rounded-xl shadow border border-white/30 mb-3 sm:mb-4 relative" style={{backdropFilter:'blur(2px)'}}>
+                    <h3 className="font-semibold text-base sm:text-lg mb-1 sm:mb-2 text-blue-800">Summary</h3>
+                    <p className="text-sm sm:text-base leading-relaxed text-gray-800 whitespace-pre-line" style={{fontWeight: 400}}>{callSummary.content}</p>
+                    <div className="mt-2 sm:mt-3 flex justify-end">
+                      <div className="text-xs text-gray-500">
+                        Generated at {new Date(callSummary.timestamp).toLocaleTimeString()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {/* Desktop: Additional Notes, Room Number, and Actions (giữ nguyên) */}
+              <div className="hidden sm:flex flex-row items-center gap-2 h-10">
                 <button className="h-10 px-3 sm:px-4 bg-[#ffe082] hover:bg-[#ffe9b3] text-blue-900 rounded-full text-xs sm:text-sm font-semibold shadow transition-colors" onClick={handleAddNote} disabled={!note.trim()}>Add Note</button>
-                {/* Room Number input: chỉ hiện trên mobile */}
-                <div className="flex items-center space-x-2 w-full justify-center sm:hidden">
-                  <label className="text-xs text-gray-600 font-medium">Room</label>
-                  <input type="text" className="w-16 p-2 border border-white/30 rounded-xl focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] bg-white/70 text-gray-900 font-semibold text-xs" value={orderSummary.roomNumber} onChange={(e) => handleInputChange('roomNumber', e.target.value)} />
+                <div className="flex items-center space-x-2 w-full justify-center">
+                  <label className="text-xs sm:text-base text-gray-600 font-medium">Room</label>
+                  <input type="text" className="w-16 sm:w-32 p-2 border border-white/30 rounded-xl focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] bg-white/70 text-gray-900 font-semibold text-xs sm:text-base" value={orderSummary.roomNumber} onChange={(e) => handleInputChange('roomNumber', e.target.value)} />
                 </div>
                 <button className="h-10 px-3 sm:px-4 bg-white/70 text-blue-900 rounded-full text-xs sm:text-sm font-semibold border border-white/30 shadow flex items-center justify-center" onClick={() => setCurrentInterface('interface3vi')}>
                   <span className="material-icons text-base">language</span>
                 </button>
               </div>
-              {/* Textarea Add Note đặt bên dưới hàng ngang */}
-              <textarea placeholder="Enter any corrections or additional Information & Press Add Note to update into the Conversation Summary" className="w-full p-2 sm:p-3 border border-white/30 rounded-xl mb-3 sm:mb-4 text-xs sm:text-sm bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-[#d4af37] transition italic font-light text-gray-500" value={note} onChange={(e) => setNote(e.target.value)} rows={3} style={{fontFamily:'inherit'}} />
-              {/* Room Number input (desktop: giữ nguyên vị trí cũ) */}
-              <div className="hidden sm:flex items-center space-x-2">
-                <label className="text-sm sm:text-base text-gray-600 font-medium">Room Number</label>
-                <input type="text" className="w-24 sm:w-32 p-2 border border-white/30 rounded-xl focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] bg-white/70 text-gray-900 font-semibold" value={orderSummary.roomNumber} onChange={(e) => handleInputChange('roomNumber', e.target.value)} />
-                <span className="italic text-xs text-gray-400 ml-2">*Required in order to help our reception to process your request</span>
-              </div>
+              <textarea placeholder="Enter any corrections or additional Information & Press Add Note to update into the Conversation Summary" className="hidden sm:block w-full p-2 sm:p-3 border border-white/30 rounded-xl mb-3 sm:mb-4 text-xs sm:text-sm bg-white/60 focus:bg-white/90 focus:ring-2 focus:ring-[#d4af37] transition italic font-light text-gray-500" value={note} onChange={(e) => setNote(e.target.value)} rows={3} style={{fontFamily:'inherit'}} />
             </div>
             {/* Right column: control buttons at top-right (ẩn trên mobile) */}
             <div className="md:w-1/4 w-full hidden sm:flex md:justify-end justify-center">
