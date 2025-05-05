@@ -467,12 +467,12 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
                 </div>
               )}
               {/* Additional Notes, Room Number, and Actions (mobile: row, desktop: column) */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-2 h-auto sm:h-10">
+              <div className="flex flex-row items-center gap-2 h-10">
                 <button className="h-10 px-3 sm:px-4 bg-[#ffe082] hover:bg-[#ffe9b3] text-blue-900 rounded-full text-xs sm:text-sm font-semibold shadow transition-colors" onClick={handleAddNote} disabled={!note.trim()}>Add Note</button>
-                {/* Room Number input ở giữa trên mobile */}
-                <div className="flex items-center space-x-2 w-full sm:w-auto justify-center">
-                  <label className="text-xs sm:text-base text-gray-600 font-medium">Room</label>
-                  <input type="text" className="w-16 sm:w-32 p-2 border border-white/30 rounded-xl focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] bg-white/70 text-gray-900 font-semibold text-xs sm:text-base" value={orderSummary.roomNumber} onChange={(e) => handleInputChange('roomNumber', e.target.value)} />
+                {/* Room Number input: chỉ hiện trên mobile */}
+                <div className="flex items-center space-x-2 w-full justify-center sm:hidden">
+                  <label className="text-xs text-gray-600 font-medium">Room</label>
+                  <input type="text" className="w-16 p-2 border border-white/30 rounded-xl focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37] bg-white/70 text-gray-900 font-semibold text-xs" value={orderSummary.roomNumber} onChange={(e) => handleInputChange('roomNumber', e.target.value)} />
                 </div>
                 <button className="h-10 px-3 sm:px-4 bg-white/70 text-blue-900 rounded-full text-xs sm:text-sm font-semibold border border-white/30 shadow flex items-center justify-center" onClick={() => setCurrentInterface('interface3vi')}>
                   <span className="material-icons text-base">language</span>
