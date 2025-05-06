@@ -438,6 +438,20 @@ const Interface3: React.FC<Interface3Props> = ({ isActive }) => {
           <div className="flex flex-col md:flex-row gap-4 sm:gap-10 md:gap-16">
             {/* Left column: summary, notes, room number */}
             <div className="md:w-3/4 w-full space-y-3 sm:space-y-4">
+              {/* Mobile: Cancel và Send to Reception lên trên cùng */}
+              <div className="flex sm:hidden flex-row w-full gap-2 mb-2">
+                <button className="flex-1 flex items-center justify-center px-2 py-1.5 bg-white/80 hover:bg-blue-100 text-blue-900 rounded-full text-xs font-semibold border border-white/30 shadow transition-colors" onClick={() => setCurrentInterface('interface1')}>
+                  <span className="material-icons text-base mr-1">cancel</span>Cancel
+                </button>
+                <button
+                  onClick={handleConfirmOrder}
+                  className="flex-1 bg-[#d4af37] hover:bg-[#ffd700] text-blue-900 font-bold py-1.5 px-3 rounded-full shadow-lg flex items-center justify-center space-x-2 transition-colors border border-white/30 text-xs"
+                  style={{letterSpacing:0.5}}
+                >
+                  <span className="material-icons">send</span>
+                  <span className="whitespace-nowrap">Send To Reception</span>
+                </button>
+              </div>
               {/* Mobile: Add Note, Room, Vietnamese, textarea lên trên summary */}
               <div className="flex flex-col gap-2 mb-2 sm:hidden">
                 <div className="flex flex-row w-full gap-2">
