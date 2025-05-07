@@ -977,5 +977,24 @@ Mi Nhon Hotel Mui Ne`
     }
   });
 
+  // TEMPORARY ENDPOINT: Create call_summaries table
+  app.get('/api/create-call-summaries-table', async (req, res) => {
+    try {
+      await storage.db.query(`
+        CREATE TABLE IF NOT EXISTS call_summaries (
+          id SERIAL PRIMARY KEY,
+          call_id TEXT NOT NULL,
+          content TEXT NOT NULL,
+          timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
+          room_number TEXT,
+          duration TEXT
+        );
+      `);
+      res.send('Table call_summaries created or already exists!');
+    } catch (err) {
+      res.status(500).send('Error: ' + err.message);
+    }
+  });
+
   return httpServer;
 }
